@@ -1,6 +1,12 @@
-FROM python:3.14.2-alpine
+FROM python:3.14.2
 
 WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Enable access to dbshell
+RUN apt-get update && apt-get install -y postgresql-client
 
 RUN pip install --upgrade pip
 COPY requirements.txt .
