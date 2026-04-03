@@ -4,3 +4,4 @@ venv
 .gitignore
 README.md
 **/__pycache__
+ruff.toml
