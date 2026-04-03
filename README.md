@@ -32,7 +32,12 @@ POSTGRES_HOST=cityscope-postgres
 
 5) Make sure Docker Engine or Docker Desktop is working
 
-6) Create and run containers
+6) Create and run containers in detached mode
 ```bash
-docker compose up --build
+docker compose up --build -d
+```
+
+7) Apply database migrations
+```bash
+docker exec cityscope-backend python manage.py migrate
 ```
