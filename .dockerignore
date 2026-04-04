@@ -1,0 +1,7 @@
+venv
+.env
+.env.example
+.gitignore
+README.md
+**/__pycache__
+ruff.toml
