@@ -11,6 +11,7 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     list_display_links = ["name", "slug"]
     search_fields = ["name", "slug"]
+    ordering = ["name"]
 
 
 @admin.register(Category)
@@ -18,6 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     list_display_links = ["name", "slug"]
     search_fields = ["name", "slug"]
+    ordering = ["name"]
 
 
 @admin.register(SourceRecord)
@@ -29,6 +31,7 @@ class SourceRecordAdmin(admin.ModelAdmin):
     list_display_links = ["name", "source_type"]
     search_fields = ["name", "source_type"]
     list_filter = ["source_type"]
+    ordering = ["name", "source_type"]
 
 
 @admin.register(Place)
@@ -40,6 +43,7 @@ class PlaceAdmin(admin.ModelAdmin):
         "latitude",
         "longitude",
         "sourcerecord",
+        "opening_status",
     ]
     search_fields = [
         "name",
@@ -55,4 +59,13 @@ class PlaceAdmin(admin.ModelAdmin):
         "sourcerecord",
         RatingListFilter,
         "city",
+    ]
+    ordering = [
+        "name",
+        "latitude",
+        "longitude",
+        "category__name",
+        "sourcerecord",
+        "city__name",
+        "opening_status",
     ]
