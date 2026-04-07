@@ -1,1 +1,72 @@
+from django.db import models
+from django.utils.text import slugify
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 # Create your models here.
+
+class SlugifyModel(models.Model):
+    class Meta:
+        abstract = True
+
+    slug = models.SlugField(max_length=100, unique=True)
+
+    # Generate slug automatically if slug was not provided
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+class City(SlugifyModel):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = 'City'
+        verbose_name_plural = 'Cities'
+
+    def __str__(self):
+        return self.name
+
+
+class Category(SlugifyModel):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.name
+
+
+class SourceRecord(models.Model):
+    API = "API"
+    SOURCE_TYPE_CHOICES = {
+        API: "Api"
+    }
+
+    source_id = models.AutoField(primary_key=True, editable=False)
+    name = models.CharField(max_length=100)
+    source_type = models.CharField(choices=SOURCE_TYPE_CHOICES, max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Place(SlugifyModel):
+    CLOSED = "CLOSED"
+    OPEN = "OPEN"
+    STATUS_CHOICES = {
+        CLOSED: "Closed",
+        OPEN: "Open"
+    }
+
+    name = models.CharField(max_length=150)
+    address = models.CharField(max_length=255)
+    latitude = models.DecimalField(max_digits=9, decimal_places=7, validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)])
+    longitude = models.DecimalField(max_digits=10, decimal_places=7, validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)])
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    sourcerecord = models.ForeignKey(SourceRecord, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    rating = models.FloatField(blank=True, null=True, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
+    price_level = models.CharField(max_length=20, blank=True, null=True)
+    opening_status = models.CharField(blank=True, null=True, choices=STATUS_CHOICES)
