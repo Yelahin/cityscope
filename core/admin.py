@@ -3,10 +3,47 @@ from .models import City, Category, SourceRecord, Place
 
 # Register your models here.
 
-admin.site.register(City)
-admin.site.register(Category)
-admin.site.register(SourceRecord)
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ["name", "slug"]
+    list_display_links = ["name", "slug"]
+    search_fields = ["name", "slug"]
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ["name", "slug"]
+    list_display_links = ["name", "slug"]
+    search_fields = ["name", "slug"]
+
+
+@admin.register(SourceRecord)
+class SourceRecordAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "source_type",
+    ]
+    list_display_links = ["name", "source_type"]
+    search_fields = ["name", "source_type"]
+
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'city', 'latitude', 'longitude', 'sourcerecord']
+    list_display = [
+        "name",
+        "category",
+        "city",
+        "latitude",
+        "longitude",
+        "sourcerecord",
+    ]
+    search_fields = [
+        "name",
+        "address",
+        "category__name",
+        "sourcerecord__name",
+        "city__name",
+        "rating",
+        "opening_status",
+    ]
