@@ -1,0 +1,58 @@
+[
+{
+  "model": "core.city",
+  "pk": 64,
+  "fields": {
+    "slug": "london",
+    "name": "London"
+  }
+},
+{
+  "model": "core.city",
+  "pk": 65,
+  "fields": {
+    "slug": "paris",
+    "name": "Paris"
+  }
+},
+{
+  "model": "core.city",
+  "pk": 66,
+  "fields": {
+    "slug": "berlin",
+    "name": "Berlin"
+  }
+},
+{
+  "model": "core.city",
+  "pk": 67,
+  "fields": {
+    "slug": "rome",
+    "name": "Rome"
+  }
+},
+{
+  "model": "core.city",
+  "pk": 68,
+  "fields": {
+    "slug": "madrid",
+    "name": "Madrid"
+  }
+},
+{
+  "model": "core.city",
+  "pk": 69,
+  "fields": {
+    "slug": "amsterdam",
+    "name": "Amsterdam"
+  }
+},
+{
+  "model": "core.city",
+  "pk": 70,
+  "fields": {
+    "slug": "barcelona",
+    "name": "Barcelona"
+  }
+}
+]

@@ -1,0 +1,98 @@
+[
+{
+  "model": "core.category",
+  "pk": 11,
+  "fields": {
+    "slug": "cafe",
+    "name": "Cafe"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 12,
+  "fields": {
+    "slug": "gym",
+    "name": "Gym"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 13,
+  "fields": {
+    "slug": "restaurant",
+    "name": "Restaurant"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 14,
+  "fields": {
+    "slug": "airport",
+    "name": "Airport"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 15,
+  "fields": {
+    "slug": "hospital",
+    "name": "Hospital"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 16,
+  "fields": {
+    "slug": "hotel",
+    "name": "Hotel"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 17,
+  "fields": {
+    "slug": "museum",
+    "name": "Museum"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 18,
+  "fields": {
+    "slug": "park",
+    "name": "Park"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 21,
+  "fields": {
+    "slug": "school",
+    "name": "School"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 22,
+  "fields": {
+    "slug": "supermarket",
+    "name": "Supermarket"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 23,
+  "fields": {
+    "slug": "bank",
+    "name": "Bank"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 25,
+  "fields": {
+    "slug": "gas-station",
+    "name": "Gas Station"
+  }
+}
+]
