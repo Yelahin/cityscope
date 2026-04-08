@@ -6,7 +6,7 @@ class RatingListFilter(admin.SimpleListFilter):
     title = "Rating level"
     parameter_name = "rating"
 
-    rating = [(0, 0.9), (1, 1.9), (2, 2.9), (3, 3.9), (4, 4.9), (5, 5)]
+    rating = [(0, 0.9), (1, 1.9), (2, 2.9), (3, 3.9), (4, 4.9), (5, 5.0)]
 
     def lookups(self, request, model_admin):
         # Create lookups. First value for url, second value for admin panel
@@ -30,7 +30,7 @@ class RatingListFilter(admin.SimpleListFilter):
             return queryset.filter(rating__isnull=True)
 
         # Filter records by rating
-        if self.value():
+        elif self.value():
             min_value = float(self.value()[0])
             max_value = min_value + 0.9
             return queryset.filter(

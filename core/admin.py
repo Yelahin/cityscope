@@ -36,6 +36,7 @@ class SourceRecordAdmin(admin.ModelAdmin):
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
+    show_facets = admin.ShowFacets.NEVER
     list_display = [
         "name",
         "category",
