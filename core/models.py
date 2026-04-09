@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
+import shortuuid
 
 # Create your models here.
 
@@ -55,7 +56,7 @@ class SourceRecord(models.Model):
         return self.name
 
 
-class Place(SlugifyModel):
+class Place(models.Model):
     class Meta:
         verbose_name = "Place"
         verbose_name_plural = "Places"
@@ -65,6 +66,7 @@ class Place(SlugifyModel):
     STATUS_CHOICES = {CLOSED: "Closed", OPEN: "Open"}
 
     name = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=200, unique=True)
     address = models.CharField(max_length=255)
     latitude = models.DecimalField(
         max_digits=9,
@@ -90,3 +92,12 @@ class Place(SlugifyModel):
     opening_status = models.CharField(
         blank=True, null=True, choices=STATUS_CHOICES
     )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug = slugify(self.name)
+            if Place.objects.filter(slug=slug).exists():
+                self.slug = f"{slug}-{shortuuid.uuid()}"
+            else:
+                self.slug = slug
+        super().save(*args, **kwargs)
