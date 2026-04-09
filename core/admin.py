@@ -52,7 +52,6 @@ class PlaceAdmin(admin.ModelAdmin):
         "category__name",
         "sourcerecord__name",
         "city__name",
-        "rating",
         "opening_status",
     ]
     list_filter = [
