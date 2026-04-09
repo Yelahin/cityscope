@@ -47,7 +47,6 @@ class SourceRecord(models.Model):
     API = "API"
     SOURCE_TYPE_CHOICES = {API: "Api"}
 
-    source_id = models.AutoField(primary_key=True, editable=False)
     name = models.CharField(max_length=100)
     source_type = models.CharField(choices=SOURCE_TYPE_CHOICES, max_length=50)
 
