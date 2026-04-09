@@ -13,7 +13,8 @@ class SlugifyModel(models.Model):
 
     # Generate slug automatically if slug was not provided
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        if not self.slug:
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
 
