@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "core.apps.CoreConfig",
+    "fetchdata.apps.FetchdataConfig",
 ]
 
 MIDDLEWARE = [
