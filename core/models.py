@@ -10,7 +10,7 @@ class SlugifyModel(models.Model):
     class Meta:
         abstract = True
 
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True, editable=False)
 
     # Generate slug automatically if slug was not provided
     def save(self, *args, **kwargs):
@@ -66,7 +66,7 @@ class Place(models.Model):
     STATUS_CHOICES = {CLOSED: "Closed", OPEN: "Open"}
 
     name = models.CharField(max_length=150)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, blank=True, editable=False)
     address = models.CharField(max_length=255)
     latitude = models.DecimalField(
         max_digits=9,

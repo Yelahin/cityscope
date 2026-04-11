@@ -10,6 +10,8 @@ from .utils import RatingListFilter
 class CityAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     list_display_links = ["name", "slug"]
+    readonly_fields = ["slug"]
+    fields = ["name", "slug"]
     search_fields = ["name", "slug"]
     ordering = ["name"]
 
@@ -18,6 +20,8 @@ class CityAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     list_display_links = ["name", "slug"]
+    readonly_fields = ["slug"]
+    fields = ["name", "slug"]
     search_fields = ["name", "slug"]
     ordering = ["name"]
 
@@ -44,6 +48,20 @@ class PlaceAdmin(admin.ModelAdmin):
         "latitude",
         "longitude",
         "sourcerecord",
+        "opening_status",
+    ]
+    readonly_fields = ["slug"]
+    fields = [
+        "name", 
+        "slug",
+        "address",
+        "latitude",
+        "longitude",
+        "category",
+        "sourcerecord",
+        "city",
+        "rating", 
+        "price_level",
         "opening_status",
     ]
     search_fields = [
