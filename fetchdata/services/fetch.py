@@ -6,5 +6,5 @@ api = overpy.Overpass(
 )
 
 def fetch_overpass_api(query):
-    result = api.query(query=query)
-    return result
+    queries = api.query(query=query)
+    return queries.nodes
