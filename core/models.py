@@ -66,11 +66,11 @@ class Place(models.Model):
     STATUS_CHOICES = {CLOSED: "Closed", OPEN: "Open"}
 
     name = models.CharField(max_length=150)
-    slug = models.SlugField(max_length=200, unique=True, blank=True, editable=False)
-    address = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=200, unique=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
     latitude = models.DecimalField(
         max_digits=9,
-        decimal_places=7,
+        decimal_places=7, 
         validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)],
     )
     longitude = models.DecimalField(
