@@ -95,14 +95,24 @@ class Place(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["name", "latitude", "longitude"], name="unique_place")
+            models.UniqueConstraint(
+                fields=["name", "latitude", "longitude"], name="unique_place"
+            )
         ]
 
-    def save(self, *args, **kwargs):
+    def prepare(self, used_slugs=None):
+        """This method prevent integrity error in bulk_create"""
         if not self.slug:
             slug = slugify(self.name)
-            if Place.objects.filter(slug=slug).exists():
+            if Place.objects.filter(slug=slug).exists() or (
+                used_slugs is not None and slug in used_slugs
+            ):
                 self.slug = f"{slug}-{shortuuid.uuid()}"
             else:
                 self.slug = slug
+            if used_slugs is not None:
+                used_slugs.add(self.slug)
+
+    def save(self, *args, **kwargs):
+        self.prepare()
         super().save(*args, **kwargs)
