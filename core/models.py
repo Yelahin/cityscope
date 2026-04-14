@@ -93,6 +93,11 @@ class Place(models.Model):
         blank=True, null=True, choices=STATUS_CHOICES
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["name", "latitude", "longitude"], name="unique_place")
+        ]
+
     def save(self, *args, **kwargs):
         if not self.slug:
             slug = slugify(self.name)
