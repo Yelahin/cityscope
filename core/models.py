@@ -1,7 +1,7 @@
+import shortuuid
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
-from django.core.validators import MaxValueValidator, MinValueValidator
-import shortuuid
 
 # Create your models here.
 

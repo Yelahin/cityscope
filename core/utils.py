@@ -30,7 +30,7 @@ class RatingListFilter(admin.SimpleListFilter):
             return queryset.filter(rating__isnull=True)
 
         # Filter records by rating
-        elif self.value():
+        if self.value():
             min_value = float(self.value()[0])
             max_value = min_value + 0.9
             return queryset.filter(

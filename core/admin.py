@@ -52,7 +52,7 @@ class PlaceAdmin(admin.ModelAdmin):
     ]
     readonly_fields = ["slug"]
     fields = [
-        "name", 
+        "name",
         "slug",
         "address",
         "latitude",
@@ -60,7 +60,7 @@ class PlaceAdmin(admin.ModelAdmin):
         "category",
         "sourcerecord",
         "city",
-        "rating", 
+        "rating",
         "price_level",
         "opening_status",
     ]
