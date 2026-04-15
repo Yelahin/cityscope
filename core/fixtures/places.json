@@ -1,0 +1,852 @@
+[
+{
+  "model": "core.place",
+  "pk": 63,
+  "fields": {
+    "slug": "flat-white-cafe",
+    "name": "Flat White Cafe",
+    "address": "17 Berwick St, London W1F 0PT",
+    "latitude": "51.5131800",
+    "longitude": "-0.1335200",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": 4.3,
+    "price_level": "5$ - 12$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 64,
+  "fields": {
+    "slug": "puregym-london-central",
+    "name": "PureGym London Central",
+    "address": "116 Tottenham Court Rd, London W1T 5AY",
+    "latitude": "51.5221100",
+    "longitude": "-0.1351600",
+    "category": 12,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": 3.8,
+    "price_level": "25$ - 40$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 65,
+  "fields": {
+    "slug": "the-ivy-restaurant",
+    "name": "The Ivy Restaurant",
+    "address": "1-5 West St, London WC2H 9NQ",
+    "latitude": "51.5129200",
+    "longitude": "-0.1280400",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": 4.2,
+    "price_level": "40$ - 80$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 66,
+  "fields": {
+    "slug": "heathrow-airport",
+    "name": "Heathrow Airport",
+    "address": "Longford TW6 1EW, London",
+    "latitude": "51.4700200",
+    "longitude": "-0.4542900",
+    "category": 14,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": 3.7,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 67,
+  "fields": {
+    "slug": "st-thomas-hospital",
+    "name": "St Thomas Hospital",
+    "address": "Westminster Bridge Rd, London SE1 7EH",
+    "latitude": "51.4985700",
+    "longitude": "-0.1186400",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 68,
+  "fields": {
+    "slug": "hyde-park",
+    "name": "Hyde Park",
+    "address": "Hyde Park, London W2 2UH",
+    "latitude": "51.5072800",
+    "longitude": "-0.1657400",
+    "category": 18,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": 4.8,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 69,
+  "fields": {
+    "slug": "tesco-express-london-bridge",
+    "name": "Tesco Express London Bridge",
+    "address": "3 London Bridge St, London SE1 9SG",
+    "latitude": "51.5047100",
+    "longitude": "-0.0864300",
+    "category": 22,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 70,
+  "fields": {
+    "slug": "barclays-bank-canary-wharf",
+    "name": "Barclays Bank Canary Wharf",
+    "address": "1 Churchill Pl, London E14 5HP",
+    "latitude": "51.5054500",
+    "longitude": "-0.0235400",
+    "category": 23,
+    "sourcerecord": 8,
+    "city": 64,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "CLOSED"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 71,
+  "fields": {
+    "slug": "cafe-de-la-paix",
+    "name": "Cafe de la Paix",
+    "address": "5 Pl. de l Opera, 75009 Paris",
+    "latitude": "48.8719300",
+    "longitude": "2.3316500",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": null,
+    "price_level": "10$ - 25$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 72,
+  "fields": {
+    "slug": "basic-fit-paris-opera",
+    "name": "Basic Fit Paris Opera",
+    "address": "27 Rue de la Chaussee d Antin, 75009 Paris",
+    "latitude": "48.8742100",
+    "longitude": "2.3336800",
+    "category": 12,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": 3.5,
+    "price_level": "20$ - 35$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 73,
+  "fields": {
+    "slug": "le-comptoir-du-relais",
+    "name": "Le Comptoir du Relais",
+    "address": "9 Carrefour de l Odeon, 75006 Paris",
+    "latitude": "48.8516200",
+    "longitude": "2.3393700",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": 4.4,
+    "price_level": "30$ - 60$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 74,
+  "fields": {
+    "slug": "orly-airport",
+    "name": "Orly Airport",
+    "address": "94390 Orly, Paris",
+    "latitude": "48.7262500",
+    "longitude": "2.3652300",
+    "category": 14,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": 3.2,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 75,
+  "fields": {
+    "slug": "hopital-hotel-dieu",
+    "name": "Hopital Hotel Dieu",
+    "address": "1 Parvis Notre-Dame, 75004 Paris",
+    "latitude": "48.8535500",
+    "longitude": "2.3472000",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 76,
+  "fields": {
+    "slug": "musee-d-orsay",
+    "name": "Musee d Orsay",
+    "address": "1 Rue de la Legion d Honneur, 75007 Paris",
+    "latitude": "48.8600100",
+    "longitude": "2.3265800",
+    "category": 17,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": 4.8,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 77,
+  "fields": {
+    "slug": "lycee-louis-le-grand",
+    "name": "Lycee Louis le Grand",
+    "address": "123 Rue Saint-Jacques, 75005 Paris",
+    "latitude": "48.8497300",
+    "longitude": "2.3462700",
+    "category": 21,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": null,
+    "price_level": null,
+    "opening_status": null
+  }
+},
+{
+  "model": "core.place",
+  "pk": 78,
+  "fields": {
+    "slug": "carrefour-city-paris-rivoli",
+    "name": "Carrefour City Paris Rivoli",
+    "address": "68 Rue de Rivoli, 75004 Paris",
+    "latitude": "48.8556800",
+    "longitude": "2.3512300",
+    "category": 22,
+    "sourcerecord": 8,
+    "city": 65,
+    "rating": 2.9,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 79,
+  "fields": {
+    "slug": "the-barn-coffee",
+    "name": "The Barn Coffee",
+    "address": "Schonhauser Allee 8, 10119 Berlin",
+    "latitude": "52.5317200",
+    "longitude": "13.4132400",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": 4.6,
+    "price_level": "6$ - 14$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 80,
+  "fields": {
+    "slug": "mcfit-berlin-mitte",
+    "name": "McFit Berlin Mitte",
+    "address": "Karl-Liebknecht-Str. 13, 10178 Berlin",
+    "latitude": "52.5219800",
+    "longitude": "13.4093100",
+    "category": 12,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": null,
+    "price_level": "20$ - 30$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 81,
+  "fields": {
+    "slug": "restaurant-tim-raue",
+    "name": "Restaurant Tim Raue",
+    "address": "Rudi-Dutschke-Str. 26, 10969 Berlin",
+    "latitude": "52.5054700",
+    "longitude": "13.3904600",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": 4.7,
+    "price_level": "90$ - 180$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 82,
+  "fields": {
+    "slug": "charite-hospital-berlin",
+    "name": "Charite Hospital Berlin",
+    "address": "Chariteplatz 1, 10117 Berlin",
+    "latitude": "52.5259700",
+    "longitude": "13.3780200",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 83,
+  "fields": {
+    "slug": "tiergarten-park",
+    "name": "Tiergarten Park",
+    "address": "Tiergarten, 10785 Berlin",
+    "latitude": "52.5145100",
+    "longitude": "13.3501700",
+    "category": 18,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": 4.7,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 84,
+  "fields": {
+    "slug": "humboldt-university-berlin",
+    "name": "Humboldt University Berlin",
+    "address": "Unter den Linden 6, 10099 Berlin",
+    "latitude": "52.5186200",
+    "longitude": "13.3930600",
+    "category": 21,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": null,
+    "price_level": null,
+    "opening_status": null
+  }
+},
+{
+  "model": "core.place",
+  "pk": 85,
+  "fields": {
+    "slug": "aral-gas-station-frankfurter",
+    "name": "Aral Gas Station Frankfurter",
+    "address": "Frankfurter Allee 65, 10247 Berlin",
+    "latitude": "52.5149300",
+    "longitude": "13.4636200",
+    "category": 25,
+    "sourcerecord": 8,
+    "city": 66,
+    "rating": 1.8,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 86,
+  "fields": {
+    "slug": "antico-caffe-greco",
+    "name": "Antico Caffe Greco",
+    "address": "Via dei Condotti 86, 00187 Rome",
+    "latitude": "41.9062100",
+    "longitude": "12.4806300",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": 4.1,
+    "price_level": "8$ - 20$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 87,
+  "fields": {
+    "slug": "vivai-gym-rome",
+    "name": "Vivai Gym Rome",
+    "address": "Via Candia 101, 00192 Rome",
+    "latitude": "41.9076300",
+    "longitude": "12.4581200",
+    "category": 12,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": null,
+    "price_level": "30$ - 50$",
+    "opening_status": "CLOSED"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 88,
+  "fields": {
+    "slug": "osteria-della-concordia",
+    "name": "Osteria Della Concordia",
+    "address": "Via della Croce 81, 00187 Rome",
+    "latitude": "41.9065300",
+    "longitude": "12.4796800",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": null,
+    "price_level": "25$ - 50$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 89,
+  "fields": {
+    "slug": "policlinico-umberto-i",
+    "name": "Policlinico Umberto I",
+    "address": "Viale del Policlinico 155, 00161 Rome",
+    "latitude": "41.9049800",
+    "longitude": "12.5141700",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": 1.6,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 90,
+  "fields": {
+    "slug": "borghese-gallery",
+    "name": "Borghese Gallery",
+    "address": "Piazzale Scipione Borghese 5, 00197 Rome",
+    "latitude": "41.9141700",
+    "longitude": "12.4921600",
+    "category": 17,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": 4.8,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 91,
+  "fields": {
+    "slug": "villa-doria-pamphilj-park",
+    "name": "Villa Doria Pamphilj Park",
+    "address": "Via di San Pancrazio, 00152 Rome",
+    "latitude": "41.8910400",
+    "longitude": "12.4388700",
+    "category": 18,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": 4.5,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 92,
+  "fields": {
+    "slug": "bnl-bank-rome-center",
+    "name": "BNL Bank Rome Center",
+    "address": "Via Vittorio Veneto 119, 00187 Rome",
+    "latitude": "41.9090600",
+    "longitude": "12.4882100",
+    "category": 23,
+    "sourcerecord": 8,
+    "city": 67,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "CLOSED"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 93,
+  "fields": {
+    "slug": "cafe-comercial-madrid",
+    "name": "Cafe Comercial Madrid",
+    "address": "Glorieta de Bilbao 7, 28004 Madrid",
+    "latitude": "40.4284100",
+    "longitude": "-3.7031400",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": null,
+    "price_level": "7$ - 15$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 94,
+  "fields": {
+    "slug": "holmes-place-madrid",
+    "name": "Holmes Place Madrid",
+    "address": "Calle de Serrano 61, 28006 Madrid",
+    "latitude": "40.4303600",
+    "longitude": "-3.6884200",
+    "category": 12,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": 4.1,
+    "price_level": "50$ - 80$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 95,
+  "fields": {
+    "slug": "casa-lucio-restaurant",
+    "name": "Casa Lucio Restaurant",
+    "address": "Cava Baja 35, 28005 Madrid",
+    "latitude": "40.4131200",
+    "longitude": "-3.7097800",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": 4.3,
+    "price_level": "35$ - 65$",
+    "opening_status": null
+  }
+},
+{
+  "model": "core.place",
+  "pk": 96,
+  "fields": {
+    "slug": "hospital-la-paz-madrid",
+    "name": "Hospital La Paz Madrid",
+    "address": "Paseo de la Castellana 261, 28046 Madrid",
+    "latitude": "40.4789100",
+    "longitude": "-3.6891200",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 97,
+  "fields": {
+    "slug": "reina-sofia-museum",
+    "name": "Reina Sofia Museum",
+    "address": "Calle de Santa Isabel 52, 28012 Madrid",
+    "latitude": "40.4082300",
+    "longitude": "-3.6944600",
+    "category": 17,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": 4.6,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 98,
+  "fields": {
+    "slug": "colegio-san-agustin",
+    "name": "Colegio San Agustin",
+    "address": "Calle de Alcala 109, 28009 Madrid",
+    "latitude": "40.4213500",
+    "longitude": "-3.6792800",
+    "category": 21,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": null,
+    "price_level": null,
+    "opening_status": null
+  }
+},
+{
+  "model": "core.place",
+  "pk": 99,
+  "fields": {
+    "slug": "mercadona-madrid-salamanca",
+    "name": "Mercadona Madrid Salamanca",
+    "address": "Calle de Ayala 12, 28001 Madrid",
+    "latitude": "40.4253700",
+    "longitude": "-3.6827400",
+    "category": 22,
+    "sourcerecord": 8,
+    "city": 68,
+    "rating": 3.6,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 100,
+  "fields": {
+    "slug": "lot-sixty-one-coffee",
+    "name": "Lot Sixty One Coffee",
+    "address": "Kinkerstraat 112, 1053 EG Amsterdam",
+    "latitude": "52.3672300",
+    "longitude": "4.8694100",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": 4.5,
+    "price_level": "5$ - 12$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 101,
+  "fields": {
+    "slug": "gym-fit-amsterdam-west",
+    "name": "Gym Fit Amsterdam West",
+    "address": "Haarlemmerweg 8, 1014 BE Amsterdam",
+    "latitude": "52.3853100",
+    "longitude": "4.8669200",
+    "category": 12,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": null,
+    "price_level": "30$ - 45$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 102,
+  "fields": {
+    "slug": "de-kas-restaurant",
+    "name": "De Kas Restaurant",
+    "address": "Kamerlingh Onneslaan 3, 1097 DE Amsterdam",
+    "latitude": "52.3531200",
+    "longitude": "4.9285300",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": 4.5,
+    "price_level": "55$ - 95$",
+    "opening_status": "CLOSED"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 103,
+  "fields": {
+    "slug": "amsterdam-umc-hospital",
+    "name": "Amsterdam UMC Hospital",
+    "address": "Meibergdreef 9, 1105 AZ Amsterdam",
+    "latitude": "52.2963400",
+    "longitude": "4.9590100",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 104,
+  "fields": {
+    "slug": "van-gogh-museum",
+    "name": "Van Gogh Museum",
+    "address": "Museumplein 6, 1071 DJ Amsterdam",
+    "latitude": "52.3584100",
+    "longitude": "4.8811700",
+    "category": 17,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": 4.7,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 105,
+  "fields": {
+    "slug": "ing-bank-amsterdam",
+    "name": "ING Bank Amsterdam",
+    "address": "Bijlmerplein 888, 1102 MG Amsterdam",
+    "latitude": "52.3131200",
+    "longitude": "4.9482700",
+    "category": 23,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": 1.5,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 106,
+  "fields": {
+    "slug": "shell-gas-station-amsterdam",
+    "name": "Shell Gas Station Amsterdam",
+    "address": "Prins Hendrikkade 20, 1012 TM Amsterdam",
+    "latitude": "52.3764200",
+    "longitude": "4.9063800",
+    "category": 25,
+    "sourcerecord": 8,
+    "city": 69,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 107,
+  "fields": {
+    "slug": "federal-cafe-barcelona",
+    "name": "Federal Cafe Barcelona",
+    "address": "Carrer del Parlament 39, 08015 Barcelona",
+    "latitude": "41.3773200",
+    "longitude": "2.1643400",
+    "category": 11,
+    "sourcerecord": 8,
+    "city": 70,
+    "rating": 4.4,
+    "price_level": "7$ - 16$",
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 108,
+  "fields": {
+    "slug": "restaurant-cinc-sentits",
+    "name": "Restaurant Cinc Sentits",
+    "address": "Carrer de Sepulveda 108, 08015 Barcelona",
+    "latitude": "41.3811700",
+    "longitude": "2.1584200",
+    "category": 13,
+    "sourcerecord": 8,
+    "city": 70,
+    "rating": 4.6,
+    "price_level": "70$ - 130$",
+    "opening_status": null
+  }
+},
+{
+  "model": "core.place",
+  "pk": 109,
+  "fields": {
+    "slug": "hospital-de-la-santa-creu",
+    "name": "Hospital de la Santa Creu",
+    "address": "Carrer de Sant Antoni Maria Claret 167, 08025 Barcelona",
+    "latitude": "41.4120700",
+    "longitude": "2.1731400",
+    "category": 15,
+    "sourcerecord": 8,
+    "city": 70,
+    "rating": null,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 110,
+  "fields": {
+    "slug": "mnac-museum-barcelona",
+    "name": "MNAC Museum Barcelona",
+    "address": "Parc de Montjuic, 08038 Barcelona",
+    "latitude": "41.3685600",
+    "longitude": "2.1537600",
+    "category": 17,
+    "sourcerecord": 8,
+    "city": 70,
+    "rating": 4.5,
+    "price_level": null,
+    "opening_status": "OPEN"
+  }
+},
+{
+  "model": "core.place",
+  "pk": 111,
+  "fields": {
+    "slug": "escola-tecnica-barcelona",
+    "name": "Escola Tecnica Barcelona",
+    "address": "Carrer de Urgell 187, 08036 Barcelona",
+    "latitude": "41.3912300",
+    "longitude": "2.1528400",
+    "category": 21,
+    "sourcerecord": 8,
+    "city": 70,
+    "rating": null,
+    "price_level": null,
+    "opening_status": null
+  }
+},
+{
+  "model": "core.place",
+  "pk": 112,
+  "fields": {
+    "slug": "condis-supermarket-gracia",
+    "name": "Condis Supermarket Gracia",
+    "address": "Carrer de Verdi 44, 08012 Barcelona",
+    "latitude": "41.4032100",
+    "longitude": "2.1569800",
+    "category": 22,
+    "sourcerecord": 8,
+    "city": 70,
+    "rating": 1.9,
+    "price_level": null,
+    "opening_status": "CLOSED"
+  }
+}
+]
