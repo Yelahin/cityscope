@@ -106,3 +106,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+
+# Overpass API settings
+
+# The url you will use to get data from
+OVERPASS_API_ENDPOINT = config("OVERPASS_API_ENDPOINT")
+
+# Max amount of retries for Overpass Api response
+MAX_RETRY_COUNT = 5

@@ -1,9 +1,10 @@
 import overpy
 from core.models import SourceRecord
+from cityscope.settings.base import OVERPASS_API_ENDPOINT, MAX_RETRY_COUNT
 
 api = overpy.Overpass(
-    url="https://overpass.private.coffee/api/interpreter", 
-    max_retry_count=5,
+    url=OVERPASS_API_ENDPOINT, 
+    max_retry_count=MAX_RETRY_COUNT,
 )
 
 def fetch_overpass_api(query):
