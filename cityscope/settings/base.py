@@ -12,6 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
+# Data memory limitation
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000
+
 # Application definition
 
 INSTALLED_APPS = [
