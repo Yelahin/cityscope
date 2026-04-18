@@ -3,6 +3,7 @@ from .forms import ImportPlacesForm
 from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.contrib import admin
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -12,6 +13,7 @@ class ImportPlacesView(FormView):
 
     template_name = "admin/import_places.html"
     form_class = ImportPlacesForm
+    success_url = reverse_lazy("admin:import_places")
 
     # Add additional context to the page
     def get_context_data(self, **kwargs):
