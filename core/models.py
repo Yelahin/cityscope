@@ -56,6 +56,11 @@ class SourceRecord(models.Model):
         return self.name
 
 
+# Place model validators
+latitude_validator = [MinValueValidator(-90.0), MaxValueValidator(90.0)]
+longitude_validator = [MinValueValidator(-180.0), MaxValueValidator(180.0)]
+
+
 class Place(models.Model):
     class Meta:
         verbose_name = "Place"
@@ -70,13 +75,13 @@ class Place(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     latitude = models.DecimalField(
         max_digits=9,
-        decimal_places=7, 
-        validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)],
+        decimal_places=7,
+        validators=latitude_validator,
     )
     longitude = models.DecimalField(
         max_digits=10,
         decimal_places=7,
-        validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)],
+        validators=longitude_validator,
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True
