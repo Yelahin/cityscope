@@ -118,3 +118,19 @@ OVERPASS_API_ENDPOINT = config("OVERPASS_API_ENDPOINT")
 
 # Max amount of retries for Overpass Api response
 MAX_RETRY_COUNT = 5
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "base": {
+            "format": "{levelname} | {name} | {asctime} | {message}",
+            "style": "{",
+        }
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "base"}
+    },
+    "loggers": {"": {"handlers": ["console"], "level": "WARNING"}},
+}
