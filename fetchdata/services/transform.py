@@ -1,9 +1,10 @@
-import reverse_geocoder as rg
+import reverse_geocode 
 from unicodedata import normalize
 from core.models import City, Category
 from string import punctuation, digits
 import overpy
 from .utils import category_tags
+from cityscope.settings.base import MIN_POPULATION
 
 ELEMENTS_FIELDS = {
     "name": lambda element: get_name_from_element(element),
@@ -75,9 +76,9 @@ def add_city_for_elements(elements) -> list:
         return []
 
     # Set city for valid elements
-    locations = rg.search(coordinates)
+    locations = reverse_geocode.search(coordinates, min_population=MIN_POPULATION)
     for element, location in zip(valid_els, locations):
-        element.tags["city"] = location["name"]
+        element.tags["city"] = location["city"]
 
     # Return only valid elements
     return valid_els
@@ -85,9 +86,7 @@ def add_city_for_elements(elements) -> list:
 
 def get_city_from_element(element) -> City | None:
     if element.tags.get("city") is not None:
-        city, created = City.objects.get_or_create(
-            name=element.tags.get("city")
-        )
+        city = City.objects.filter(name=element.tags.get("city")).first()
         return city
 
 
