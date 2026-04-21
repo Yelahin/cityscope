@@ -1,30 +1,36 @@
 import reverse_geocoder as rg
 from unicodedata import normalize
 from core.models import City, Category
+from string import punctuation, digits
+import overpy
+from .utils import category_tags
 
-NODE_FIELDS = {
-    "name": lambda node: get_name_from_node(node),
-    "address": lambda node: get_address_from_node(node),
-    "longitude": lambda node: getattr(node, "lon", None),
-    "latitude": lambda node: getattr(node, "lat", None),
-    "sourcerecord": lambda node: node.tags.get("sourcerecord"),
-    "category": lambda node: get_category_from_node(node),
-    "city": lambda node: get_city_from_node(node),
-    "rating": lambda node: get_rating_from_node(node),
-    "price_level": lambda node: get_price_level_from_node(node),
-    "opening_status": lambda node: get_opening_status_from_node(node),
+ELEMENTS_FIELDS = {
+    "name": lambda element: get_name_from_element(element),
+    "address": lambda element: get_address_from_element(element),
+    "latitude": lambda element: get_latitude_from_element(element),
+    "longitude": lambda element: get_longitude_from_element(element),
+    "sourcerecord": lambda element: element.tags.get("sourcerecord"),
+    "category": lambda element: get_category_from_element(element),
+    "city": lambda element: get_city_from_element(element),
+    "rating": lambda element: get_rating_from_element(element),
+    "price_level": lambda element: get_price_level_from_element(element),
+    "opening_status": lambda element: get_opening_status_from_element(element),
 }
 
 
+# Transform raw data from response to DataBase ready data
 def get_transformed_data(fetched_data: tuple[list, str]) -> list[dict]:
     sourcerecord = fetched_data[1]
-    nodes = fetched_data[0].copy()
+    elements = fetched_data[0].copy()
 
-    nodes = add_city_for_nodes(nodes)
+    elements = add_city_for_elements(elements)
 
-    transformed_nodes = []
-    for node in nodes:
-        transformed_data = transform_node(node, sourcerecord)
+    # Transform data
+    transformed_elements = []
+    for element in elements:
+        transformed_data = transform_element(element, sourcerecord)
+        # Filter data with empty required fields
         if transformed_data is not None and all(
             [
                 transformed_data["name"],
@@ -35,73 +41,148 @@ def get_transformed_data(fetched_data: tuple[list, str]) -> list[dict]:
                 transformed_data["city"],
             ]
         ):
-            transformed_nodes.append(transformed_data)
-    return transformed_nodes
+            transformed_elements.append(transformed_data)
+    return transformed_elements
 
 
 # Returns dict with transformed data for database schema
-def transform_node(node, sourcerecord) -> dict:
-    node.tags["sourcerecord"] = sourcerecord
+def transform_element(element, sourcerecord) -> dict:
+    element.tags["sourcerecord"] = sourcerecord
 
-    result = {key: value(node) for key, value in NODE_FIELDS.items()}
+    result = {key: value(element) for key, value in ELEMENTS_FIELDS.items()}
     return result
 
 
 # Transform field functions
 
 
-def add_city_for_nodes(nodes) -> list:
-    nds = nodes.copy()
-    coordinates = [(node.lat, node.lon) for node in nds]
+def add_city_for_elements(elements) -> list:
+    el = elements.copy()
+    coordinates = []
+    valid_els = []
+
+    # Get elements with coordinates
+    for element in el:
+        latitude = get_latitude_from_element(element)
+        longitude = get_longitude_from_element(element)
+
+        if latitude is not None and longitude is not None:
+            coordinates.append((latitude, longitude))
+            valid_els.append(element)
+
+    # Stop function if there is no valid elements
+    if not coordinates:
+        return []
+
+    # Set city for valid elements
     locations = rg.search(coordinates)
-    for index in range(len(nds)):
-        nds[index].tags["city"] = locations[index]["name"]
-    return nds
+    for element, location in zip(valid_els, locations):
+        element.tags["city"] = location["name"]
+
+    # Return only valid elements
+    return valid_els
 
 
-def get_city_from_node(node) -> City:
-    if node.tags.get("city") is not None:
-        city, created = City.objects.get_or_create(name=node.tags.get("city"))
+def get_city_from_element(element) -> City | None:
+    if element.tags.get("city") is not None:
+        city, created = City.objects.get_or_create(
+            name=element.tags.get("city")
+        )
         return city
 
 
-def get_name_from_node(node) -> str:
-    name = node.tags.get("name")
+def get_name_from_element(element) -> str | None:
+    # Get name
+    name = element.tags.get("name:en")
+    if name is None:
+        name = element.tags.get("name")
+
+    # Transform name
     if name is not None:
         normalized_name = normalize("NFKD", name)
         ascii_text = normalized_name.encode(
             encoding="ascii", errors="ignore"
         ).decode("ascii")
-        return ascii_text
+
+        remove_sequence = punctuation + digits + " "
+
+        if (
+            len(ascii_text.translate(str.maketrans("", "", remove_sequence)))
+            > 1
+        ):
+            return ascii_text
 
 
-def get_address_from_node(node) -> str:
+def get_address_from_element(element) -> str | None:
     tags = [
         "addr:street",
         "addr:housenumber",
         "addr:postcode",
     ]
 
-    address = [node.tags.get(tag) for tag in tags if node.tags.get(tag)]
+    address = [element.tags.get(tag) for tag in tags if element.tags.get(tag)]
     if any(address):
         return " ".join(address)
 
 
-def get_category_from_node(node) -> Category:
-    if node.tags.get("amenity") is not None:
-        cat, created = Category.objects.get_or_create(
-            name=node.tags.get("amenity").capitalize()
-        )
+def get_category_from_element(element) -> Category | None:
+    category = None
+
+    # Transform Overpass QL category name to human readable
+    for key, value in category_tags.items():
+        element_category = element.tags.get(value.get("tag"))
+        if element_category is not None and element_category == value.get("value"):
+            category = key
+            break
+
+    if category:
+        cat, created = Category.objects.get_or_create(name=category)
         return cat
 
 
-def get_rating_from_node(node) -> str:
+def get_latitude_from_element(element) -> float | None:
+    latitude = None
+
+    if isinstance(element, overpy.Node):
+        try:
+            latitude = element.lat
+        except AttributeError:
+            latitude = None
+
+    elif isinstance(element, (overpy.Way, overpy.Relation)):
+        try:
+            latitude = element.center_lat
+        except AttributeError:
+            latitude = None
+
+    return latitude
+
+
+def get_longitude_from_element(element) -> float | None:
+    longitude = None
+
+    if isinstance(element, overpy.Node):
+        try:
+            longitude = element.lon
+        except AttributeError:
+            longitude = None
+
+    elif isinstance(element, (overpy.Way, overpy.Relation)):
+        try:
+            longitude = element.center_lon
+        except AttributeError:
+            longitude = None
+
+    return longitude
+
+
+def get_rating_from_element(element) -> str:
     pass
 
 
-def get_price_level_from_node(node) -> str:
+def get_price_level_from_element(element) -> str:
     pass
 
 
-def get_opening_status_from_node(node) -> bool:
+def get_opening_status_from_element(element) -> bool:
     pass

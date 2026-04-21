@@ -1,7 +1,8 @@
 from core.models import Place
-from .transform import NODE_FIELDS
+from .transform import ELEMENTS_FIELDS
 
 
+# Saves places in Place model using bulk_create()
 def save_places_to_db(transformed_data: list[dict]):
     bulk_list = []
 
@@ -11,7 +12,7 @@ def save_places_to_db(transformed_data: list[dict]):
         bulk_list.append(place)
 
         # Set values for Place instance
-        for field in NODE_FIELDS.keys():
+        for field in ELEMENTS_FIELDS.keys():
             setattr(place, field, place_data[field])
 
     # Set 'slug' field for Place objects

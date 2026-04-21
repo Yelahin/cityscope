@@ -4,26 +4,20 @@ from cityscope.settings.base import OVERPASS_API_ENDPOINT, MAX_RETRY_COUNT
 from .transform import get_transformed_data
 from .save import save_places_to_db
 import logging
+from .utils import category_tags
 
 # Set up logger
 logger = logging.getLogger(__name__)
 
+# Set up Overpass API
 api = overpy.Overpass(
     url=OVERPASS_API_ENDPOINT,
     max_retry_count=MAX_RETRY_COUNT,
 )
 
 
-def fetch_overpass_api(query) -> tuple[list, SourceRecord]:
-    queries = api.query(query=query)
-    overpass_source, created = SourceRecord.objects.get_or_create(
-        name="Overpass", source_type=SourceRecord.API
-    )
-    return (queries.nodes, overpass_source)
-
-
 # Normalize and upload to database fetched data from query
-def upload_data_to_database(query: str):
+def upload_data_to_database(query: str) -> None:
     try:
         # Get transformed data
         nodes = fetch_overpass_api(query)
@@ -39,3 +33,39 @@ def upload_data_to_database(query: str):
     except Exception:
         logger.exception("Something went wrong!")
         raise
+
+
+# Returns response from Overpass API and return source type
+def fetch_overpass_api(query: str) -> tuple[list, SourceRecord]:
+    queries = api.query(query=query)
+    overpass_source, created = SourceRecord.objects.get_or_create(
+        name="Overpass", source_type=SourceRecord.API
+    )
+
+    # Filter raw api response to data that related to places
+    elements = queries.nodes + queries.ways + queries.relations
+
+    return elements, overpass_source
+
+
+# Returns Overpass QL request using category and city filters
+def get_overpass_query(category: Category, city: City) -> str:
+    # Transform human readable cateogry to Overpass QL version
+    cat = category.name
+    tag = category_tags[cat]["tag"]
+    value = category_tags[cat]["value"]
+
+    query = f"""
+    [out:json][timeout:25];
+    (
+        area["name"="{city.name}"]["boundary"="administrative"]->.city;
+        node["{tag}"="{value}"](area.city);
+        way["{tag}"="{value}"](area.city);
+        relation["{tag}"="{value}"](area.city);
+    );
+    out body;
+    >;
+    out center qt;
+    """
+
+    return query
