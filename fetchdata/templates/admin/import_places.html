@@ -1,8 +1,31 @@
 {% extends "admin/base_site.html" %}
+
+<!-- Import custom CSS to page-->
+{% load static %}
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'fetchdata/css/admin-extra.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
+{% endblock%}
+
+
 {% block content %}
 <form method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
+    <fieldset class="module aligned">
+    {% for field in form %}
+        <div class="form-row">
+            <div>
+                <div class="flex-container">
+                    <label class="required" for="id_{{ field.name }}">{{ field.name }}:</label>
+                    {{ field }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Submit">
+    </div>
 </form>
 {% endblock %}
