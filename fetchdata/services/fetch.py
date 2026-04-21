@@ -58,14 +58,15 @@ def get_overpass_query(category: Category, city: City) -> str:
     query = f"""
     [out:json][timeout:25];
     (
-        area["name"="{city.name}"]["boundary"="administrative"]->.city;
+        area["name:en"="{city.name}"]["boundary"="administrative"];
+        area["name"="{city.name}"]["boundary"="administrative"];
+    )->.city;
+    (
         node["{tag}"="{value}"](area.city);
         way["{tag}"="{value}"](area.city);
         relation["{tag}"="{value}"](area.city);
     );
-    out body;
-    >;
-    out center qt;
+    out center;
     """
 
     return query
