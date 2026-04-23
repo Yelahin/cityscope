@@ -136,6 +136,3 @@ LOGGING = {
     },
     "loggers": {"": {"handlers": ["console"], "level": "WARNING"}},
 }
-
-# Reverse Geocode settings
-MIN_POPULATION = 50000

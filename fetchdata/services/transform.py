@@ -1,10 +1,9 @@
-import reverse_geocode 
 from unicodedata import normalize
-from core.models import City, Category
+from core.models import City, Category, SourceRecord
 from string import punctuation, digits
 import overpy
 from .utils import category_tags
-from cityscope.settings.base import MIN_POPULATION
+
 
 ELEMENTS_FIELDS = {
     "name": lambda element: get_name_from_element(element),
@@ -13,7 +12,7 @@ ELEMENTS_FIELDS = {
     "longitude": lambda element: get_longitude_from_element(element),
     "sourcerecord": lambda element: element.tags.get("sourcerecord"),
     "category": lambda element: get_category_from_element(element),
-    "city": lambda element: get_city_from_element(element),
+    "city": lambda element: element.tags.get("city"),
     "rating": lambda element: get_rating_from_element(element),
     "price_level": lambda element: get_price_level_from_element(element),
     "opening_status": lambda element: get_opening_status_from_element(element),
@@ -21,16 +20,14 @@ ELEMENTS_FIELDS = {
 
 
 # Transform raw data from response to DataBase ready data
-def get_transformed_data(fetched_data: tuple[list, str]) -> list[dict]:
+def get_transformed_data(fetched_data: tuple[list, SourceRecord], city: City) -> list[dict]:
     sourcerecord = fetched_data[1]
     elements = fetched_data[0].copy()
-
-    elements = add_city_for_elements(elements)
 
     # Transform data
     transformed_elements = []
     for element in elements:
-        transformed_data = transform_element(element, sourcerecord)
+        transformed_data = transform_element(element, sourcerecord, city)
         # Filter data with empty required fields
         if transformed_data is not None and all(
             [
@@ -47,48 +44,15 @@ def get_transformed_data(fetched_data: tuple[list, str]) -> list[dict]:
 
 
 # Returns dict with transformed data for database schema
-def transform_element(element, sourcerecord) -> dict:
+def transform_element(element, sourcerecord: SourceRecord, city: City) -> dict:
     element.tags["sourcerecord"] = sourcerecord
+    element.tags["city"] = city
 
     result = {key: value(element) for key, value in ELEMENTS_FIELDS.items()}
     return result
 
 
 # Transform field functions
-
-
-def add_city_for_elements(elements) -> list:
-    el = elements.copy()
-    coordinates = []
-    valid_els = []
-
-    # Get elements with coordinates
-    for element in el:
-        latitude = get_latitude_from_element(element)
-        longitude = get_longitude_from_element(element)
-
-        if latitude is not None and longitude is not None:
-            coordinates.append((latitude, longitude))
-            valid_els.append(element)
-
-    # Stop function if there is no valid elements
-    if not coordinates:
-        return []
-
-    # Set city for valid elements
-    locations = reverse_geocode.search(coordinates, min_population=MIN_POPULATION)
-    for element, location in zip(valid_els, locations):
-        element.tags["city"] = location["city"]
-
-    # Return only valid elements
-    return valid_els
-
-
-def get_city_from_element(element) -> City | None:
-    if element.tags.get("city") is not None:
-        city = City.objects.filter(name=element.tags.get("city")).first()
-        return city
-
 
 def get_name_from_element(element) -> str | None:
     # Get name

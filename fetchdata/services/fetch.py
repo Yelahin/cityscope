@@ -17,11 +17,11 @@ api = overpy.Overpass(
 
 
 # Normalize and upload to database fetched data from query
-def upload_data_to_database(query: str) -> None:
+def upload_data_to_database(query: str, city: City) -> None:
     try:
         # Get transformed data
-        nodes = fetch_overpass_api(query)
-        normalized_data = get_transformed_data(nodes)
+        elements = fetch_overpass_api(query)
+        normalized_data = get_transformed_data(elements, city)
 
         # Save data
         save_places_to_db(normalized_data)
@@ -58,8 +58,8 @@ def get_overpass_query(category: Category, city: City) -> str:
     query = f"""
     [out:json][timeout:25];
     (
-        area["name:en"="{city.name}"]["boundary"="administrative"];
-        area["name"="{city.name}"]["boundary"="administrative"];
+        area["name:en"="{city.name}"];
+        area["name"="{city.name}"];
     )->.city;
     (
         node["{tag}"="{value}"](area.city);

@@ -39,7 +39,7 @@ class ImportPlacesView(FormView):
         if source == "Overpass":
             query = get_overpass_query(category=category, city=city)
             try:
-                upload_data_to_database(query)
+                upload_data_to_database(query=query, city=city)
 
             # Exceptions
             except overpy.exception.OverPyException:

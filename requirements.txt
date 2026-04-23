@@ -1,12 +1,9 @@
 asgiref==3.11.1
 Django==6.0.3
 djangorestframework==3.17.1
-numpy==2.4.4
 overpy==0.7
 psycopg==3.3.3
 python-decouple==3.8
-reverse_geocode==1.6.6
 ruff==0.15.9
-scipy==1.17.1
 shortuuid==1.0.13
 sqlparse==0.5.5
