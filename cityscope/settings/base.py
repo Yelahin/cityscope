@@ -12,6 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
+# Data memory limitation
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -23,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "core.apps.CoreConfig",
+    "fetchdata.apps.FetchdataConfig",
 ]
 
 MIDDLEWARE = [
@@ -104,4 +108,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+
+# Overpass API settings
+
+# The url you will use to get data from
+OVERPASS_API_ENDPOINT = config("OVERPASS_API_ENDPOINT")
+
+# Max amount of retries for Overpass Api response
+MAX_RETRY_COUNT = 5
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "base": {
+            "format": "{levelname} | {name} | {asctime} | {message}",
+            "style": "{",
+        }
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "base"}
+    },
+    "loggers": {"": {"handlers": ["console"], "level": "WARNING"}},
+}

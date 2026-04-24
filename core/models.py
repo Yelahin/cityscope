@@ -56,6 +56,11 @@ class SourceRecord(models.Model):
         return self.name
 
 
+# Place model validators
+latitude_validator = [MinValueValidator(-90.0), MaxValueValidator(90.0)]
+longitude_validator = [MinValueValidator(-180.0), MaxValueValidator(180.0)]
+
+
 class Place(models.Model):
     class Meta:
         verbose_name = "Place"
@@ -66,17 +71,17 @@ class Place(models.Model):
     STATUS_CHOICES = {CLOSED: "Closed", OPEN: "Open"}
 
     name = models.CharField(max_length=150)
-    slug = models.SlugField(max_length=200, unique=True, blank=True, editable=False)
-    address = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=200, unique=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
     latitude = models.DecimalField(
         max_digits=9,
         decimal_places=7,
-        validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)],
+        validators=latitude_validator,
     )
     longitude = models.DecimalField(
         max_digits=10,
         decimal_places=7,
-        validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)],
+        validators=longitude_validator,
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True
@@ -93,11 +98,26 @@ class Place(models.Model):
         blank=True, null=True, choices=STATUS_CHOICES
     )
 
-    def save(self, *args, **kwargs):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "latitude", "longitude"], name="unique_place"
+            )
+        ]
+
+    def prepare(self, used_slugs=None):
+        """This method prevent integrity error in bulk_create"""
         if not self.slug:
             slug = slugify(self.name)
-            if Place.objects.filter(slug=slug).exists():
+            if Place.objects.filter(slug=slug).exists() or (
+                used_slugs is not None and slug in used_slugs
+            ):
                 self.slug = f"{slug}-{shortuuid.uuid()}"
             else:
                 self.slug = slug
+            if used_slugs is not None:
+                used_slugs.add(self.slug)
+
+    def save(self, *args, **kwargs):
+        self.prepare()
         super().save(*args, **kwargs)
