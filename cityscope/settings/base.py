@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_filters",
     "core.apps.CoreConfig",
     "fetchdata.apps.FetchdataConfig",
 ]
@@ -135,4 +136,13 @@ LOGGING = {
         "console": {"class": "logging.StreamHandler", "formatter": "base"}
     },
     "loggers": {"": {"handlers": ["console"], "level": "WARNING"}},
+}
+
+# Django REST Framework settings
+REST_FRAMEWORK = {
+    # Pagination
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    # Filtering
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
