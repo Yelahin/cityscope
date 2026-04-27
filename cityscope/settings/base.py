@@ -146,3 +146,7 @@ REST_FRAMEWORK = {
     # Filtering
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
+
+# Calculate distance between user and places using API endpoint
+KILOMETERS = 6371
+MILES = 3959 
