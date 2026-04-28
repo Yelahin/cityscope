@@ -13,9 +13,15 @@ logger = logging.getLogger(__name__)
 class PlaceFilterSet(filters.FilterSet):
     lat = filters.NumberFilter(method="do_nothing", label="Users latitude")
     lon = filters.NumberFilter(method="do_nothing", label="Users longitude")
+    radius = filters.NumberFilter(method="get_radius", lookup_expr="lt", label="Radius of places")
 
     # Mock individual lat and lon parameters logic
     def do_nothing(self, queryset, name, value):
+        return queryset
+
+    def get_radius(self, queryset, name, value):
+        if "distance" in queryset.query.annotations:
+            return queryset.filter(distance__lt=value)
         return queryset
 
     class Meta:
@@ -34,11 +40,18 @@ class PlaceFilterSet(filters.FilterSet):
     def filter_queryset(self, queryset):
         latitude = self.form.cleaned_data.get("lat")
         longitude = self.form.cleaned_data.get("lon")
+        radius = self.form.cleaned_data.get("radius")
 
         # Return queryset without distance if user coordinates were not provided
-        if latitude is None and longitude is None:
+        if latitude is None and longitude is None and radius is None:
             return super().filter_queryset(queryset)
 
+        # Check if user try to filter by radius without coordinates provided
+        if radius and (not latitude and not longitude):
+            logging.exception("Can not filter by radius without users coordinates provided!")
+            raise ValidationError("Radius filter expect users coordinates: lat, lon")
+
+        # Check if only one coordinate was provided
         if latitude is None or longitude is None:
             logging.exception("User provide only one coordinate!")
             raise ValidationError(
