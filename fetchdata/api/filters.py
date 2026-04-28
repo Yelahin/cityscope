@@ -6,6 +6,8 @@ from django.db.models import FloatField
 from rest_framework.exceptions import ValidationError
 from cityscope.settings.base import KILOMETERS
 import logging
+from rest_framework.filters import OrderingFilter
+
 
 
 logger = logging.getLogger(__name__)
@@ -81,4 +83,17 @@ class PlaceFilterSet(filters.FilterSet):
         queryset = queryset.annotate(distance=distance)
 
         return super().filter_queryset(queryset)
-       
+    
+
+class PlaceOrderingFilter(OrderingFilter):
+    class Meta:
+        model = Place
+
+    def filter_queryset(self, request, queryset, view):
+        ordering_field = request.query_params.get("ordering")
+
+        if (ordering_field == "distance" or ordering_field == "-distance") and "distance" not in queryset.query.annotations:
+            logger.exception("Order by distance without providing coordinates")
+            raise ValidationError("Can't order by distance without users coordinates provided!")
+        return super().filter_queryset(request, queryset, view)
+        
