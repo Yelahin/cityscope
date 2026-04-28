@@ -48,22 +48,22 @@ class PlaceFilterSet(filters.FilterSet):
 
         # Check if user try to filter by radius without coordinates provided
         if radius and (not latitude and not longitude):
-            logging.exception("Can not filter by radius without users coordinates provided!")
+            logger.exception("Can not filter by radius without users coordinates provided!")
             raise ValidationError("Radius filter expect users coordinates: lat, lon")
 
         # Check if only one coordinate was provided
         if latitude is None or longitude is None:
-            logging.exception("User provide only one coordinate!")
+            logger.exception("User provide only one coordinate!")
             raise ValidationError(
                 "Both latitude and longitude should be provided!"
             )
 
         if 90 < latitude or latitude < -90:
-            logging.exception(f"{latitude} is invalid value for latitutde!")
+            logger.exception(f"{latitude} is invalid value for latitutde!")
             raise ValidationError("Latitude should be less than 90.0 and greater than -90.0")
         
         if 180 < longitude or longitude < -180:
-            logging.exception(f"{longitude} is invalid value for longitude!")
+            logger.exception(f"{longitude} is invalid value for longitude!")
             raise ValidationError("Longitude should be less than 180.0 and greater than -180.0")
         
         distance = ExpressionWrapper(
@@ -81,4 +81,4 @@ class PlaceFilterSet(filters.FilterSet):
         queryset = queryset.annotate(distance=distance)
 
         return super().filter_queryset(queryset)
-    
+       
