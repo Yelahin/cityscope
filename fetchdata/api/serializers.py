@@ -7,7 +7,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     # If distance in queryset get distance
     def get_distance(self, instance):
-        if hasattr(instance, "distance"):
+        if hasattr(instance, "distance") and instance.distance is not None:
             return round(instance.distance, 2)
         
     # If latitude or longitude are missing in query parameters - remove distance from response

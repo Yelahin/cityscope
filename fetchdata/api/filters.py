@@ -1,0 +1,71 @@
+from django_filters import rest_framework as filters
+from core.models import Place
+from django.db.models import ExpressionWrapper, Value, F
+from django.db.models.functions import Radians, ACos, Cos, Sin
+from django.db.models import FloatField
+from rest_framework.exceptions import ValidationError
+from cityscope.settings.base import KILOMETERS
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+class PlaceFilterSet(filters.FilterSet):
+    lat = filters.NumberFilter(method="do_nothing", label="Users latitude")
+    lon = filters.NumberFilter(method="do_nothing", label="Users longitude")
+
+    # Mock individual lat and lon parameters logic
+    def do_nothing(self, queryset, name, value):
+        return queryset
+
+    class Meta:
+        model = Place
+        fields = [
+            "name",
+            "city",
+            "address",
+            "category",
+            "rating",
+            "price_level",
+            "opening_status",
+        ]
+
+    # Add users latitude and longitude to filters
+    def filter_queryset(self, queryset):
+        latitude = self.form.cleaned_data.get("lat")
+        longitude = self.form.cleaned_data.get("lon")
+
+        # Return queryset without distance if user coordinates were not provided
+        if latitude is None and longitude is None:
+            return super().filter_queryset(queryset)
+
+        if latitude is None or longitude is None:
+            logging.exception("User provide only one coordinate!")
+            raise ValidationError(
+                "Both latitude and longitude should be provided!"
+            )
+
+        if 90 < latitude or latitude < -90:
+            logging.exception(f"{latitude} is invalid value for latitutde!")
+            raise ValidationError("Latitude should be less than 90.0 and greater than -90.0")
+        
+        if 180 < longitude or longitude < -180:
+            logging.exception(f"{longitude} is invalid value for longitude!")
+            raise ValidationError("Longitude should be less than 180.0 and greater than -180.0")
+        
+        distance = ExpressionWrapper(
+                KILOMETERS
+                * ACos(
+                    Cos(Radians(F("latitude")))
+                    * Cos(Radians(Value(latitude)))
+                    * Cos(Radians(F("longitude")) - Radians(Value(longitude)))
+                    + Sin(Radians(F("latitude")))
+                    * Sin(Radians(Value(latitude)))
+                ),
+                output_field=FloatField(),
+            )
+        
+        queryset = queryset.annotate(distance=distance)
+
+        return super().filter_queryset(queryset)
+    
