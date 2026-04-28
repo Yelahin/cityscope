@@ -58,11 +58,11 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         
         if 90 < latitude or latitude < -90:
             logging.exception(f"{latitude} is invalid value for latitutde!")
-            raise ValueError("Latitude should be less than 90.0 and greater than -90.0")
+            raise ValidationError("Latitude should be less than 90.0 and greater than -90.0")
         
         if 180 < longitude or longitude < -180:
             logging.exception(f"{longitude} is invalid value for longitude!")
-            raise ValueError("Longitude should be less than 180.0 and greater than -180.0")
+            raise ValidationError("Longitude should be less than 180.0 and greater than -180.0")
 
         # Provide additional calculated field distance to queryset
         queryset = queryset.annotate(
