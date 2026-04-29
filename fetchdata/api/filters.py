@@ -49,7 +49,7 @@ class PlaceFilterSet(filters.FilterSet):
             return super().filter_queryset(queryset)
 
         # Check if user try to filter by radius without coordinates provided
-        if radius and (not latitude and not longitude):
+        if radius and (latitude is None and longitude is None):
             logger.exception("Can not filter by radius without users coordinates provided!")
             raise ValidationError("Radius filter expect users coordinates: lat, lon")
 
