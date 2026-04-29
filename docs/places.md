@@ -15,9 +15,12 @@ Returns paginated list of places. If users geo coordinates provided sorts result
 
 ## Query Parameters
 
-`lat` and `lon` - **Float** type **not required** parameters. Stands for users geo coordinates: **latitude, longitude**. If coordinates provided **both should be specified**. Latitude value can be in range **-90 : 90**, longitude value can be in range **-180 : 180**
+`lat` and `lon` - **not required** number type parameters. Stands for users geo coordinates: **latitude, longitude**. If coordinates provided **both should be specified**. Latitude value can be in range **-90 : 90**, longitude value can be in range **-180 : 180**
 
 If `lat` and `lon` query parameters provided - each place will have `distance` field in result. This field stands for distance between users coordinates and place coordinates. **Unit: kilometers/miles**
+
+`radius` - **not required** number type parameter. For use `radius` parameter, `lat` and `lon` **should be provided**. Filter places by distance. If user will provide `radius=100` - result will contain only places with distance to user less than 100 kilometers/miles (Km by default).
+
 
 ## Filters
 Filter allowed by fields:
@@ -30,6 +33,39 @@ Filter allowed by fields:
 - `opening_status`: `/api/places/?opening_status={opening_status}`
 
 `/api/places/?lat=51&lon=-21&page=1`
+
+## Ordering
+
+Allowed ordering by:
+- `name` - ascending
+- `name` - descending
+- `address` - descending
+- `address` - ascending
+- `latitude` - descending
+- `latitude` - ascending
+- `longitude` - descending
+- `longitude` - ascending
+- `category` - descending
+- `category` - ascending
+- `city` - descending
+- `city` - ascending
+- `distance` - descending
+- `distance` - ascending
+
+#### Example:
+- ascending: `/api/places/?ordering=name`
+- descending - `/api/places/?ordering=-name`
+
+## Search
+
+Search allowed by fields:
+- `name`
+- `address`
+
+#### Example:
+- `name`: `/api/places/?search=PureGym`
+- `address`: `/api/places/?search=High Road 412,893 N20 9TA`
+
 
 ## Payload Examples
 
