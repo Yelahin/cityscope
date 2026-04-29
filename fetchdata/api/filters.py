@@ -2,20 +2,23 @@ from django_filters import rest_framework as filters
 from core.models import Place
 from django.db.models import ExpressionWrapper, Value, F
 from django.db.models.functions import Radians, ACos, Cos, Sin
-from django.db.models import FloatField
+from django.db.models import FloatField, Case, When, Value, IntegerField
 from rest_framework.exceptions import ValidationError
 from cityscope.settings.base import KILOMETERS
 import logging
 from rest_framework.filters import OrderingFilter
-
+from rest_framework.filters import SearchFilter
 
 
 logger = logging.getLogger(__name__)
 
+
 class PlaceFilterSet(filters.FilterSet):
     lat = filters.NumberFilter(method="do_nothing", label="Users latitude")
     lon = filters.NumberFilter(method="do_nothing", label="Users longitude")
-    radius = filters.NumberFilter(method="get_radius", lookup_expr="lt", label="Radius of places")
+    radius = filters.NumberFilter(
+        method="get_radius", lookup_expr="lt", label="Radius of places"
+    )
 
     # Mock individual lat and lon parameters logic
     def do_nothing(self, queryset, name, value):
@@ -50,8 +53,12 @@ class PlaceFilterSet(filters.FilterSet):
 
         # Check if user try to filter by radius without coordinates provided
         if radius and (latitude is None and longitude is None):
-            logger.exception("Can not filter by radius without users coordinates provided!")
-            raise ValidationError("Radius filter expect users coordinates: lat, lon")
+            logger.exception(
+                "Can not filter by radius without users coordinates provided!"
+            )
+            raise ValidationError(
+                "Radius filter expect users coordinates: lat, lon"
+            )
 
         # Check if only one coordinate was provided
         if latitude is None or longitude is None:
@@ -62,28 +69,31 @@ class PlaceFilterSet(filters.FilterSet):
 
         if 90 < latitude or latitude < -90:
             logger.exception(f"{latitude} is invalid value for latitutde!")
-            raise ValidationError("Latitude should be less than 90.0 and greater than -90.0")
-        
+            raise ValidationError(
+                "Latitude should be less than 90.0 and greater than -90.0"
+            )
+
         if 180 < longitude or longitude < -180:
             logger.exception(f"{longitude} is invalid value for longitude!")
-            raise ValidationError("Longitude should be less than 180.0 and greater than -180.0")
-        
-        distance = ExpressionWrapper(
-                KILOMETERS
-                * ACos(
-                    Cos(Radians(F("latitude")))
-                    * Cos(Radians(Value(latitude)))
-                    * Cos(Radians(F("longitude")) - Radians(Value(longitude)))
-                    + Sin(Radians(F("latitude")))
-                    * Sin(Radians(Value(latitude)))
-                ),
-                output_field=FloatField(),
+            raise ValidationError(
+                "Longitude should be less than 180.0 and greater than -180.0"
             )
-        
-        queryset = queryset.annotate(distance=distance)
+
+        distance = ExpressionWrapper(
+            KILOMETERS
+            * ACos(
+                Cos(Radians(F("latitude")))
+                * Cos(Radians(Value(latitude)))
+                * Cos(Radians(F("longitude")) - Radians(Value(longitude)))
+                + Sin(Radians(F("latitude"))) * Sin(Radians(Value(latitude)))
+            ),
+            output_field=FloatField(),
+        )
+
+        queryset = queryset.annotate(distance=distance).order_by("distance")
 
         return super().filter_queryset(queryset)
-    
+
 
 class PlaceOrderingFilter(OrderingFilter):
     class Meta:
@@ -92,8 +102,37 @@ class PlaceOrderingFilter(OrderingFilter):
     def filter_queryset(self, request, queryset, view):
         ordering_field = request.query_params.get("ordering")
 
-        if (ordering_field == "distance" or ordering_field == "-distance") and "distance" not in queryset.query.annotations:
+        if (
+            ordering_field == "distance" or ordering_field == "-distance"
+        ) and "distance" not in queryset.query.annotations:
             logger.exception("Order by distance without providing coordinates")
-            raise ValidationError("Can't order by distance without users coordinates provided!")
+            raise ValidationError(
+                "Can't order by distance without users coordinates provided!"
+            )
         return super().filter_queryset(request, queryset, view)
-        
+
+
+class PlaceSearchFilter(SearchFilter):
+    def filter_queryset(self, request, queryset, view):
+        search = request.query_params.get("search")
+
+        # If search is empty - return basic queryset
+        if search is None:
+            return super().filter_queryset(request, queryset, view)
+
+        queryset = queryset.annotate(
+            relevance=Case(
+                When(name__iexact=search, then=Value(4)),
+                When(address__iexact=search, then=Value(3)),
+                When(name__icontains=search, then=Value(2)),
+                When(address__icontains=search, then=Value(1)),
+                default=Value(0),
+            )
+        ).filter(relevance__gt=0)
+
+        queryset = queryset.order_by("-relevance")
+
+        if "distance" in queryset.query.annotations:
+            queryset = queryset.order_by("-relevance", "distance")
+
+        return super().filter_queryset(request, queryset, view)
