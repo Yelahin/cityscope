@@ -1,9 +1,11 @@
+from string import digits, punctuation
 from unicodedata import normalize
-from core.models import City, Category, SourceRecord
-from string import punctuation, digits
-import overpy
-from .utils import category_tags
 
+import overpy
+
+from core.models import Category, City, SourceRecord
+
+from .utils import category_tags
 
 ELEMENTS_FIELDS = {
     "name": lambda element: get_name_from_element(element),

@@ -1,9 +1,11 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+
 from core.models import Place
-from .serializers import PlaceSerializer
-from django_filters.rest_framework import DjangoFilterBackend
+
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
+from .serializers import PlaceSerializer
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):

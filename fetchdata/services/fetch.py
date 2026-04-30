@@ -1,9 +1,12 @@
-import overpy
-from core.models import SourceRecord, Category, City
-from cityscope.settings.base import OVERPASS_API_ENDPOINT, MAX_RETRY_COUNT
-from .transform import get_transformed_data
-from .save import save_places_to_db
 import logging
+
+import overpy
+
+from cityscope.settings.base import MAX_RETRY_COUNT, OVERPASS_API_ENDPOINT
+from core.models import Category, City, SourceRecord
+
+from .save import save_places_to_db
+from .transform import get_transformed_data
 from .utils import category_tags
 
 # Set up logger

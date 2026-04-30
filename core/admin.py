@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path
+
 from fetchdata.views import ImportPlacesView, custom_pages_index
+
 from .models import Category, City, Place, SourceRecord
 from .utils import RatingListFilter
 

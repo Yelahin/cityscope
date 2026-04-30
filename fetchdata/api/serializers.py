@@ -1,5 +1,6 @@
-from core.models import Place
 from rest_framework import serializers
+
+from core.models import Place
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -9,7 +10,7 @@ class PlaceSerializer(serializers.ModelSerializer):
     def get_distance(self, instance):
         if hasattr(instance, "distance") and instance.distance is not None:
             return round(instance.distance, 2)
-        
+
     # If latitude or longitude are missing in query parameters - remove distance from response
     def to_representation(self, instance):
         data = super().to_representation(instance)

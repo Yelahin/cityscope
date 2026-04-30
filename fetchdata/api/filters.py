@@ -1,14 +1,20 @@
-from django_filters import rest_framework as filters
-from core.models import Place
-from django.db.models import ExpressionWrapper, Value, F
-from django.db.models.functions import Radians, ACos, Cos, Sin
-from django.db.models import FloatField, Case, When, Value, IntegerField
-from rest_framework.exceptions import ValidationError
-from cityscope.settings.base import KILOMETERS
 import logging
-from rest_framework.filters import OrderingFilter
-from rest_framework.filters import SearchFilter
 
+from django.db.models import (
+    Case,
+    ExpressionWrapper,
+    F,
+    FloatField,
+    Value,
+    When,
+)
+from django.db.models.functions import ACos, Cos, Radians, Sin
+from django_filters import rest_framework as filters
+from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter, SearchFilter
+
+from cityscope.settings.base import KILOMETERS
+from core.models import Place
 
 logger = logging.getLogger(__name__)
 
@@ -67,13 +73,13 @@ class PlaceFilterSet(filters.FilterSet):
                 "Both latitude and longitude should be provided!"
             )
 
-        if 90 < latitude or latitude < -90:
+        if latitude > 90 or latitude < -90:
             logger.exception(f"{latitude} is invalid value for latitutde!")
             raise ValidationError(
                 "Latitude should be less than 90.0 and greater than -90.0"
             )
 
-        if 180 < longitude or longitude < -180:
+        if longitude > 180 or longitude < -180:
             logger.exception(f"{longitude} is invalid value for longitude!")
             raise ValidationError(
                 "Longitude should be less than 180.0 and greater than -180.0"
@@ -109,7 +115,7 @@ class PlaceOrderingFilter(OrderingFilter):
             raise ValidationError(
                 "Can't order by distance without users coordinates provided!"
             )
-        
+
         if ordering_field is None and "distance" in queryset.query.annotations:
             queryset = queryset.order_by("distance")
 
@@ -138,8 +144,12 @@ class PlaceSearchFilter(SearchFilter):
         is_ordering = ordering is not None
 
         if "distance" in queryset.query.annotations:
-            queryset = queryset.order_by("-relevance", ("distance", ordering)[is_ordering])
+            queryset = queryset.order_by(
+                "-relevance", ("distance", ordering)[is_ordering]
+            )
         else:
-            queryset = queryset.order_by("-relevance", ("name", ordering)[is_ordering])
+            queryset = queryset.order_by(
+                "-relevance", ("name", ordering)[is_ordering]
+            )
 
         return super().filter_queryset(request, queryset, view)
