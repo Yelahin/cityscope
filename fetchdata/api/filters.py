@@ -90,7 +90,7 @@ class PlaceFilterSet(filters.FilterSet):
             output_field=FloatField(),
         )
 
-        queryset = queryset.annotate(distance=distance).order_by("distance")
+        queryset = queryset.annotate(distance=distance)
 
         return super().filter_queryset(queryset)
 
@@ -109,12 +109,17 @@ class PlaceOrderingFilter(OrderingFilter):
             raise ValidationError(
                 "Can't order by distance without users coordinates provided!"
             )
+        
+        if ordering_field is None and "distance" in queryset.query.annotations:
+            queryset = queryset.order_by("distance")
+
         return super().filter_queryset(request, queryset, view)
 
 
 class PlaceSearchFilter(SearchFilter):
     def filter_queryset(self, request, queryset, view):
         search = request.query_params.get("search")
+        ordering = request.query_params.get("ordering")
 
         # If search is empty - return basic queryset
         if search is None:
@@ -130,9 +135,11 @@ class PlaceSearchFilter(SearchFilter):
             )
         ).filter(relevance__gt=0)
 
-        queryset = queryset.order_by("-relevance")
+        is_ordering = ordering is not None
 
         if "distance" in queryset.query.annotations:
-            queryset = queryset.order_by("-relevance", "distance")
+            queryset = queryset.order_by("-relevance", ("distance", ordering)[is_ordering])
+        else:
+            queryset = queryset.order_by("-relevance", ("name", ordering)[is_ordering])
 
         return super().filter_queryset(request, queryset, view)
