@@ -1,13 +1,11 @@
-from django.views.generic.edit import FormView
-from .forms import ImportPlacesForm
+import overpy
 from django.contrib import admin
 from django.template.response import TemplateResponse
-from django.contrib import admin
 from django.urls import reverse_lazy
-from .services.fetch import upload_data_to_database
-import overpy
-from .services.fetch import get_overpass_query
+from django.views.generic.edit import FormView
 
+from .forms import ImportPlacesForm
+from .services.fetch import get_overpass_query, upload_data_to_database
 
 # Create your views here.
 

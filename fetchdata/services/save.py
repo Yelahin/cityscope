@@ -1,4 +1,5 @@
 from core.models import Place
+
 from .transform import ELEMENTS_FIELDS
 
 

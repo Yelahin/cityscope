@@ -1,5 +1,6 @@
 from django import forms
-from core.models import SourceRecord, City, Category
+
+from core.models import Category, City, SourceRecord
 
 
 class ImportPlacesForm(forms.Form):
