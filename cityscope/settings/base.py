@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django_filters",
     "core.apps.CoreConfig",
     "fetchdata.apps.FetchdataConfig",
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
