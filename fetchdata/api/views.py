@@ -6,6 +6,8 @@ from core.models import Place
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
 from .serializers import PlaceSerializer
 from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 
 
@@ -49,3 +51,27 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(
+        detail=True,
+        methods=["POST", "DELETE"],
+        permission_classes=[IsAuthenticated],
+        url_path="favorite",
+    )
+    def add_or_delete_favorite_place(self, request, pk=None):
+        place = get_object_or_404(Place, pk=pk)
+        is_place_exists = request.user.favorite_places.filter(id=pk).exists()
+
+        if request.method == "POST":
+            if is_place_exists:
+                return Response(data={"message": f"Place with id {pk} already in favorite places!"}, status=status.HTTP_409_CONFLICT)
+            
+            request.user.favorite_places.add(place)
+            return Response(data={"message": f"Place was successfully saved to favorite places!"}, status=status.HTTP_201_CREATED)
+
+        elif request.method == "DELETE":
+            if not is_place_exists:
+                return Response(data={"message": f"Place with id {pk} is not in favorite places!"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            request.user.favorite_places.remove(place)
+            return Response(data={"message": f"Place was successfully removed from favorite places!"}, status=status.HTTP_200_OK)
+        
