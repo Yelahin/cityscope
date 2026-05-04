@@ -114,6 +114,8 @@ STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Add custom User model
+AUTH_USER_MODEL = "users.User"
 
 # Overpass API settings
 
