@@ -60,7 +60,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         permission_classes=[IsAuthenticated],
         url_path="favorite",
     )
-    def add_or_delete_favorite_place(self, request, pk=None):
+    def detail_favorite_place(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
         is_place_exists = request.user.favorite_places.filter(id=pk).exists()
 
