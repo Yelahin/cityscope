@@ -24,4 +24,4 @@ class ProxyGroup(Group):
 class SavedSearch(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    params = models.JSONField()
+    params = models.JSONField(blank=True, null=True)

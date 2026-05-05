@@ -22,3 +22,4 @@ class SavedSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedSearch
         fields = "__all__"
+        read_only_fields = ["user"]

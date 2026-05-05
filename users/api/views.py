@@ -18,13 +18,13 @@ class SavedSearchViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return SavedSearch.objects.filter(user=self.request.user)
 
-    def create(self, request, *args, **kwargs):
-        request.data["user"] = request.user.id
-        return super().create(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        return super().perform_create(serializer)
     
-    def update(self, request, *args, **kwargs):
-        request.data["user"] = request.user.id
-        return super().update(request, *args, **kwargs)
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+        return super().perform_update(serializer)
 
 
 @api_view(["POST"])
