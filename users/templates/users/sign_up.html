@@ -1,0 +1,9 @@
+<h1>Cityscope</h1>
+<h2>Sign Up</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+
+    <button type="submit">Submit</button>
+</form>
