@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r"searchs", SavedSearchViewSet, basename="search")
+router.register(r"searches", SavedSearchViewSet, basename="search")
 
 urlpatterns = [
     path("", include(router.urls)),
