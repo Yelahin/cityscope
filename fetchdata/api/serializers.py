@@ -27,3 +27,4 @@ class PlaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
         fields = "__all__"
+        read_only_fields = [field.name for field in model._meta.get_fields()]
