@@ -1,16 +1,16 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import CreateView
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
+from .forms import RegistrationForm
 
 
 # Create your views here.
 
 class SignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = RegistrationForm
     template_name = "users/sign_up.html"
     success_url = reverse_lazy("health")
 
