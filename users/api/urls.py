@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .views import register_user
+from .views import register_user, SavedSearchViewSet
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -7,6 +7,7 @@ from rest_framework_simplejwt.views import (
 )
 
 router = routers.DefaultRouter()
+router.register(r"searchs", SavedSearchViewSet, basename="search")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-
+from users.models import SavedSearch
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,5 +12,13 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         username = validated_data.get("username")
         password = validated_data.get("password")
-        user = get_user_model().objects.create_user(username=username, password=password)
+        user = get_user_model().objects.create_user(
+            username=username, password=password
+        )
         return user
+
+
+class SavedSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavedSearch
+        fields = "__all__"
