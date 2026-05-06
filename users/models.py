@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group
 from core.models import Place
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -21,7 +22,12 @@ class ProxyGroup(Group):
         verbose_name_plural = "Groups"
 
 
+def validate_search_params(value):
+    if not isinstance(value, dict):
+        raise ValidationError(message="params value should be json object!")
+
+
 class SavedSearch(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    params = models.JSONField(blank=True, null=True)
+    params = models.JSONField(validators=[validate_search_params])
