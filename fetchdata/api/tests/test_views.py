@@ -21,23 +21,23 @@ class FavoritePlaceTests(APITestCase):
             if number < self.favorite_places_count:
                 self.user_1.favorite_places.add(place)
       
-    def test_only_authenticated_user_can_access_endpoint(self):
-        # Unauthenticated user can't access endpoint
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
+    def test_unauthenticated_user_cannot_access_endpoints(self):
         id = Place.objects.first().id
+
+        # GET
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
         response = self.client.get(f"/api/places/{id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        # Anthenticated user can access endpoint
-        self.client.login(**self.user_1_credentials)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # POST
+        response = self.client.post(f"/api/places/{id}/favorite/")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        id = self.user_1.favorite_places.first().id
-        response = self.client.get(f"/api/places/{id}/favorite/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # DELETE 
+        response = self.client.delete(f"/api/places/{id}/favorite/")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_list_of_favorite_places(self):
         # Get list of favorite places (user_1)
@@ -99,12 +99,7 @@ class FavoritePlaceTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_post_favorite_place(self):
-        # Unauthenticated user can't access endpoint
-        id = Place.objects.first().id
-        response = self.client.post(f"/api/places/{id}/favorite/")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-        # Add favorite place to existing list of favorite places
+        # Add favorite place
         self.client.login(**self.user_1_credentials)
         self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
         self.assertFalse(self.user_1.favorite_places.filter(name=f"Place {Place.objects.order_by("-id").first().id -  self.favorite_places_count}").exists())
