@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from users.models import SavedSearch
+from django.contrib.auth.password_validation import validate_password
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,6 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
             username=username, password=password
         )
         return user
+
+    def validate_password(self, value):
+        validate_password(value)
+        return value
 
 
 class SavedSearchSerializer(serializers.ModelSerializer):
