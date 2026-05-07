@@ -8,6 +8,10 @@ from .serializers import PlaceSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from .utils import get_calculated_distance
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
@@ -72,6 +76,19 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+            latitude = request.query_params.get("lat")
+            longitude = request.query_params.get("lon")
+
+            if latitude is not None or longitude is not None:
+                distance = get_calculated_distance(latitude, longitude, logger)
+                if distance is not None:
+                    place = (
+                        Place.objects.filter(id=pk)
+                        .annotate(distance=distance)
+                        .first()
+                    )
+
             serializer = self.get_serializer(place)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
