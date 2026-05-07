@@ -26,12 +26,12 @@ Returns paginated list of user's favorite places | Returns detail page of user's
 ##### With geo distance
 **GET** `/api/places/1/favorite/?lat=48&lon=2`
 
-### Payloads:
+### Payloads
 
-#### Request:
+#### Request
 **GET** `/api/places/favorite/?lat=48&lon=2`
 
-#### Payload:
+#### Payload
 ```json
 {
     "count": 6,
@@ -52,7 +52,7 @@ Returns paginated list of user's favorite places | Returns detail page of user's
             "category": 16,
             "sourcerecord": 8,
             "city": 66
-        },
+        }
     ]
 }
 ```
@@ -66,7 +66,7 @@ Add place to user's favorite places
 
 ### Payload Examples
 
-#### Successful:
+#### Successful
 
 ```json
 {
@@ -74,7 +74,7 @@ Add place to user's favorite places
 }
 ```
 
-#### Already exists in favorite places:
+#### Already exists in favorite places
 
 ```json
 {
@@ -82,7 +82,7 @@ Add place to user's favorite places
 }
 ```
 
-#### Not existing place:
+#### Not existing place
 
 ```json
 {
@@ -98,9 +98,9 @@ Delete place from user's favorite places
 ### Endpoint
 **DELETE** `/api/places/1/favorite/`
 
-### Payload Examples:
+### Payload Examples
 
-#### Successful:
+#### Successful
 
 ```json
 {
@@ -108,7 +108,7 @@ Delete place from user's favorite places
 }
 ```
 
-#### Already deleted place:
+#### Already deleted place
 
 ```json
 {
@@ -116,7 +116,7 @@ Delete place from user's favorite places
 }
 ```
 
-#### Not existing place:
+#### Not existing place
 
 ```json
 {

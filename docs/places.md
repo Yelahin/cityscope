@@ -47,8 +47,6 @@ Filter allowed by fields:
 - `price_level`: `/api/places/?price_level={price_level}`
 - `opening_status`: `/api/places/?opening_status={opening_status}`
 
-`/api/places/?lat=51&lon=-21&page=1`
-
 ## Ordering
 
 Allowed ordering by:
@@ -67,9 +65,9 @@ Allowed ordering by:
 - `distance` - ascending
 - `distance` - descending
 
-#### Example:
-- ascending - `/api/places/?ordering=name`
-- descending - `/api/places/?ordering=-name`
+#### Example
+- ascending: `/api/places/?ordering=name`
+- descending: `/api/places/?ordering=-name`
 
 ## Search
 
@@ -77,7 +75,7 @@ Search allowed by fields:
 - `name`
 - `address`
 
-#### Example:
+#### Example
 - `name`: `/api/places/?search=PureGym`
 - `address`: `/api/places/?search=High Road 412,893 N20 9TA`
 
@@ -85,10 +83,10 @@ Search allowed by fields:
 ## Payload Examples
 
 
-##### Request:
-`/api/places/?page=1`
+##### Request
+**GET** `/api/places/?page=1`
 
-##### Payload:
+##### Payload
 
 ```json
 {
@@ -118,10 +116,10 @@ Search allowed by fields:
 
 #### With users coordinates
 
-##### Request:
-`/api/places/?lat=51&lon=-21&page=1`
+##### Request
+**GET** `/api/places/?lat=51&lon=-21&page=1`
 
-##### Payload:
+##### Payload
 
 
 ```json
