@@ -1,17 +1,32 @@
-# GET /api/places/ - List of places
-Returns paginated list of places. If users geo coordinates provided sorts result by nearest to farthest 
+# GET list | GET detail
+Returns paginated list of places. If users geo coordinates provided sorts result by nearest to farthest.
+**Only authenticated users can access endpoints**
 
 ---
 
 ## Endpoint
 
+### List
+`GET` list supports: filtering, sorting, search, calculated distance with query parameters
+
 #### Default
 
 `/api/places/`
 
-#### With geo distance
+#### With geo distance 
 
 `/api/places/?lat={latitude}&lon={longitude}`
+
+### Detail
+`GET` detail supports calculated distance with query parameters
+
+#### Default
+
+`/api/places/1/`
+
+#### With geo distance
+
+`/api/places/1/?lat={latitude}&lon={longitude}`
 
 ## Query Parameters
 
@@ -27,7 +42,7 @@ Filter allowed by fields:
 - `name`: `/api/places/?name={name}`
 - `city`: `/api/places/?city={city}`
 - `address`: `/api/places/?address={address}`
-- `category`: `/api/places/?category={category_id}}`
+- `category`: `/api/places/?category={category_id}`
 - `rating`: `/api/places/?rating={rating}`
 - `price_level`: `/api/places/?price_level={price_level}`
 - `opening_status`: `/api/places/?opening_status={opening_status}`
@@ -39,21 +54,21 @@ Filter allowed by fields:
 Allowed ordering by:
 - `name` - ascending
 - `name` - descending
-- `address` - descending
 - `address` - ascending
-- `latitude` - descending
+- `address` - descending
 - `latitude` - ascending
-- `longitude` - descending
+- `latitude` - descending
 - `longitude` - ascending
-- `category` - descending
+- `longitude` - descending
 - `category` - ascending
-- `city` - descending
+- `category` - descending
 - `city` - ascending
-- `distance` - descending
+- `city` - descending
 - `distance` - ascending
+- `distance` - descending
 
 #### Example:
-- ascending: `/api/places/?ordering=name`
+- ascending - `/api/places/?ordering=name`
 - descending - `/api/places/?ordering=-name`
 
 ## Search
