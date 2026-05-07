@@ -1,20 +1,14 @@
 import logging
-
 from django.db.models import (
     Case,
-    ExpressionWrapper,
-    F,
-    FloatField,
     Value,
     When,
 )
-from django.db.models.functions import ACos, Cos, Radians, Sin
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
-
-from cityscope.settings.base import KILOMETERS
 from core.models import Place
+from .utils import get_calculated_distance
 
 logger = logging.getLogger(__name__)
 
@@ -66,35 +60,7 @@ class PlaceFilterSet(filters.FilterSet):
                 "Radius filter expect users coordinates: lat, lon"
             )
 
-        # Check if only one coordinate was provided
-        if latitude is None or longitude is None:
-            logger.exception("User provide only one coordinate!")
-            raise ValidationError(
-                "Both latitude and longitude should be provided!"
-            )
-
-        if latitude > 90 or latitude < -90:
-            logger.exception(f"{latitude} is invalid value for latitutde!")
-            raise ValidationError(
-                "Latitude should be less than 90.0 and greater than -90.0"
-            )
-
-        if longitude > 180 or longitude < -180:
-            logger.exception(f"{longitude} is invalid value for longitude!")
-            raise ValidationError(
-                "Longitude should be less than 180.0 and greater than -180.0"
-            )
-
-        distance = ExpressionWrapper(
-            KILOMETERS
-            * ACos(
-                Cos(Radians(F("latitude")))
-                * Cos(Radians(Value(latitude)))
-                * Cos(Radians(F("longitude")) - Radians(Value(longitude)))
-                + Sin(Radians(F("latitude"))) * Sin(Radians(Value(latitude)))
-            ),
-            output_field=FloatField(),
-        )
+        distance = get_calculated_distance(latitude, longitude, logger)
 
         queryset = queryset.annotate(distance=distance)
 
