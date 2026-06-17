@@ -34,7 +34,6 @@ def register_user(request):
             data={"message": "User was successfully created"},
             status=status.HTTP_201_CREATED,
         )
-    else:
-        return Response(
+    return Response(
             data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST
-        )
+    )

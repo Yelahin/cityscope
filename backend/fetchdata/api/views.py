@@ -92,7 +92,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
             serializer = self.get_serializer(place)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        if request.method == "POST":
+        elif request.method == "POST":
             if is_place_exists:
                 return Response(
                     data={
@@ -104,7 +104,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
             request.user.favorite_places.add(place)
             return Response(
                 data={
-                    "message": f"Place was successfully saved to favorite places!"
+                    "message": "Place was successfully saved to favorite places!"
                 },
                 status=status.HTTP_201_CREATED,
             )
@@ -121,7 +121,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
             request.user.favorite_places.remove(place)
             return Response(
                 data={
-                    "message": f"Place was successfully removed from favorite places!"
+                    "message": "Place was successfully removed from favorite places!"
                 },
                 status=status.HTTP_200_OK,
             )

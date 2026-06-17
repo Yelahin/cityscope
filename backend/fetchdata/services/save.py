@@ -13,7 +13,7 @@ def save_places_to_db(transformed_data: list[dict]):
         bulk_list.append(place)
 
         # Set values for Place instance
-        for field in ELEMENTS_FIELDS.keys():
+        for field in ELEMENTS_FIELDS:
             setattr(place, field, place_data[field])
 
     # Set 'slug' field for Place objects
