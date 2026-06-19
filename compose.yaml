@@ -12,6 +12,13 @@ services:
         condition: service_healthy
 
 
+  frontend:
+    container_name: cityscope-frontend
+    build: ./frontend
+    ports:
+      - 3000:3000
+    env_file: frontend/.env.local
+
   db:
     image: postgres:17
     container_name: cityscope-postgres
