@@ -18,6 +18,9 @@ services:
     ports:
       - 3000:3000
     env_file: frontend/.env.local
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
 
   db:
     image: postgres:17
