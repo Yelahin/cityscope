@@ -15,4 +15,6 @@
 
 @theme {
     --color-primary: var(--color-blue-500);
+    --height-header: 3.5rem;
+    --spacing-header: var(--height-header);
 }
