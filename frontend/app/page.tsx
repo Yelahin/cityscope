@@ -1,3 +1,7 @@
 export default function Home () {
-    return <h1>Home page!</h1>
+    return (
+        <main className="pt-14">
+            <h1>Home page!</h1>
+        </main>
+    )
 }
