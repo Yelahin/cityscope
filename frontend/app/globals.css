@@ -20,7 +20,9 @@
 
 @theme {
     --color-primary: var(--color-blue-500);
+    --color-secondary: var(--color-mauve-500);
     --height-header: 3.5rem;
     --spacing-header: var(--height-header);
     --animate-spin: spin 1s linear infinite;
+    --height-main-content: calc(100vh - var(--height-header) *2)
 }
