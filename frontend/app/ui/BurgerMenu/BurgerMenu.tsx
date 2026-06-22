@@ -16,7 +16,7 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
     const pathname = usePathname();
     return (
         <>
-            <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center gap-2 sm:hidden cursor-pointer w-10 h-10 p-1.5 rounded-lg shadow-md border-[0.5px] border-[rgb(35,35,35)]">
+            <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center gap-2 sm:hidden cursor-pointer w-10 h-10 p-1.5 rounded-lg shadow-md border-[0.5px] border-border-primary">
                     <span className={`flex bg- h-0.75 rounded-3xl transition-all
                         ${isOpen ? "w-8 bg-primary rotate-45 translate-y-2.75" : "w-6 bg-gray-500"}`}></span>
                     <span className={`flex bg- h-0.75 rounded-3xl transition-all
@@ -26,7 +26,7 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
             </button>
 
             <div className={`fixed sm:hidden top-header right-0 bg-[rgb(15,15,15)]/70 backdrop-blur-sm w-full 
-                ${isOpen ? "opacity-100 h-full" : "opacity-0 h-0"} transition`}>
+                ${isOpen ? "opacity-100 h-full" : "pointer-events-none opacity-0 h-0"} transition`}>
                     <ul className="flex flex-col items-center pt-10">
                         {pages.map((page: Page) => {
                             return (
