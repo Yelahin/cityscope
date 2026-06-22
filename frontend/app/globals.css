@@ -21,6 +21,7 @@
 @theme {
     --color-primary: var(--color-blue-500);
     --color-secondary: var(--color-mauve-500);
+    --color-border-primary: rgb(35, 35, 35);
     --height-header: 3.5rem;
     --spacing-header: var(--height-header);
     --animate-spin: spin 1s linear infinite;
