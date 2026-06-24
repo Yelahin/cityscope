@@ -18,9 +18,9 @@ git clone https://github.com/Yelahin/cityscope
 cd cityscope
 ```
 
-3) Create **.env** file
+3) Create **backend/.env** file for backend and create **frontend/env.local** file for frontend
 
-4) Set up variables in **.env** file. Variables displayed in .env.example file
+4) Set up variables in **backend/.env** and **frontend/.env.local** file. Variables displayed in **.env.example** file located both in backend and frontend app
 
 ```bash
 SECRET_KEY=your-django-secret-key
