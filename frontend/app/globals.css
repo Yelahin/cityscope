@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+@layer base {
+    body {
+        color: white;
+        background-color: rgb(20, 20, 20);
+        font-family: 'Inter', sans-serif;
+    }
+
+    header {
+        background-color: rgb(20, 20, 20);
+    }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@theme {
+    --color-primary: var(--color-blue-500);
+    --color-secondary: var(--color-mauve-500);
+    --color-border-primary: rgb(35, 35, 35);
+    --height-header: 3.5rem;
+    --spacing-header: var(--height-header);
+    --animate-spin: spin 1s linear infinite;
+    --height-main-content: calc(100vh - var(--height-header) *2)
+}

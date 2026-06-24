@@ -1,25 +1,31 @@
 services:
   backend:
     container_name: cityscope-backend
-    build: .
+    build: ./backend
     ports: 
       - 8000:8000
-    env_file: .env
+    env_file: backend/.env
     volumes:
-      - .:/app
+      - ./backend:/app/backend
     depends_on:
       db:
         condition: service_healthy
 
 
+  frontend:
+    container_name: cityscope-frontend
+    build: ./frontend
+    ports:
+      - 3000:3000
+    env_file: frontend/.env.local
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+
   db:
     image: postgres:17
     container_name: cityscope-postgres
-    env_file: .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file: backend/.env
     ports:
       - "5432:5432"
     volumes:

@@ -62,10 +62,6 @@ longitude_validator = [MinValueValidator(-180.0), MaxValueValidator(180.0)]
 
 
 class Place(models.Model):
-    class Meta:
-        verbose_name = "Place"
-        verbose_name_plural = "Places"
-
     CLOSED = "CLOSED"
     OPEN = "OPEN"
     STATUS_CHOICES = {CLOSED: "Closed", OPEN: "Open"}
@@ -99,6 +95,9 @@ class Place(models.Model):
     )
 
     class Meta:
+        verbose_name = "Place"
+        verbose_name_plural = "Places"
+
         constraints = [
             models.UniqueConstraint(
                 fields=["name", "latitude", "longitude"], name="unique_place"

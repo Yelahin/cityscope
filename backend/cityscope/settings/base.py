@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 
 from decouple import config
 
@@ -116,6 +117,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Add custom User model
 AUTH_USER_MODEL = "users.User"
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+}
 
 # Overpass API settings
 
