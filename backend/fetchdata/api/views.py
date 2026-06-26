@@ -1,7 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from core.models import Place
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
 from .serializers import PlaceSerializer
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     filter_backends = [
         DjangoFilterBackend,
         PlaceOrderingFilter,
