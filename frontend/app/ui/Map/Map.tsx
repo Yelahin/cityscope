@@ -4,7 +4,7 @@ import "leaflet-defaulticon-compatibility"
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
 
 interface MapProps {
-    position: [number, number]
+    position: [number, number];
     zoom: number;
 }
 
