@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+import Loading from "./loading";
 
 const Map = dynamic(() => import("./ui/Map/Map"), {ssr: false})
 
@@ -10,22 +11,28 @@ interface Coordinates {
 }
 
 export default function Home () {
-    const [userCoordinates, setUserCoordinates] = useState<Coordinates>({latitude: null, longitude: null})
+    const [userCoordinates, setUserCoordinates] = useState<Coordinates>({latitude: null, longitude: null});
+    const [coordinatesReady, setCoordinatesReady] = useState(false);
 
-    function getPosition (position: GeolocationPosition): void {
-        setUserCoordinates({latitude: position.coords.latitude, longitude: position.coords.longitude})
-    }
-
-    function getLocation (): void {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(getPosition);
-        } else {
-            console.log("Access to user coordinates denied!")
+    useEffect(() => {
+        if (!navigator.geolocation) {
+            console.log("Geolocation not supported!");
+            Promise.resolve().then(() => setCoordinatesReady(true));
         }
-    }
 
-    useEffect(() => getLocation(), [])
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setUserCoordinates({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                setCoordinatesReady(true);
+            },
+            () => {
+                console.log("Access denied!");
+                setCoordinatesReady(true);
+            }
+        )
+    }, []);
 
+    if (!coordinatesReady) return <Loading />;
 
     return (
         <div>

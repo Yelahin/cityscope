@@ -25,8 +25,8 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
                         ${isOpen ? "w-8 bg-primary bg- -rotate-45 -translate-y-2.75" : "w-6 bg-gray-500"}`}></span>
             </button>
 
-            <div className={`fixed sm:hidden top-header right-0 bg-[rgb(15,15,15)]/70 backdrop-blur-sm w-full 
-                ${isOpen ? "opacity-100 h-full" : "pointer-events-none opacity-0 h-0"} transition`}>
+            <div className={`fixed z-[1000] sm:hidden top-header right-0 bg-[rgb(15,15,15)]/70 backdrop-blur-sm w-full 
+                ${isOpen ? "opacity-100 h-full" : "pointer-events opacity-0 h-0"} transition`}>
                     <ul className="flex flex-col items-center pt-10">
                         {pages.map((page: Page) => {
                             return (
@@ -35,7 +35,7 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
                                         <Link
                                             onClick={() => setIsOpen(false)}
                                             href={page.href} 
-                                            className={`text-6xl font-bold [-webkit-text-stroke:1px_white] text-transparent hover:text-white transition duration-300
+                                            className={`text-6xl font-bold font-mono [-webkit-text-stroke:1px_white] text-transparent hover:text-white transition duration-300
                                             ${pathname === page.href && "text-white"}`}>
                                                 {page.label}
                                         </Link>
