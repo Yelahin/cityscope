@@ -1,9 +1,22 @@
 from rest_framework import serializers
 
-from core.models import Place
+from core.models import Place, Category, City
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ["id", "name"]
 
 
 class PlaceSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    city = CitySerializer(read_only=True)
     distance = serializers.SerializerMethodField()
 
     # If distance in queryset get distance

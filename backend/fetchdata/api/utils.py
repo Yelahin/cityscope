@@ -1,5 +1,6 @@
 import logging
 from rest_framework.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
 from django.db.models import (
     ExpressionWrapper,
     F,
@@ -55,3 +56,9 @@ def get_calculated_distance(latitude, longitude, logger=logger) -> FloatField:
     )
 
     return distance
+
+
+class StandardResultSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 500
