@@ -25,8 +25,8 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
                         ${isOpen ? "w-8 bg-primary bg- -rotate-45 -translate-y-2.75" : "w-6 bg-gray-500"}`}></span>
             </button>
 
-            <div className={`fixed z-[1000] sm:hidden top-header right-0 bg-[rgb(15,15,15)]/70 backdrop-blur-sm w-full 
-                ${isOpen ? "opacity-100 h-full" : "pointer-events opacity-0 h-0"} transition`}>
+            <div className={`fixed z-10000 sm:hidden top-header right-0 bg-[rgb(15,15,15)]/70 backdrop-blur-sm w-full 
+                ${isOpen ? "opacity-100 h-full" : "pointer-events-none opacity-0 h-0"} transition`}>
                     <ul className="flex flex-col items-center pt-10">
                         {pages.map((page: Page) => {
                             return (
