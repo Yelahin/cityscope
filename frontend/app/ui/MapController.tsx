@@ -2,7 +2,7 @@ import { Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet.markercluster";
-import { Place } from "../Map/Map";
+import { Place } from "./Map";
 
 
 export default function MapController ({places}: {places: Place[]}) {

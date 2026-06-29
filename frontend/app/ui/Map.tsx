@@ -3,11 +3,11 @@ import "leaflet.markercluster";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import Input from "../Input/Input";
+import Input from "./Input";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchApi from "@/app/lib/api/client";
-import MapController from "../MapController/MapController";
+import MapController from "./MapController";
 
 interface MapProps {
     position?: [number, number];

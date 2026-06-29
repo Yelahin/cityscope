@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Loading from "./loading";
 
-const Map = dynamic(() => import("./ui/Map/Map"), {ssr: false})
+const Map = dynamic(() => import("./ui/Map"), {ssr: false})
 
 interface Coordinates {
     latitude: number | null;

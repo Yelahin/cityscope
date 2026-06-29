@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { PrimaryButtonLink } from "./PrimaryButton/PrimaryButton";
-import { SecondaryButtonLink } from "./SecondaryButton/SecondaryButton";
+import { PrimaryButtonLink } from "./PrimaryButton";
+import { SecondaryButtonLink } from "./SecondaryButton";
 import { IoLocationSharp } from "react-icons/io5";
-import BurgerMenu from "./BurgerMenu/BurgerMenu";
+import BurgerMenu from "./BurgerMenu";
 import { useState} from "react";
 
 

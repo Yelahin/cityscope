@@ -1,4 +1,4 @@
-import { PrimaryButtonLink } from "./ui/PrimaryButton/PrimaryButton";
+import { PrimaryButtonLink } from "./ui/PrimaryButton";
 
 export default function NotFound() {
     return (
