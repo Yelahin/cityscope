@@ -18,6 +18,7 @@ export default function Home () {
         if (!navigator.geolocation) {
             console.log("Geolocation not supported!");
             Promise.resolve().then(() => setCoordinatesReady(true));
+            return;
         }
 
         navigator.geolocation.getCurrentPosition(
@@ -38,8 +39,7 @@ export default function Home () {
         <div>
             {userCoordinates.latitude !== null && userCoordinates.longitude !== null 
             ? (<Map position={[userCoordinates.latitude, userCoordinates.longitude]} zoom={15} />) 
-            : (<Map position={[30, 0]} zoom={0} />)}
-    
+            : (<Map zoom={0} />)}
         </div>
     )
 }

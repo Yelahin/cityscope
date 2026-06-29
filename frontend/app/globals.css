@@ -4,12 +4,12 @@
 @layer base {
     body {
         color: white;
-        background-color: rgb(20, 20, 20);
+        background-color: var(--color-dark-primary);
         font-family: 'Inter', sans-serif;
     }
 
     header {
-        background-color: rgb(20, 20, 20);
+        background-color: var(--color-dark-primary)
     }
 }
 
@@ -22,8 +22,28 @@
     --color-primary: var(--color-blue-500);
     --color-secondary: var(--color-mauve-500);
     --color-border-primary: rgb(35, 35, 35);
+    --color-dark-primary: rgb(20, 20, 20);
     --height-header: 3.5rem;
     --spacing-header: var(--height-header);
     --animate-spin: spin 1s linear infinite;
-    --height-main-content: calc(100vh - var(--height-header) *2)
+    --height-main-content: calc(100vh - var(--height-header) *2);
+}
+
+.custom-marker-cluster,
+.custom-marker-cluster div,
+.custom-marker-cluster span {
+    border-radius: 50%;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.custom-marker-cluster div {
+    width: 100%;
+    height: 100%;
+}
+
+.custom-marker-cluster span {
+    width: 80%;
+    height: 80%;
 }
