@@ -3,7 +3,7 @@ import "leaflet.markercluster";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import Input from "./Input";
+import SearchBar from "./SearchBar";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchApi from "@/app/lib/api/client";
@@ -40,15 +40,14 @@ const defaultPosition: [number, number] = [30, 0]
 
 export default function Map(props: MapProps) {
   const { position, zoom } = props;
-  const [searchValue, setSearchValue] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
   const [places, setPlaces] = useState<Place[]>([]); 
 
-  function handleSubmit (): void {
-    if (searchValue !== "") {
-      router.push(`?search=${searchValue}`);
+  function handleSubmit (value: string): void {
+    if (value !== "") {
+      router.push(`?search=${value}`);
     }
   }
 
@@ -56,7 +55,7 @@ export default function Map(props: MapProps) {
     if (!search) return;
 
     async function fetchPlaces () {
-      const firstPage = await fetchApi(`places/?search=${search}${position ? `&lat=${position[0]}&lon=${position[1]}` : ""}&page=1`);
+      const firstPage: FetchedData = await fetchApi(`places/?search=${search}${position ? `&lat=${position[0]}&lon=${position[1]}` : ""}&page=1`);
 
       if (firstPage.next !== null) {
 
@@ -85,13 +84,7 @@ export default function Map(props: MapProps) {
   return (
     <>
       <div className="fixed flex items-center z-1000 top-header right-0 w-full h-header sm:px-30 px-15 pointer-events-none transition-all duration-300">
-          <Input 
-            className="pointer-events-auto"
-            placeholder="Search..." 
-            value={searchValue} 
-            onChange={(e) => setSearchValue(e.target.value) }
-            onSubmit={handleSubmit}
-          />
+          <SearchBar handleSubmit={handleSubmit} />
       </div>
       <MapContainer center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoom={zoom} className="h-main-content w-full">
       <TileLayer
