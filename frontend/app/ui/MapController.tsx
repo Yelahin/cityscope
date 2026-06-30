@@ -1,4 +1,5 @@
-import { Marker, Popup } from "react-leaflet";
+import { useEffect } from "react";
+import { Marker, Popup, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet.markercluster";
@@ -6,6 +7,8 @@ import { Place } from "./Map";
 
 
 export default function MapController ({places}: {places: Place[]}) {
+  const map = useMap();
+
   function createClusterCustomIcon (cluster: L.MarkerCluster) {
     const count = cluster.getChildCount();
 
@@ -43,6 +46,17 @@ export default function MapController ({places}: {places: Place[]}) {
       iconSize: L.point(size, size, true),
     });
   }
+
+  useEffect(() => {
+    if (places.length === 0) {
+      return;
+    }
+
+    const bounds = L.latLngBounds(
+      places.map((place: Place) => [place.latitude, place.longitude])
+    );
+    map.flyToBounds(bounds, {maxZoom: 14, duration: 2, padding: [50, 50]});
+  }, [places])
 
     return (
         <MarkerClusterGroup
