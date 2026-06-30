@@ -29,7 +29,7 @@ export default function Input ({ placeholder, type, className, value, onChange, 
             />
             <button 
                 type="submit" 
-                onSubmit={onSubmit}
+                onClick={onSubmit}
                 className="cursor-pointer text-primary">
                 <FaSearch />
             </button>

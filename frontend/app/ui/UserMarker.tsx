@@ -1,4 +1,4 @@
-import { Marker } from "react-leaflet";
+import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
 
@@ -10,6 +10,11 @@ export default function UserMarker ({position}: {position: [number, number]}) {
     })
 
     return (
-        <Marker icon={userIcon} position={position} />
+        <Marker icon={userIcon} position={position}>
+            <Popup>
+                <p>Latitude: {position[0].toFixed(7)}</p>
+                <p>Longitude: {position[1].toFixed(7)}</p>
+            </Popup>
+        </Marker>
     )
 }
