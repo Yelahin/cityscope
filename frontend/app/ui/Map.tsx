@@ -1,4 +1,4 @@
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet.markercluster";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchApi from "@/app/lib/api/client";
 import MapController from "./MapController";
+import UserMarker from "./UserMarker";
 
 interface MapProps {
     position?: [number, number];
@@ -91,7 +92,7 @@ export default function Map(props: MapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
-      {position && <Marker position={position} />}
+      {position && <UserMarker position={position} />}
        <MapController places={places} />
       </MapContainer>
     </>
