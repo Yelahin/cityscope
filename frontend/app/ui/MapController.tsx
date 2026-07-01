@@ -6,7 +6,10 @@ import "leaflet.markercluster";
 import { Place } from "./Map";
 
 
-export default function MapController ({places}: {places: Place[]}) {
+export default function MapController ({places, markersRef}: {
+    places: Place[], 
+    markersRef: React.RefObject<Record<number, L.Marker>>
+  }) {
   const map = useMap();
 
   function createClusterCustomIcon (cluster: L.MarkerCluster) {
@@ -55,8 +58,12 @@ export default function MapController ({places}: {places: Place[]}) {
     const bounds = L.latLngBounds(
       places.map((place: Place) => [place.latitude, place.longitude])
     );
-    map.flyToBounds(bounds, {maxZoom: 14, duration: 2, padding: [50, 50]});
-  }, [places])
+    map.flyToBounds(bounds, {
+      maxZoom: 14, 
+      duration: 2,
+      padding: [100, 100]
+    });
+  }, [places, map])
 
     return (
         <MarkerClusterGroup
@@ -82,8 +89,10 @@ export default function MapController ({places}: {places: Place[]}) {
               <Marker 
                 key={place.id} 
                 position={[place.latitude, place.longitude]}
-                eventHandlers={{
-                }}>
+                ref={(el) => {
+                  if (el) markersRef.current[place.id] = el;
+                }}
+              >
                 <Popup>
                   <p>Name: {place.name}</p>
                   {place.address && address}

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import Input from "./Input";
 
-export default function SearchBar ({handleSubmit}: {handleSubmit: (value: string) => void}) {
+export default function SearchBar ({handleSubmit, className}: {handleSubmit: (value: string) => void, className?: string}) {
     const [searchValue, setSearchValue] = useState("");
 
     return (
         <Input 
-        className="pointer-events-auto"
+        className={className}
         placeholder="Search..." 
         value={searchValue} 
         onChange={(e) => setSearchValue(e.target.value) }

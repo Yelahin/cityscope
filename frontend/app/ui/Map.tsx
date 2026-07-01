@@ -1,14 +1,15 @@
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl } from "react-leaflet";
 import "leaflet.markercluster";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import SearchBar from "./SearchBar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchApi from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
+import MapList from "./MapList";
 
 interface MapProps {
     position?: [number, number];
@@ -44,7 +45,24 @@ export default function Map(props: MapProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
-  const [places, setPlaces] = useState<Place[]>([]); 
+  const [places, setPlaces] = useState<Place[]>([]);
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<Record<number, L.Marker>>({})
+
+  function handleMapListPlaceClick (place: Place) {
+    const map = mapRef.current;
+    
+    if (!map) return;
+
+    map.flyTo([place.latitude, place.longitude], 18, {duration: 2});
+    
+    map.once("moveend", () => {
+      const marker = markersRef.current?.[place.id];
+      requestAnimationFrame(() => {
+        marker.openPopup()
+      })
+    });
+  }
 
   function handleSubmit (value: string): void {
     if (value !== "") {
@@ -80,20 +98,22 @@ export default function Map(props: MapProps) {
     }
 
     fetchPlaces();
-  }, [search])
+  }, [search, position])
 
   return (
     <>
-      <div className="fixed flex items-center z-1000 top-header right-0 w-full h-header sm:px-30 px-15 pointer-events-none transition-all duration-300">
-          <SearchBar handleSubmit={handleSubmit} />
+      <div className="fixed flex items-center z-1000 left-0 w-75 h-header gap-2.5 p-2.5 pointer-events-none *:pointer-events-auto">
+        <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full" />
+        <MapList places={places} search={search} onPlaceClick={handleMapListPlaceClick} />
       </div>
-      <MapContainer center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoom={zoom} className="h-main-content w-full">
+      <MapContainer ref={mapRef} attributionControl={false} center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoomControl={false} zoom={zoom} className="h-main-content w-full">
+        <ZoomControl position="topright" />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
       {position && <UserMarker position={position} />}
-       <MapController places={places} />
+       <MapController markersRef={markersRef} places={places} />
       </MapContainer>
     </>
   )
