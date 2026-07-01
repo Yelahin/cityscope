@@ -45,6 +45,7 @@ export default function Map(props: MapProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [places, setPlaces] = useState<Place[]>([]);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<Record<number, L.Marker>>({})
@@ -74,6 +75,7 @@ export default function Map(props: MapProps) {
     if (!search) return;
 
     async function fetchPlaces () {
+      setIsLoading(true);
       const firstPage: FetchedData = await fetchApi(`places/?search=${search}${position ? `&lat=${position[0]}&lon=${position[1]}` : ""}&page=1`);
 
       if (firstPage.next !== null) {
@@ -91,10 +93,12 @@ export default function Map(props: MapProps) {
         )
 
         setPlaces([...firstPage.results, ...results.flat()]);
+        setIsLoading(false);
         return;
 
       }
       setPlaces(firstPage.results);
+      setIsLoading(false);
     }
 
     fetchPlaces();
@@ -104,7 +108,7 @@ export default function Map(props: MapProps) {
     <>
       <div className="fixed flex items-center z-1000 left-0 w-75 h-header gap-2.5 p-2.5 pointer-events-none *:pointer-events-auto">
         <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full" />
-        <MapList places={places} search={search} onPlaceClick={handleMapListPlaceClick} />
+        <MapList places={places} search={search} onPlaceClick={handleMapListPlaceClick} isLoading={isLoading}  />
       </div>
       <MapContainer ref={mapRef} attributionControl={false} center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoomControl={false} zoom={zoom} className="h-main-content w-full">
         <ZoomControl position="topright" />
