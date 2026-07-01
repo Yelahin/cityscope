@@ -116,7 +116,7 @@ export default function MapList ({places, search, onPlaceClick, isLoading}: {
                     ${isOpen ? "w-8 bg-primary  -rotate-45 -translate-y-2.5" : "w-7 bg-gray-500"}`}></span>
             </button>
 
-            <div className={`-z-1 top-header left-0 w-75 h-main-content bg-dark-primary
+            <div className={`-z-1 top-header left-0 w-full max-w-75 h-main-content bg-dark-primary
                 ${isOpen ? "fixed" : "hidden"}`}>
                 {displayPlacesList()}
             </div>

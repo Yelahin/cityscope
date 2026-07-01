@@ -106,7 +106,7 @@ export default function Map(props: MapProps) {
 
   return (
     <>
-      <div className="fixed flex items-center z-1000 left-0 w-75 h-header gap-2.5 p-2.5 pointer-events-none *:pointer-events-auto">
+      <div className="fixed flex items-center z-1000 left-0 w-full max-w-75 h-header gap-2.5 p-2.5 pointer-events-none *:pointer-events-auto">
         <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full" />
         <MapList places={places} search={search} onPlaceClick={handleMapListPlaceClick} isLoading={isLoading}  />
       </div>
