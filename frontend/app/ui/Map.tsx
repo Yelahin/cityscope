@@ -55,6 +55,7 @@ export default function Map(props: MapProps) {
   // Params
   const category = searchParams.get("category");
   const city = searchParams.get("city");
+  const radius = searchParams.get("radius");
 
   function buildUrl (searchValue: string, showPosition: boolean, page?: number) {
     const parts = [
@@ -62,6 +63,7 @@ export default function Map(props: MapProps) {
       (showPosition && position) ? `lat=${position[0]}&lon=${position[1]}` : "",
       category ? `category=${category}` : "",
       city ? `city=${city}` : "",
+      radius ? `radius=${radius}` : "",
       page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");
@@ -134,7 +136,7 @@ export default function Map(props: MapProps) {
             <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full rounded-xl" />
             <MapList places={places} onPlaceClick={handleMapListPlaceClick} isLoading={isLoading}  />
           </div>
-          <Filters />
+          <Filters position={position} />
         </div>
       </div>
       <MapContainer ref={mapRef} attributionControl={false} center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoomControl={false} zoom={zoom} className="h-main-content w-full">

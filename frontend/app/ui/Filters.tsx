@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PlaceFilter from "./PlaceFilter";
 import ScrollableRow from "./ScrollableRow";
 import ListFilter from "./ListFilter";
+import RadiusFilter from "./RadiusFilter";
 import fetchApi from "../lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -11,7 +12,7 @@ export interface FilterOption {
     name: string
 }
 
-export default function Filters () {
+export default function Filters ({position}: {position: [number, number] | undefined}) {
     const [openFilter, setOpenFilter] = useState<string | null>(null);
     const [categories, setCategories] = useState<FilterOption[]>([]);
     const [cities, setCities] = useState<FilterOption[]>([]);
@@ -59,7 +60,15 @@ export default function Filters () {
                 onToggle={() => toggleFilter("Category")}
                 filter={<ListFilter objects={categories} placeholder="Category" setOpenFilter={setOpenFilter} />}
             />
-            <button onClick={handleClear} className="bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-gray-400 hover:text-white border border-white-500 p-1 rounded-full cursor-pointer">Clear filters</button>
+            {position &&
+            <PlaceFilter
+                placeholder="Radius"
+                isOpen={openFilter === "Radius"}
+                onToggle={() => toggleFilter("Radius")}
+                filter={<RadiusFilter setOpenFilter={setOpenFilter} />}
+             />
+             }
+            <button onClick={handleClear} className="flex justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
         </ScrollableRow>
     );
 }

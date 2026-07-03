@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useMemo, useState} from "react";
 import Input from "./Input";
 import { IoCheckmark } from "react-icons/io5";
 import { PrimaryButton } from "./PrimaryButton";
+import { SecondaryButton } from "./SecondaryButton";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface FilterOption {
@@ -60,7 +61,7 @@ export default function ListFilter ({
                 isButton={false}
                 onChange={(e) => setSearchValue(e.target.value)}
             />
-            <ul className="h-32.5 mb-2.5 rounded-b-md overflow-auto overscroll-contain border-border-primary border-b-[0.5px] border-x-[0.5px]">
+            <ul className="h-32.5 rounded-b-md overflow-auto overscroll-contain border-border-primary border-b-[0.5px] border-x-[0.5px]">
                 {filtered.map((object) => {
                     return (
                         <li key={object.id} className="flex justify-between border-[0.5px] py-1 px-2 border-border-primary cursor-pointer" onClick={() => 
@@ -76,9 +77,9 @@ export default function ListFilter ({
                     )
                 })}
             </ul>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 mt-2.5">
                 <PrimaryButton onClick={handleApply}>Apply</PrimaryButton>
-                <button onClick={handleClear} className="p-1 bg-gray-500 hover:bg-gray-400 active:bg-gray-300 rounded-md transition cursor-pointer">Clear All</button>
+                <SecondaryButton onClick={handleClear}>Clear All</SecondaryButton>
             </div>
         </div>
     )

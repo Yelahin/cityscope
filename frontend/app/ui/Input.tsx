@@ -6,7 +6,7 @@ interface InputProps {
     placeholder: string,
     type?: React.HTMLInputTypeAttribute,
     className?: string,
-    value: string,
+    value: string | number,
     isButton: boolean,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onSubmit?: () => void
@@ -16,7 +16,8 @@ export default function Input ({ placeholder, type, className, value, isButton, 
     return (
         <div className={`flex gap-1 items-center border-[0.5px] border-border-primary p-2 inset-shadow-sm bg-dark-primary
         ${className}`}>
-            <input 
+            <input
+                min={0}
                 placeholder={placeholder} 
                 type={type} 
                 value={value} 

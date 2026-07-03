@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PrimaryButtonLink } from "./PrimaryButton";
-import { SecondaryButtonLink } from "./OutlineButton";
+import { OutlineButtonLink } from "./OutlineButton";
 import { IoLocationSharp } from "react-icons/io5";
 import BurgerMenu from "./BurgerMenu";
 import { useState} from "react";
@@ -22,7 +22,7 @@ export default function Header () {
             </div>
             <nav className="hidden sm:flex items-center gap-3.5">
                 <PrimaryButtonLink href="/sign-up">Sign Up</PrimaryButtonLink>
-                <SecondaryButtonLink href="/login">Login</SecondaryButtonLink>
+                <OutlineButtonLink href="/login">Login</OutlineButtonLink>
             </nav>
 
             <BurgerMenu isOpen={isBurgerMenu} setIsOpen={setIsBurgerMenu} />            
