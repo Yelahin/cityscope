@@ -12,7 +12,8 @@ export default function RatingFilter ({setOpenFilter}: {setOpenFilter: Dispatch<
     const router = useRouter();
     const searchParams = useSearchParams();
     const params = new URLSearchParams(searchParams.toString());
-    const [selectedRating, setSelectedRating] = useState<number | null>(Number(searchParams.get("rating_min")) ?? null);
+    const ratingParams = searchParams.get("rating_min")
+    const [selectedRating, setSelectedRating] = useState<number | null>(ratingParams ? Number(ratingParams) : null);
 
     const rating = [0, 1, 2, 3, 4, 5];
 
