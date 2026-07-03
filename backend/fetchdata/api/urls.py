@@ -1,10 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import PlaceViewSet
+from .views import PlaceViewSet, CategoryListView, CityListView
 
 router = routers.DefaultRouter()
 router.register(r"places", PlaceViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("categories/", CategoryListView.as_view()),
+    path("cities/", CityListView.as_view())
 ]

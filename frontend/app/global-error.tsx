@@ -1,7 +1,7 @@
 "use client"
 
 import { PrimaryButtonLink } from "./ui/PrimaryButton";
-import { SecondaryButton } from "./ui/SecondaryButton";
+import { SecondaryButton } from "./ui/OutlineButton";
 
 export default function Error ({ error, reset }: {error: Error, reset: () => void}) {
     return (

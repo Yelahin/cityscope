@@ -1,40 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Place } from "./Map";
 import { IoSearch } from "react-icons/io5";
 import { MdErrorOutline } from "react-icons/md";
 import StarRating from "./StarRatings";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Spinner from "./Spinner";
+import { useSearchParams } from "next/navigation";
 
-export default function MapList ({places, search, onPlaceClick, isLoading}: {
+export default function MapList ({places, onPlaceClick, isLoading}: {
     places: Place[], 
-    search: string | null,
     onPlaceClick: (place: Place) => void,
     isLoading: boolean}) {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const itemsPerPage = 10;
-    const [hasMore, setHasMore] = useState<boolean>(true);
     const [displayCount, setDisplayCount] = useState<number>(itemsPerPage);
     const displayedPlaces = places.slice(0, displayCount)
+    const [prevPlaces, setPrevPlaces] = useState<Place[]>(places);
+    const hasMore = displayCount < places.length
+    const searchParams = useSearchParams();
 
-    useEffect(() => {
+    if (places !== prevPlaces) {
+        setPrevPlaces(places);
         setDisplayCount(itemsPerPage);
-        setHasMore(true);
-    }, [places]);
+    }
 
     function fetchMoreData () {
-        if (displayCount >= places.length) {
-            setHasMore(false);
-            return;
-        } 
         setTimeout(() => {
             setDisplayCount(prev => prev + itemsPerPage)
         }, 500)
     }
 
     function displayPlacesList  () {
-        if (!search) {
+        if (searchParams.size === 0) {
             return (
                 <div className="flex flex-col h-full w-full justify-center items-center gap-2 text-gray-500">
                     <IoSearch className="text-8xl"/>
@@ -57,7 +55,7 @@ export default function MapList ({places, search, onPlaceClick, isLoading}: {
             )
         } else {
             return (
-                <ul className="mt-14 w-full h-[calc(var(--height-main-content)-var(--height-header))] overflow-auto overscroll-contain">
+                <ul className="mt-24 w-full h-[calc(var(--height-main-content)-var(--height-header))] overflow-auto overscroll-contain">
                     <InfiniteScroll 
                         dataLength={displayCount} 
                         next={fetchMoreData} 
@@ -66,6 +64,10 @@ export default function MapList ({places, search, onPlaceClick, isLoading}: {
                     >
                         {displayedPlaces.map((place: Place) => {
                             const priceLevel = <p className="text-gray-400 text-sm">{place?.price_level}</p>
+                            const openingStatus = <p 
+                                className={`text-sm ${place?.opening_status === "OPEN" ? "text-green-500" : "text-red-500"}`}>
+                                {place?.opening_status}
+                            </p>
                             const address = <p className="text-gray-400 text-sm">{place?.address}</p>
                             const distance = <p className="text-gray-400 text-sm">
                                 Distance: {place.distance != null && (place.distance >= 1 ? `${place.distance}km` : `${place.distance * 1000}m`)}
@@ -92,6 +94,7 @@ export default function MapList ({places, search, onPlaceClick, isLoading}: {
 
                                     <p className="text-gray-400 text-sm">{place.category.name} • {place.city.name}</p>
                                     {place.address && address}
+                                    {place.opening_status && openingStatus}
                                     {place.distance != null && distance}
                                 </li>
                             )

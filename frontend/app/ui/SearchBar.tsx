@@ -7,6 +7,7 @@ export default function SearchBar ({handleSubmit, className}: {handleSubmit: (va
     return (
         <Input 
         className={className}
+        isButton={true}
         placeholder="Search..." 
         value={searchValue} 
         onChange={(e) => setSearchValue(e.target.value) }

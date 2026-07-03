@@ -10,6 +10,7 @@ import fetchApi from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
 import MapList from "./MapList";
+import Filters from "./Filters";
 
 interface MapProps {
     position?: [number, number];
@@ -25,6 +26,7 @@ export interface Place {
   longitude: number,
   rating: number | null,
   price_level: string | null,
+  opening_status: "OPEN" | "CLOSED",
   category: {id: number, name: string}
   city: {id: number, name: string},
   sourcerecord: number,
@@ -48,7 +50,22 @@ export default function Map(props: MapProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [places, setPlaces] = useState<Place[]>([]);
   const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<Record<number, L.Marker>>({})
+  const markersRef = useRef<Record<number, L.Marker>>({});
+
+  // Params
+  const category = searchParams.get("category");
+  const city = searchParams.get("city");
+
+  function buildUrl (searchValue: string, showPosition: boolean, page?: number) {
+    const parts = [
+      searchValue ? `search=${searchValue}` : "",
+      (showPosition && position) ? `lat=${position[0]}&lon=${position[1]}` : "",
+      category ? `category=${category}` : "",
+      city ? `city=${city}` : "",
+      page ? `page=${page}` : ""
+    ];
+    return parts.filter((part) => part !== "").join("&");
+  }
 
   function handleMapListPlaceClick (place: Place) {
     const map = mapRef.current;
@@ -66,17 +83,22 @@ export default function Map(props: MapProps) {
   }
 
   function handleSubmit (value: string): void {
-    if (value !== "") {
-      router.push(`?search=${value}`);
-    }
+    router.push("?" + buildUrl(value, false));
   }
 
   useEffect(() => {
-    if (!search) return;
+    if (!search && !category && !city) {
+      async function clearPlaces () {
+        setPlaces([]);
+      }
+      clearPlaces();
+      return;
+    }
 
     async function fetchPlaces () {
       setIsLoading(true);
-      const firstPage: FetchedData = await fetchApi(`places/?search=${search}${position ? `&lat=${position[0]}&lon=${position[1]}` : ""}&page=1`);
+      const firstPage: FetchedData = await fetchApi("places/?" + buildUrl(search ?? "", true, 1));
+      console.log("fetch");
 
       if (firstPage.next !== null) {
 
@@ -88,7 +110,7 @@ export default function Map(props: MapProps) {
 
         const results = await Promise.all(
           remainingPages.map((page) => {
-            return fetchApi(`places/?search=${search}&page=${page}${position ? `&lat=${position[0]}&lon=${position[1]}` : ""}`).then((data: FetchedData) => data.results);
+            return fetchApi("places/?" + buildUrl(search ?? "", true, page)).then((data: FetchedData) => data.results);
           })
         )
 
@@ -102,13 +124,18 @@ export default function Map(props: MapProps) {
     }
 
     fetchPlaces();
-  }, [search, position])
+  }, [search, position, category, city])
 
   return (
     <>
-      <div className="fixed flex items-center z-1000 left-0 w-full max-w-75 h-header gap-2.5 p-2.5 pointer-events-none *:pointer-events-auto">
-        <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full" />
-        <MapList places={places} search={search} onPlaceClick={handleMapListPlaceClick} isLoading={isLoading}  />
+      <div className="fixed flex items-center justify-between z-1000 left-0 w-full pointer-events-none *:pointer-events-auto">
+        <div className="flex flex-col p-2.5 gap-2.5 w-full max-w-75">
+          <div className="flex w-full gap-2.5">
+            <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full rounded-xl" />
+            <MapList places={places} onPlaceClick={handleMapListPlaceClick} isLoading={isLoading}  />
+          </div>
+          <Filters />
+        </div>
       </div>
       <MapContainer ref={mapRef} attributionControl={false} center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoomControl={false} zoom={zoom} className="h-main-content w-full">
         <ZoomControl position="topright" />

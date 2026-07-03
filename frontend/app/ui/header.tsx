@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PrimaryButtonLink } from "./PrimaryButton";
-import { SecondaryButtonLink } from "./SecondaryButton";
+import { SecondaryButtonLink } from "./OutlineButton";
 import { IoLocationSharp } from "react-icons/io5";
 import BurgerMenu from "./BurgerMenu";
 import { useState} from "react";

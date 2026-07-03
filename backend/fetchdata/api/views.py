@@ -1,10 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from core.models import Place
+from core.models import Place, Category, City
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
-from .serializers import PlaceSerializer
+from .serializers import PlaceSerializer, CategorySerializer, CitySerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -126,3 +126,15 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
                 },
                 status=status.HTTP_200_OK,
             )
+
+class CategoryListView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    pagination_class = StandardResultSetPagination
+    permission_classes = [AllowAny]
+
+class CityListView(generics.ListAPIView):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+    pagination_class = StandardResultSetPagination
+    permission_classes = [AllowAny]

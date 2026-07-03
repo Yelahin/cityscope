@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const btnStyle = "bg-primary rounded-md p-1 hover:bg-blue-400 active:bg-blue-300 transition"
+const btnStyle = "bg-primary rounded-md p-1 hover:bg-blue-400 active:bg-blue-300 transition cursor-pointer"
 
 export function PrimaryButtonLink ({ href, children }: {
     href: string, children: React.ReactNode

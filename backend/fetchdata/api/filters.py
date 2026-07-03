@@ -12,8 +12,12 @@ from .utils import get_calculated_distance
 
 logger = logging.getLogger(__name__)
 
+class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
+    pass
 
 class PlaceFilterSet(filters.FilterSet):
+    category = NumberInFilter(field_name="category", lookup_expr="in")
+    city = NumberInFilter(field_name="city", lookup_expr="in")
     lat = filters.NumberFilter(method="do_nothing", label="Users latitude")
     lon = filters.NumberFilter(method="do_nothing", label="Users longitude")
     radius = filters.NumberFilter(

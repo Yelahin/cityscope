@@ -7,13 +7,14 @@ interface InputProps {
     type?: React.HTMLInputTypeAttribute,
     className?: string,
     value: string,
+    isButton: boolean,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onSubmit: () => void
+    onSubmit?: () => void
 }
 
-export default function Input ({ placeholder, type, className, value, onChange, onSubmit }: InputProps) {
+export default function Input ({ placeholder, type, className, value, isButton, onChange, onSubmit }: InputProps) {
     return (
-        <div className={`flex gap-1 items-center border-[0.5px] border-border-primary p-2 rounded-xl inset-shadow-sm bg-dark-primary
+        <div className={`flex gap-1 items-center border-[0.5px] border-border-primary p-2 inset-shadow-sm bg-dark-primary
         ${className}`}>
             <input 
                 placeholder={placeholder} 
@@ -22,17 +23,19 @@ export default function Input ({ placeholder, type, className, value, onChange, 
                 onChange={onChange} 
                 onKeyDown={(e: React.KeyboardEvent) => {
                     if (e.key === "Enter") {
-                        onSubmit();
+                        onSubmit?.();
                     }
                 }}
                 className="outline-none w-full h-full" 
             />
-            <button 
-                type="submit" 
-                onClick={onSubmit}
-                className="cursor-pointer text-primary">
-                <FaSearch />
-            </button>
+            {isButton &&
+                <button 
+                    type="submit" 
+                    onClick={onSubmit}
+                    className="cursor-pointer text-primary">
+                    <FaSearch />
+                </button>
+            }           
         </div>
     )
 }
