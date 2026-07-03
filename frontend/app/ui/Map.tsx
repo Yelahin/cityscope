@@ -56,6 +56,8 @@ export default function Map(props: MapProps) {
   const category = searchParams.get("category");
   const city = searchParams.get("city");
   const radius = searchParams.get("radius");
+  const minRating = searchParams.get("rating_min");
+  const maxRating = searchParams.get("rating_max");
 
   function buildUrl (searchValue: string, showPosition: boolean, page?: number) {
     const parts = [
@@ -64,6 +66,8 @@ export default function Map(props: MapProps) {
       category ? `category=${category}` : "",
       city ? `city=${city}` : "",
       radius ? `radius=${radius}` : "",
+      (minRating && maxRating) ? `rating_min=${minRating}` : "",
+      (minRating && maxRating) ? `rating_max=${maxRating}` : "",
       page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");

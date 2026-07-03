@@ -23,6 +23,8 @@ class PlaceFilterSet(filters.FilterSet):
     radius = filters.NumberFilter(
         method="get_radius", lookup_expr="lt", label="Radius of places"
     )
+    rating_min = filters.NumberFilter(field_name="rating", lookup_expr="gte")
+    rating_max = filters.NumberFilter(field_name="rating", lookup_expr="lte")
 
     # Mock individual lat and lon parameters logic
     def do_nothing(self, queryset, name, value):

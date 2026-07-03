@@ -29,14 +29,14 @@ export default function ScrollableRow ({children}: {children: React.ReactNode}) 
 
     return (
         <div className="relative flex items-center w-full h-[calc(var(--height-header)/2)]">
-            {canScrollLeft && (<button onClick={() => scroll("left")} className="absolute left-0 flex justify-center items-center bg-white rounded-full h-full aspect-square cursor-pointer">
-                <IoChevronBack className="text-dark-primary" />
+            {canScrollLeft && (<button onClick={() => scroll("left")} className="absolute -left-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer shrink-0">
+                <IoChevronBack className="text-primary" />
             </button>)}
             <div ref={scrollRef} onScroll={checkScroll} className="flex w-full h-full gap-2.5 overflow-x-auto overscroll-x-contain scrollbar-none">
                 {children}
             </div>
-            {canScrollRight && (<button onClick={() => scroll("right")} className="absolute right-0 flex justify-center items-center bg-white rounded-full h-full aspect-square cursor-pointer">
-                <IoChevronForward className="text-dark-primary" />
+            {canScrollRight && (<button onClick={() => scroll("right")} className="absolute -right-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer">
+                <IoChevronForward className="text-primary" />
             </button>)}
         </div>
     )

@@ -4,6 +4,8 @@ import { IoCheckmark } from "react-icons/io5";
 import { PrimaryButton } from "./PrimaryButton";
 import { SecondaryButton } from "./SecondaryButton";
 import { useRouter, useSearchParams } from "next/navigation";
+import List from "./List";
+import ListItem from "./ListItem";
 
 interface FilterOption {
     id: number, 
@@ -27,6 +29,7 @@ export default function ListFilter ({
     const [selectedObjects, setSelectedObjects] = useState<number[]>(
         searchParams.get(key)?.split(",").map(Number) ?? []
     );
+    const params = new URLSearchParams(searchParams.toString());
 
 
     const filtered = useMemo(() => {
@@ -35,7 +38,6 @@ export default function ListFilter ({
     }, [objects, searchValue])
 
     function handleApply () {
-        const params = new URLSearchParams(searchParams.toString());
         if (selectedObjects.length === 0) {
             params.delete(key);
         } else {
@@ -47,7 +49,6 @@ export default function ListFilter ({
 
     function handleClear () {
         setSelectedObjects([]);
-        const params = new URLSearchParams(searchParams.toString());
         params.delete(key);
         router.push("?" + params.toString());
     }
@@ -61,10 +62,10 @@ export default function ListFilter ({
                 isButton={false}
                 onChange={(e) => setSearchValue(e.target.value)}
             />
-            <ul className="h-32.5 rounded-b-md overflow-auto overscroll-contain border-border-primary border-b-[0.5px] border-x-[0.5px]">
+            <List>
                 {filtered.map((object) => {
                     return (
-                        <li key={object.id} className="flex justify-between border-[0.5px] py-1 px-2 border-border-primary cursor-pointer" onClick={() => 
+                        <ListItem key={object.id} onClick={() => 
                             selectedObjects.includes(object.id)
                             ? setSelectedObjects(selectedObjects.filter((obj) => obj !== object.id))
                             : setSelectedObjects([...selectedObjects, object.id])
@@ -73,10 +74,10 @@ export default function ListFilter ({
                             <div className="flex justify-center items-center p-0 m-0 w-7.5">
                                 {selectedObjects.includes(object.id) && <IoCheckmark className="text-xl text-primary" />}
                             </div>
-                        </li>
+                        </ListItem>
                     )
                 })}
-            </ul>
+            </List>
             <div className="flex items-center gap-2.5 mt-2.5">
                 <PrimaryButton onClick={handleApply}>Apply</PrimaryButton>
                 <SecondaryButton onClick={handleClear}>Clear All</SecondaryButton>

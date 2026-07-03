@@ -5,6 +5,7 @@ import ListFilter from "./ListFilter";
 import RadiusFilter from "./RadiusFilter";
 import fetchApi from "../lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import RatingFilter from "./RatingFilter";
 
 
 export interface FilterOption {
@@ -66,9 +67,16 @@ export default function Filters ({position}: {position: [number, number] | undef
                 isOpen={openFilter === "Radius"}
                 onToggle={() => toggleFilter("Radius")}
                 filter={<RadiusFilter setOpenFilter={setOpenFilter} />}
-             />
-             }
-            <button onClick={handleClear} className="flex justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
+            />
+            }
+            <PlaceFilter
+                placeholder="Rating"
+                param="rating_max"
+                isOpen={openFilter === "Rating"}
+                onToggle={() => toggleFilter("Rating")}
+                filter={<RatingFilter setOpenFilter={setOpenFilter} />}
+            />
+            <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
         </ScrollableRow>
     );
 }
