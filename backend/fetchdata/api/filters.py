@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
     pass
 
+class CharInFilter(filters.BaseInFilter, filters.CharFilter):
+    pass
+
 class PlaceFilterSet(filters.FilterSet):
     category = NumberInFilter(field_name="category", lookup_expr="in")
     city = NumberInFilter(field_name="city", lookup_expr="in")
@@ -25,6 +28,7 @@ class PlaceFilterSet(filters.FilterSet):
     )
     rating_min = filters.NumberFilter(field_name="rating", lookup_expr="gte")
     rating_max = filters.NumberFilter(field_name="rating", lookup_expr="lte")
+    price_level = CharInFilter(field_name="price_level", lookup_expr="in")
 
     # Mock individual lat and lon parameters logic
     def do_nothing(self, queryset, name, value):

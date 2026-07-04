@@ -19,7 +19,29 @@ export default function Filters ({position}: {position: [number, number] | undef
     const [cities, setCities] = useState<FilterOption[]>([]);
     const router = useRouter();
     const search = useSearchParams().get("search");
-
+    const priceLevels = [
+        "0$ - 10$",
+        "5$ - 12$",
+        "7$ - 16$",
+        "10$ - 20$",
+        "10$ - 25$",
+        "15$ - 25$",
+        "15$ - 30$",
+        "20$ - 30$",
+        "20$ - 35$",
+        "25$ - 40$",
+        "25$ - 45$",
+        "30$ - 50$",
+        "30$ - 60$",
+        "35$ - 65$",
+        "40$ - 80$",
+        "45$ - 85$",
+        "55$ - 95$",
+        "50$ - 100$",
+        "60$ - 110$",
+        "75$ - 130$",
+        "100$+"
+    ].map((name, id) => ({id: id, name: name}));
 
     useEffect(() => {
         function fetchFilters () {
@@ -75,6 +97,13 @@ export default function Filters ({position}: {position: [number, number] | undef
                 isOpen={openFilter === "Rating"}
                 onToggle={() => toggleFilter("Rating")}
                 filter={<RatingFilter setOpenFilter={setOpenFilter} />}
+            />
+            <PlaceFilter
+                placeholder="Price level"
+                param="price_level"
+                isOpen={openFilter === "Price level"}
+                onToggle={() => toggleFilter("Price level")}
+                filter={<ListFilter selectById={false} objects={priceLevels} placeholder="Price level" param="price_level" setOpenFilter={setOpenFilter} />}
             />
             <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
         </ScrollableRow>

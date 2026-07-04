@@ -58,6 +58,7 @@ export default function Map(props: MapProps) {
   const radius = searchParams.get("radius");
   const minRating = searchParams.get("rating_min");
   const maxRating = searchParams.get("rating_max");
+  const priceLevel = searchParams.get("price_level");
 
   function buildUrl (searchValue: string, showPosition: boolean, page?: number) {
     const parts = [
@@ -68,6 +69,7 @@ export default function Map(props: MapProps) {
       radius ? `radius=${radius}` : "",
       (minRating && maxRating) ? `rating_min=${minRating}` : "",
       (minRating && maxRating) ? `rating_max=${maxRating}` : "",
+      priceLevel ? `price_level=${priceLevel}` : "",
       page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");

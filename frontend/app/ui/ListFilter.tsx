@@ -16,18 +16,23 @@ interface FilterOption {
 export default function ListFilter ({
     objects,
     placeholder,
-    setOpenFilter
+    param,
+    setOpenFilter,
+    selectById = true,
 }: {
     objects: FilterOption[], 
     placeholder: string,
+    param?: string,
     setOpenFilter: Dispatch<SetStateAction<string | null>>
+    selectById?: boolean
 }) {
-    const key = placeholder.toLowerCase();
+    const key = param ? param : placeholder.toLowerCase();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchValue, setSearchValue] = useState<string>("");
-    const [selectedObjects, setSelectedObjects] = useState<number[]>(
-        searchParams.get(key)?.split(",").map(Number) ?? []
+    const [selectedObjects, setSelectedObjects] = useState<(number | string)[]>(selectById 
+        ? searchParams.get(key)?.split(",").map(Number) ?? []
+        : searchParams.get(key)?.split(",") ?? []
     );
     const params = new URLSearchParams(searchParams.toString());
 
@@ -66,13 +71,13 @@ export default function ListFilter ({
                 {filtered.map((object) => {
                     return (
                         <ListItem key={object.id} onClick={() => 
-                            selectedObjects.includes(object.id)
-                            ? setSelectedObjects(selectedObjects.filter((obj) => obj !== object.id))
-                            : setSelectedObjects([...selectedObjects, object.id])
+                            selectedObjects.includes(selectById ? object.id : object.name)
+                            ? setSelectedObjects(selectedObjects.filter((obj) => obj !== (selectById ? object.id : object.name)))
+                            : setSelectedObjects([...selectedObjects, selectById ? object.id : object.name])
                         }>
                             {object.name}
                             <div className="flex justify-center items-center p-0 m-0 w-7.5">
-                                {selectedObjects.includes(object.id) && <IoCheckmark className="text-xl text-primary" />}
+                                {selectedObjects.includes(selectById ? object.id : object.name) && <IoCheckmark className="text-xl text-primary" />}
                             </div>
                         </ListItem>
                     )

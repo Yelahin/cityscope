@@ -33,7 +33,7 @@ export default function RatingFilter ({setOpenFilter}: {setOpenFilter: Dispatch<
         setOpenFilter(null);
         params.delete(key + "_min");
         params.delete(key + "_max");
-        router.push("?" + params.toString);
+        router.push("?" + params.toString());
     }
     
 

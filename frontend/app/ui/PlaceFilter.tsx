@@ -22,7 +22,7 @@ export default function PlaceFilter ({
         {selectedCount > 0 
         ? (
             <button onClick={() => onToggle()} className={`
-            text-sm rounded-full px-2 cursor-pointer flex gap-1 justify-center items-center border border-primary
+            text-sm rounded-full px-2 cursor-pointer flex gap-1 justify-center items-center border border-primary whitespace-nowrap
             ${isOpen
                 ? "text-white bg-[rgb(75,75,75)]" 
                 : "text-gray-400 hover:text-white bg-dark-primary hover:bg-[rgb(75,75,75)] "}
@@ -33,7 +33,7 @@ export default function PlaceFilter ({
         )
         : (
             <button onClick={() => onToggle()} className={`
-            text-sm rounded-full px-2 cursor-pointer
+            text-sm rounded-full px-2 cursor-pointer whitespace-nowrap
             ${isOpen
                 ? "border text-white bg-[rgb(75,75,75)]" 
                 : "border-border-primary text-gray-400 hover:text-white border-[0.5px] bg-dark-primary hover:bg-[rgb(75,75,75)] "}
