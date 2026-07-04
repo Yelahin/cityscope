@@ -8,7 +8,7 @@ export default function RadiusFilter ({setOpenFilter}: {setOpenFilter: Dispatch<
     const router = useRouter();
     const searchParams = useSearchParams();
     const key = "radius";
-    const [radius, setRadius] = useState<number | null>(Number(searchParams.get(key)) ?? null);
+    const [radius, setRadius] = useState<number | null>(searchParams.get(key) ? Number(searchParams.get(key)) : null);
     const params = new URLSearchParams(searchParams.toString());
 
     function handleApply () {
