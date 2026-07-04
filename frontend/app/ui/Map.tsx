@@ -59,6 +59,7 @@ export default function Map(props: MapProps) {
   const minRating = searchParams.get("rating_min");
   const maxRating = searchParams.get("rating_max");
   const priceLevel = searchParams.get("price_level");
+  const openingStatus = searchParams.get("opening_status");
 
   function buildUrl (searchValue: string, showPosition: boolean, page?: number) {
     const parts = [
@@ -70,6 +71,7 @@ export default function Map(props: MapProps) {
       (minRating && maxRating) ? `rating_min=${minRating}` : "",
       (minRating && maxRating) ? `rating_max=${maxRating}` : "",
       priceLevel ? `price_level=${priceLevel}` : "",
+      openingStatus ? `opening_status=${openingStatus}` : "",
       page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");

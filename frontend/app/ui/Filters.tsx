@@ -6,6 +6,7 @@ import RadiusFilter from "./RadiusFilter";
 import fetchApi from "../lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import RatingFilter from "./RatingFilter";
+import OpeningStatusFilter from "./OpeningStatusFilter";
 
 
 export interface FilterOption {
@@ -104,6 +105,13 @@ export default function Filters ({position}: {position: [number, number] | undef
                 isOpen={openFilter === "Price level"}
                 onToggle={() => toggleFilter("Price level")}
                 filter={<ListFilter selectById={false} objects={priceLevels} placeholder="Price level" param="price_level" setOpenFilter={setOpenFilter} />}
+            />
+            <PlaceFilter
+                placeholder="Opening status"
+                param="opening_status"
+                isOpen={openFilter === "Opening status"}
+                onToggle={() => toggleFilter("Opening status")}
+                filter={<OpeningStatusFilter setOpenFilter={setOpenFilter} />}
             />
             <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
         </ScrollableRow>
