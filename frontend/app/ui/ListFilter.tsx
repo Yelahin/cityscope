@@ -49,7 +49,11 @@ export default function ListFilter ({
         } else {
             params.set(key, selectedObjects.join(","));
         }
-        router.push("?" + params.toString());
+        if (["search", "category", "city"].some((element) => params.toString().includes(element))) {
+            router.push("?" + params.toString());
+        } else {
+            router.push(pathName);
+        }
         setOpenFilter(null);
     }
 

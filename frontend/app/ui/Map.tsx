@@ -5,7 +5,7 @@ import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import SearchBar from "./SearchBar";
 import { useEffect, useState, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import fetchApi from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
@@ -51,6 +51,7 @@ export default function Map(props: MapProps) {
   const [places, setPlaces] = useState<Place[]>([]);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<Record<number, L.Marker>>({});
+  const pathName = usePathname();
 
   // Params
   const category = searchParams.get("category");
@@ -96,7 +97,7 @@ export default function Map(props: MapProps) {
     if ([value, city, category].some((element) => element !== null && element !== "")) {
       router.push("?" + buildUrl(value, false));
     } else {
-      router.push("?");
+      router.push(pathName);
     }
   }
 
