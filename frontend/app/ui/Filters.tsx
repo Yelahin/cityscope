@@ -21,7 +21,8 @@ export default function Filters ({position}: {position: [number, number] | undef
     const router = useRouter();
     const searchParams = useSearchParams()
     const search = searchParams.get("search");
-    const isRequiredFiltersSelected = search || searchParams.get("category") || searchParams.get("city");
+    const requiredFilters = (search || searchParams.get("category") || searchParams.get("city"));
+    const requiredFiltersSelected = requiredFilters !== "" && requiredFilters !== null;
     const priceLevels = [
         "0$ - 10$",
         "5$ - 12$",
@@ -73,7 +74,7 @@ export default function Filters ({position}: {position: [number, number] | undef
     }
 
     return (
-        <ScrollableRow reload={isRequiredFiltersSelected}>
+        <ScrollableRow reload={requiredFiltersSelected}>
             <PlaceFilter
                 placeholder="City" 
                 isOpen={openFilter === "City"} 
@@ -87,7 +88,7 @@ export default function Filters ({position}: {position: [number, number] | undef
                 filter={<ListFilter objects={categories} placeholder="Category" setOpenFilter={setOpenFilter} />}
             />
 
-            {position && isRequiredFiltersSelected &&
+            {position && requiredFiltersSelected &&
             <PlaceFilter
                 placeholder="Radius"
                 isOpen={openFilter === "Radius"}
@@ -95,7 +96,7 @@ export default function Filters ({position}: {position: [number, number] | undef
                 filter={<RadiusFilter setOpenFilter={setOpenFilter} />}
             />
             }
-            {isRequiredFiltersSelected &&
+            {requiredFiltersSelected &&
                 <>
                     <PlaceFilter
                         placeholder="Rating"
