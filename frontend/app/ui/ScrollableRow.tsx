@@ -4,7 +4,7 @@ import { IoChevronForward } from "react-icons/io5";
 
 
 
-export default function ScrollableRow ({children}: {children: React.ReactNode}) {
+export default function ScrollableRow ({children, reload}: {children: React.ReactNode, reload: boolean}) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
     const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
@@ -20,7 +20,7 @@ export default function ScrollableRow ({children}: {children: React.ReactNode}) 
 
     useEffect(() => {
         checkScroll();
-    }, [])
+    }, [reload])
 
 
     function scroll(direction: "left" | "right") {
