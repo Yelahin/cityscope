@@ -93,7 +93,11 @@ export default function Map(props: MapProps) {
   }
 
   function handleSubmit (value: string): void {
-    router.push("?" + buildUrl(value, false));
+    if ([value, city, category].some((element) => element !== null && element !== "")) {
+      router.push("?" + buildUrl(value, false));
+    } else {
+      router.push("?");
+    }
   }
 
   useEffect(() => {

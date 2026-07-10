@@ -3,7 +3,7 @@ import Input from "./Input";
 import { IoCheckmark } from "react-icons/io5";
 import { PrimaryButton } from "./PrimaryButton";
 import { SecondaryButton } from "./SecondaryButton";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import List from "./List";
 import ListItem from "./ListItem";
 
@@ -35,6 +35,7 @@ export default function ListFilter ({
         : searchParams.get(key)?.split(",") ?? []
     );
     const params = new URLSearchParams(searchParams.toString());
+    const pathName = usePathname();
 
 
     const filtered = useMemo(() => {
@@ -55,7 +56,12 @@ export default function ListFilter ({
     function handleClear () {
         setSelectedObjects([]);
         params.delete(key);
-        router.push("?" + params.toString());
+        if (["search", "category", "city"].some((element) => params.toString().includes(element))) {
+            router.push("?" + params.toString());
+        } else {
+            router.push(pathName);
+        }
+        setOpenFilter(null);
     }
 
     return (
