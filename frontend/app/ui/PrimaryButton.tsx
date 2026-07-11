@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-const btnStyle = "rounded-md p-1 hover:text-primary active:text-blue-300 border not-hover:border-transparent hover:border-primary active:border-blue-300 transition"
+const btnStyle = "bg-primary rounded-md p-1 hover:bg-blue-400 active:bg-blue-300 transition cursor-pointer"
 
-export function SecondaryButtonLink ({ href, children }: {
+export function PrimaryButtonLink ({ href, children }: {
     href: string, children: React.ReactNode
 }) {
     return (
@@ -12,7 +12,7 @@ export function SecondaryButtonLink ({ href, children }: {
     )
 }
 
-export function SecondaryButton ({ onClick, children }: {
+export function PrimaryButton ({ onClick, children }: {
     onClick: React.MouseEventHandler<HTMLButtonElement>, children: React.ReactNode
 }) {
     return (
