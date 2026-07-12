@@ -6,6 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework import viewsets
 from users.models import SavedSearch
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.conf import settings
+from decouple import config
 
 
 class SavedSearchViewSet(viewsets.ModelViewSet):
@@ -25,6 +28,28 @@ class SavedSearchViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        access_token = response.data["access"]
+        response.set_cookie(
+            key=settings.SIMPLE_JWT["AUTH_COOKIE"],
+            value=access_token,
+            expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+            path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
+            domain=settings.SIMPLE_JWT["AUTH_COOKIE_DOMAIN"],
+            secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+            httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"]
+        )
+
+        del response.data["access"]
+        del response.data["refresh"]
+
+        response.data["details"] = "Login successful!"
+
+        return response
+
 @api_view(["POST"])
 def register_user(request):
     user = UserSerializer(data=request.data)
@@ -37,3 +62,8 @@ def register_user(request):
     return Response(
             data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST
     )
+
+@api_view(["GET"])
+def get_me(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)

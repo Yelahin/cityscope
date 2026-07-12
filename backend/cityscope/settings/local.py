@@ -12,3 +12,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:3000",
 ]
+
+SIMPLE_JWT["AUTH_COOKIE_SECURE"] = False
+SIMPLE_JWT["AUTH_COOKIE_DOMAIN"] = None
