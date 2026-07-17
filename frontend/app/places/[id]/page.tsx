@@ -20,6 +20,11 @@ export default function PlaceDetails() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [error, setError] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
+    const [href] = useState(() => {
+        if (typeof window === "undefined") return "/";
+        return sessionStorage.getItem("lastSearchUrl") || "/";
+    }
+)
 
     useEffect(() => {
         fetchApi<Place>(`places/${params.id}/`)
@@ -75,7 +80,7 @@ export default function PlaceDetails() {
 
     return (
         <div className="mx-auto flex max-w-5xl flex-col gap-6 px-5 py-8">
-            <Link href="/" className="w-fit text-sm text-primary hover:underline">
+            <Link href={href} className="w-fit text-sm text-primary hover:underline">
                 ← Back to search
             </Link>
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
