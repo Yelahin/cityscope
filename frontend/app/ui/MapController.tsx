@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
+import Link from "next/link";
 import "leaflet.markercluster";
-import { Place } from "./Map";
+import type {Place} from "../lib/api/types";
 
 
 export default function MapController ({places, markersRef}: {
@@ -103,6 +104,7 @@ export default function MapController ({places, markersRef}: {
                   {place?.price_level && price_level}
                   <p>Latitude: {place.latitude}</p>
                   <p>Longitude: {place.longitude}</p>
+                  <Link href={`/places/${place.id}`}>View details</Link>
                 </Popup>
               </Marker>
             )

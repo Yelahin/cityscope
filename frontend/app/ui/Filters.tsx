@@ -3,7 +3,7 @@ import PlaceFilter from "./PlaceFilter";
 import ScrollableRow from "./ScrollableRow";
 import ListFilter from "./ListFilter";
 import RadiusFilter from "./RadiusFilter";
-import fetchApi from "../lib/api/client";
+import fetchApi, {PaginatedResponse} from "../lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import RatingFilter from "./RatingFilter";
 import OpeningStatusFilter from "./OpeningStatusFilter";
@@ -49,13 +49,13 @@ export default function Filters ({position}: {position: [number, number] | undef
 
     useEffect(() => {
         function fetchFilters () {
-            fetchApi("categories/")
+            fetchApi<PaginatedResponse<FilterOption>>("categories/")
             .then((categories) => setCategories(categories.results))
-            .catch((err) => console.error("Failed to load categories", err));
+            .catch(() => setCategories([]));
 
-            fetchApi("cities/")
+            fetchApi<PaginatedResponse<FilterOption>>("cities/")
             .then((cities) => setCities(cities.results))
-            .catch(((err) => console.error("Failed to load cities", err)));
+            .catch(() => setCities([]));
         }
         fetchFilters();
     }, [])

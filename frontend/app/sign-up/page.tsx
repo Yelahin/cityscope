@@ -7,12 +7,14 @@ import { SignUpErrors, signUpSchema } from "../lib/validation/signUp";
 import { PrimaryButton } from "../ui/PrimaryButton";
 import fetchApi from "../lib/api/client";
 import { ApiError } from "../lib/api/client";
+import {useRouter} from "next/navigation";
 
 export default function SignUp () {
     const [username, setUserName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errors, setErrors] = useState<SignUpErrors>({});
+    const router = useRouter();
 
     function validate () {
         const result = signUpSchema.safeParse({username, email, password});
@@ -44,11 +46,17 @@ export default function SignUp () {
             setUserName("");
             setEmail("");
             setPassword("");
+            router.push("/login");
         } catch (err) {
-             if (err instanceof ApiError && err.data) {
+             if (
+                err instanceof ApiError
+                && err.data
+                && typeof err.data.message === "object"
+                && err.data.message !== null
+             ) {
                 const backendErrors: SignUpErrors = {};
                 for (const key in err.data.message) {
-                    backendErrors[key as keyof SignUpErrors] = err.data.message[key][0];
+                    backendErrors[key as keyof SignUpErrors] = err.data.message[key];
                 }
                 setErrors((prev) => ({...prev, ...backendErrors}))
              }

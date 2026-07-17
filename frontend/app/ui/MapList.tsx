@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Place } from "./Map";
+import Link from "next/link";
+import type {Place} from "../lib/api/types";
 import { IoSearch } from "react-icons/io5";
 import { MdErrorOutline } from "react-icons/md";
 import StarRating from "./StarRatings";
@@ -7,10 +8,11 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Spinner from "./Spinner";
 import { useSearchParams } from "next/navigation";
 
-export default function MapList ({places, onPlaceClick, isLoading}: {
+export default function MapList ({places, onPlaceClick, isLoading, error}: {
     places: Place[], 
     onPlaceClick: (place: Place) => void,
-    isLoading: boolean}) {
+    isLoading: boolean,
+    error: string | null}) {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const itemsPerPage = 10;
@@ -44,6 +46,13 @@ export default function MapList ({places, onPlaceClick, isLoading}: {
                 <div className="flex flex-col h-full w-full justify-center items-center gap-2 text-gray-500">
                     <Spinner />
                     <p>Loading...</p>
+                </div>
+            )
+        } else if (error) {
+            return (
+                <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-gray-500">
+                    <MdErrorOutline className="text-8xl"/>
+                    <p className="text-center text-xl">{error}</p>
                 </div>
             )
         } else if (places.length === 0) {
@@ -96,6 +105,13 @@ export default function MapList ({places, onPlaceClick, isLoading}: {
                                     {place.address && address}
                                     {place.opening_status && openingStatus}
                                     {place.distance != null && distance}
+                                    <Link
+                                        href={`/places/${place.id}`}
+                                        onClick={(event) => event.stopPropagation()}
+                                        className="mt-2 w-fit text-sm text-primary hover:underline"
+                                    >
+                                        View details
+                                    </Link>
                                 </li>
                             )
                         })}

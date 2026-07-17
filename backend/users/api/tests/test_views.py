@@ -1,10 +1,13 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from .factories import SavedSearchFactory
-from users.models import SavedSearch
 import json
+
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+
+from users.models import SavedSearch
+
+from .factories import SavedSearchFactory
 
 
 class RegisterUserTests(APITestCase):
@@ -60,6 +63,62 @@ class RegisterUserTests(APITestCase):
 
         users_count = len(get_user_model().objects.all())
         self.assertEqual(users_count, 0)
+
+
+class AuthenticationTests(APITestCase):
+    def setUp(self):
+        self.credentials = {
+            "username": "User_1",
+            "password": "password-user-1",
+        }
+        self.user = get_user_model().objects.create_user(**self.credentials)
+
+    def test_current_user_requires_authentication(self):
+        response = self.client.get(reverse("api_current_user"))
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_login_sets_httponly_cookie_and_cookie_authenticates(self):
+        response = self.client.post(
+            reverse("token_obtain_pair"), self.credentials, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("access", response.data)
+        self.assertNotIn("refresh", response.data)
+        self.assertTrue(response.cookies["access_token"]["httponly"])
+
+        response = self.client.get(reverse("api_current_user"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["username"], self.user.username)
+        self.assertNotIn("password", response.data)
+
+    def test_logout_clears_authentication_cookie(self):
+        self.client.post(
+            reverse("token_obtain_pair"), self.credentials, format="json"
+        )
+
+        response = self.client.post(reverse("api_user_logout"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.cookies["access_token"]["max-age"], 0)
+
+    def test_cookie_authenticated_mutations_require_csrf(self):
+        client = APIClient(enforce_csrf_checks=True)
+        client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+        saved_search = {"name": "Nearby cafes", "params": {"category": 1}}
+
+        response = client.post(reverse("search-list"), saved_search, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        csrf_response = client.get(reverse("api_csrf_token"))
+        response = client.post(
+            reverse("search-list"),
+            saved_search,
+            format="json",
+            HTTP_X_CSRFTOKEN=csrf_response.data["csrfToken"],
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class SavedSearchTests(APITestCase):

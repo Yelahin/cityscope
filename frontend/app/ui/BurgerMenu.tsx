@@ -8,6 +8,7 @@ type Page = {
 
 const pages = [
     {label: "Home", href: "/"},
+    {label: "Profile", href: "/profile"},
     {label: "Sign Up", href: "/sign-up"},
     {label: "Login", href: "/login"}
 ]

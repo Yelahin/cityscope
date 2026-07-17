@@ -1,5 +1,5 @@
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 from decouple import config
 
@@ -130,10 +130,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken", ),
     "AUTH_COOKIE_PATH": "/",
-    "AUTH_COOKIE_SAMESITE": "Lax"
+    "AUTH_COOKIE_SAMESITE": "Lax",
 }
-
-CORS_ALLOW_CREDENTIALS = True
 
 # Overpass API settings
 
@@ -169,10 +167,10 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 
     # Authentication
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    "DEFAULT_AUTHENTICATION_CLASSES": [
         "users.api.authentication.CustomJWTAuthentication",
-        'rest_framework.authentication.SessionAuthentication',
-    ]
+        "rest_framework.authentication.SessionAuthentication",
+    ],
 }
 
 CORS_ALLOW_CREDENTIALS = True
@@ -180,4 +178,4 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Calculate distance between user and places using API endpoint
 KILOMETERS = 6371
-MILES = 3959 
+MILES = 3959
