@@ -37,11 +37,26 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
+        refresh_token = response.data["refresh"]
+
         response.set_cookie(
             key=settings.SIMPLE_JWT["AUTH_COOKIE"],
             value=access_token,
             max_age=int(
                 settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds()
+            ),
+            path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
+            domain=settings.SIMPLE_JWT["AUTH_COOKIE_DOMAIN"],
+            secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+            httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+        )
+
+        response.set_cookie(
+            key=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"],
+            value=refresh_token,
+            max_age=int(
+                settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()
             ),
             path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
             domain=settings.SIMPLE_JWT["AUTH_COOKIE_DOMAIN"],
@@ -96,4 +111,13 @@ def logout_user(request):
         domain=settings.SIMPLE_JWT["AUTH_COOKIE_DOMAIN"],
         samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
     )
+
+    response.delete_cookie(
+        key=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"],
+        path=settings.SIMPLE_JWT["AUTH_COOKIE_PATH"],
+        domain=settings.SIMPLE_JWT["AUTH_COOKIE_DOMAIN"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+
+    response.delete_cookie("sessionid")
     return response
