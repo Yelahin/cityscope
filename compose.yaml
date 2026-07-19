@@ -36,5 +36,27 @@ services:
       timeout: 5s
       retries: 5
 
+  broker:
+    container_name: redis
+    image: redis:latest
+
+  celery_beat:
+    container_name: celery_beat
+    build: ./backend
+    volumes:
+      - ./backend:/app/backend
+    command: celery -A cityscope beat -l INFO
+    depends_on:
+      - broker
+
+  celery_worker:
+    container_name: celery_worker
+    build: ./backend
+    volumes:
+      - ./backend:/app/backend
+    command: celery -A cityscope worker -l INFO
+    depends_on:
+      - broker
+
 volumes:
   pgdata:
