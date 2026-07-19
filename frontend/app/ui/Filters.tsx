@@ -7,6 +7,7 @@ import fetchApi, {PaginatedResponse} from "../lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import RatingFilter from "./RatingFilter";
 import OpeningStatusFilter from "./OpeningStatusFilter";
+import SaveSearch from "./SaveSearch";
 
 
 export interface FilterOption {
@@ -119,6 +120,7 @@ export default function Filters ({position}: {position: [number, number] | undef
                         onToggle={() => toggleFilter("Opening status")}
                         filter={<OpeningStatusFilter setOpenFilter={setOpenFilter} />}
                     />
+                    <SaveSearch />
                 </>
             }
             <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
