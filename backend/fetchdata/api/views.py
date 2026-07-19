@@ -1,15 +1,18 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, generics
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from core.models import Place, Category, City
-from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
-from .serializers import PlaceSerializer, CategorySerializer, CitySerializer
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-from .utils import get_calculated_distance, StandardResultSetPagination
 import logging
+
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+
+from core.models import Category, City, Place
+
+from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
+from .serializers import CategorySerializer, CitySerializer, PlaceSerializer
+from .utils import StandardResultSetPagination, get_calculated_distance
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +38,14 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         "distance",
     ]
     search_fields = ["name", "address"]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.request.user.is_authenticated:
+            context["favorite_place_ids"] = set(
+                self.request.user.favorite_places.values_list("pk", flat=True)
+            )
+        return context
 
     @action(
         detail=False,
@@ -93,7 +104,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
             serializer = self.get_serializer(place)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        elif request.method == "POST":
+        if request.method == "POST":
             if is_place_exists:
                 return Response(
                     data={
@@ -110,7 +121,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
-        elif request.method == "DELETE":
+        if request.method == "DELETE":
             if not is_place_exists:
                 return Response(
                     data={
@@ -126,6 +137,8 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
                 },
                 status=status.HTTP_200_OK,
             )
+
+        raise MethodNotAllowed(request.method)
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()

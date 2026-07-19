@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Loading from "./loading";
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const Map = dynamic(() => import("./ui/Map"), {ssr: false})
 
@@ -13,6 +14,9 @@ interface Coordinates {
 export default function Home () {
     const [userCoordinates, setUserCoordinates] = useState<Coordinates>({latitude: null, longitude: null});
     const [coordinatesReady, setCoordinatesReady] = useState(false);
+
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         if (!navigator.geolocation) {
@@ -32,6 +36,10 @@ export default function Home () {
             }
         )
     }, []);
+
+    useEffect (() => {
+        sessionStorage.setItem("lastSearchUrl", `${pathname}?${searchParams}`)
+    }, [pathname, searchParams]);
 
     if (!coordinatesReady) return <Loading />;
 

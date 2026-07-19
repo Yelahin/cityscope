@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { PrimaryButtonLink } from "./PrimaryButton";
-import { OutlineButtonLink } from "./OutlineButton";
 import { IoLocationSharp } from "react-icons/io5";
 import BurgerMenu from "./BurgerMenu";
 import { useState} from "react";
+import AuthNavigation from "./AuthNavigation";
 
 
 export default function Header () {
@@ -21,8 +20,7 @@ export default function Header () {
                 </Link>
             </div>
             <nav className="hidden sm:flex items-center gap-3.5">
-                <PrimaryButtonLink href="/sign-up">Sign Up</PrimaryButtonLink>
-                <OutlineButtonLink href="/login">Login</OutlineButtonLink>
+                <AuthNavigation />
             </nav>
 
             <BurgerMenu isOpen={isBurgerMenu} setIsOpen={setIsBurgerMenu} />            

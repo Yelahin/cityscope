@@ -12,11 +12,19 @@ export function PrimaryButtonLink ({ href, children }: {
     )
 }
 
-export function PrimaryButton ({ onClick, children }: {
-    onClick: React.MouseEventHandler<HTMLButtonElement>, children: React.ReactNode
+export function PrimaryButton ({ onClick, children, disabled, type = "button" }: {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>,
+    children: React.ReactNode,
+    disabled?: boolean,
+    type?: "button" | "submit"
 }) {
     return (
-        <button onClick={onClick} className={btnStyle}>
+        <button
+            type={type}
+            onClick={onClick}
+            disabled={disabled}
+            className={`${btnStyle} disabled:cursor-not-allowed disabled:opacity-50`}
+        >
             {children}
         </button>
     )

@@ -1,8 +1,48 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
 from django.contrib.auth import get_user_model
-from .factories import PlaceFactory
+from rest_framework import status
+from rest_framework.test import APITestCase
+
 from core.models import Place
+
+from .factories import PlaceFactory
+
+
+class PlaceDetailTests(APITestCase):
+    def setUp(self):
+        self.place = PlaceFactory(
+            address="Alexanderplatz, Berlin",
+            rating=4.5,
+            price_level="10$ - 20$",
+            opening_status=Place.OPEN,
+        )
+        self.url = f"/api/places/{self.place.id}/"
+
+    def test_detail_includes_required_place_information(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], self.place.name)
+        self.assertEqual(response.data["address"], self.place.address)
+        self.assertEqual(response.data["category"]["name"], self.place.category.name)
+        self.assertEqual(response.data["rating"], self.place.rating)
+        self.assertEqual(response.data["price_level"], self.place.price_level)
+        self.assertEqual(response.data["opening_status"], self.place.opening_status)
+        self.assertIn("latitude", response.data)
+        self.assertIn("longitude", response.data)
+        self.assertFalse(response.data["is_favorite"])
+
+    def test_detail_marks_authenticated_users_favorite(self):
+        user = get_user_model().objects.create_user(
+            username="User_1", password="password-user-1"
+        )
+        user.favorite_places.add(self.place)
+        self.client.login(username="User_1", password="password-user-1")
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["is_favorite"])
+
 
 class FavoritePlaceTests(APITestCase):
     def setUp(self):
@@ -58,8 +98,7 @@ class FavoritePlaceTests(APITestCase):
         self.client.login(**self.user_1_credentials)
         response = self.client.get(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertContains(response, f"Place {self.place.id - 1}")
-        self.assertNotContains(response, f"Place {self.place.id}")
+        self.assertContains(response, self.place.name)
 
         # Get not existing favorite place
         response = self.client.get(f"/api/places/{Place.objects.order_by("-id").first().id + 1}/favorite/")
@@ -81,13 +120,21 @@ class FavoritePlaceTests(APITestCase):
         self.assertEqual(response.data["count"], 0)
 
         # GET detail
-        self.assertTrue(self.user_1.favorite_places.filter(id=self.place.id, name=f"Place {self.place.id-1}").exists())
-        self.assertFalse(self.user_2.favorite_places.filter(id=self.place.id, name=f"Place {self.place.id-1}").exists())
+        self.assertTrue(
+            self.user_1.favorite_places.filter(
+                id=self.place.id, name=self.place.name
+            ).exists()
+        )
+        self.assertFalse(
+            self.user_2.favorite_places.filter(
+                id=self.place.id, name=self.place.name
+            ).exists()
+        )
 
         self.client.login(**self.user_1_credentials)
         response = self.client.get(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertContains(response, f"Place {self.place.id-1}")
+        self.assertContains(response, self.place.name)
 
         self.client.login(**self.user_2_credentials)
         response = self.client.get(f"/api/places/{self.place.id}/favorite/")
@@ -95,21 +142,22 @@ class FavoritePlaceTests(APITestCase):
 
     def test_post_favorite_place(self):
         # Add favorite place
-        id = Place.objects.order_by("-id").first().id - self.favorite_places_count + 1
+        place = Place.objects.exclude(
+            id__in=self.user_1.favorite_places.values("id")
+        ).first()
         self.client.login(**self.user_1_credentials)
         self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
-        self.assertFalse(self.user_1.favorite_places.filter(name=f"Place {id-1}").exists())
-        response = self.client.post(f"/api/places/{id}/favorite/")
+        self.assertFalse(self.user_1.favorite_places.filter(id=place.id).exists())
+        response = self.client.post(f"/api/places/{place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count + 1)
-        self.assertTrue(self.user_1.favorite_places.filter(name=f"Place {id-1}").exists())
+        self.assertTrue(self.user_1.favorite_places.filter(id=place.id).exists())
 
         # Add favorite place that already in favorite places
-        id = Place.objects.order_by("-id").first().id - self.favorite_places_count
-        self.assertTrue(self.user_1.favorite_places.filter(id=id))
-        response = self.client.post(f"/api/places/{id}/favorite/")
+        self.assertTrue(self.user_1.favorite_places.filter(id=self.place.id))
+        response = self.client.post(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-        self.assertTrue(self.user_1.favorite_places.filter(id=id))
+        self.assertTrue(self.user_1.favorite_places.filter(id=self.place.id))
 
         # Add not existing place to favorite places
         self.assertFalse(Place.objects.filter(id=Place.objects.order_by("-id").first().id + 1).exists())

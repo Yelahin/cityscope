@@ -16,7 +16,7 @@ export function OutlineButton ({ onClick, children }: {
     onClick: React.MouseEventHandler<HTMLButtonElement>, children: React.ReactNode
 }) {
     return (
-        <button onClick={onClick} className={btnStyle}>
+        <button type="button" onClick={onClick} className={btnStyle}>
             {children}
         </button>
     )

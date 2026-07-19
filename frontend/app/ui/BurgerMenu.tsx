@@ -1,19 +1,42 @@
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "./AuthContext";
 
 type Page = {
     label: string,
-    href: string
+    href: string,
+    link: boolean
 }
 
-const pages = [
-    {label: "Home", href: "/"},
-    {label: "Sign Up", href: "/sign-up"},
-    {label: "Login", href: "/login"}
+const authenticatedUserPages = [
+    {label: "Home", href: "/", link: true},
+    {label: "Profile", href: "/profile", link: true},
+    {label: "Log Out", href: "/logout", link: false}
+];
+
+const unAuthenticatedUserPages = [
+    {label: "Home", href: "/", link: true},
+    {label: "Sign Up", href: "/sign-up", link: true},
+    {label: "Login", href: "/login", link: true}
 ]
 
+
 export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, setIsOpen: (value: boolean) => void }) {
+    const router = useRouter();
     const pathname = usePathname();
+    const {user, logout} = useAuth();
+    const pages = user ? authenticatedUserPages : unAuthenticatedUserPages
+
+
+    async function handleLogout() {
+        await logout();
+        router.push("/");
+        router.refresh();
+        setIsOpen(false);
+    }
+
+    if (user === undefined) return null;
+
     return (
         <>
             <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center gap-2 sm:hidden cursor-pointer w-10 h-10 p-1.5 rounded-lg shadow-md border-[0.5px] border-border-primary">
@@ -32,13 +55,23 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
                             return (
                                 <li key={page.href} className="flex w-full justify-center">
                                     <div className="w-64 py-10 flex justify-center text-center border-b-[0.5px]">
-                                        <Link
-                                            onClick={() => setIsOpen(false)}
-                                            href={page.href} 
-                                            className={`text-6xl font-bold font-mono [-webkit-text-stroke:1px_white] text-transparent hover:text-white transition duration-300
-                                            ${pathname === page.href && "text-white"}`}>
-                                                {page.label}
-                                        </Link>
+                                        {page.link 
+                                            ?
+                                                <Link
+                                                    onClick={() => setIsOpen(false)}
+                                                    href={page.href} 
+                                                    className={`text-6xl font-bold font-mono [-webkit-text-stroke:1px_white] text-transparent hover:text-white transition duration-300
+                                                    ${pathname === page.href && "text-white"}`}>
+                                                        {page.label}
+                                                </Link>
+                                            :
+                                                <button
+                                                onClick={handleLogout}
+                                                className="text-6xl font-bold font-mono [-webkit-text-stroke:1px_white] text-transparent hover:text-white transition duration-300"
+                                                >
+                                                    {page.label}
+                                                </button>
+                                        }
                                     </div>
                                 </li>
                             )

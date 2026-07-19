@@ -4,40 +4,19 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import SearchBar from "./SearchBar";
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import fetchApi from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
 import MapList from "./MapList";
 import Filters from "./Filters";
+import type {Place} from "../lib/api/types";
+import type {PaginatedResponse} from "../lib/api/client";
 
 interface MapProps {
     position?: [number, number];
     zoom: number;
-}
-
-export interface Place {
-  id: number,
-  name: string,
-  slug: string,
-  address: string | null,
-  latitude: number,
-  longitude: number,
-  rating: number | null,
-  price_level: string | null,
-  opening_status: "OPEN" | "CLOSED",
-  category: {id: number, name: string}
-  city: {id: number, name: string},
-  sourcerecord: number,
-  distance?: number
-}
-
-interface FetchedData {
-  count: number,
-  next: string | null,
-  previous: string | null,
-  results: Place[]
 }
 
 const defaultPosition: [number, number] = [30, 0]
@@ -48,6 +27,7 @@ export default function Map(props: MapProps) {
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<Record<number, L.Marker>>({});
@@ -62,7 +42,7 @@ export default function Map(props: MapProps) {
   const priceLevel = searchParams.get("price_level");
   const openingStatus = searchParams.get("opening_status");
 
-  function buildUrl (searchValue: string, showPosition: boolean, page?: number) {
+  const buildUrl = useCallback((searchValue: string, showPosition: boolean, page?: number) => {
     const parts = [
       searchValue ? `search=${searchValue}` : "",
       (showPosition && position) ? `lat=${position[0]}&lon=${position[1]}` : "",
@@ -76,7 +56,7 @@ export default function Map(props: MapProps) {
       page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");
-  }
+  }, [position, category, city, radius, minRating, maxRating, priceLevel, openingStatus]);
 
   function handleMapListPlaceClick (place: Place) {
     const map = mapRef.current;
@@ -105,6 +85,7 @@ export default function Map(props: MapProps) {
     if (!search && !category && !city) {
       async function clearPlaces () {
         setPlaces([]);
+        setLoadError(null);
       }
       clearPlaces();
       return;
@@ -112,34 +93,41 @@ export default function Map(props: MapProps) {
 
     async function fetchPlaces () {
       setIsLoading(true);
-      const firstPage: FetchedData = await fetchApi("places/?" + buildUrl(search ?? "", true, 1));
-      console.log("fetch");
+      setLoadError(null);
+      try {
+        const firstPage = await fetchApi<PaginatedResponse<Place>>(
+          "places/?" + buildUrl(search ?? "", true, 1),
+        );
 
-      if (firstPage.next !== null) {
+        if (firstPage.next !== null) {
+          const totalPageCount = Math.ceil(firstPage.count / firstPage.results.length);
+          const remainingPages = Array.from(
+            {length: totalPageCount - 1},
+            (_, i) => i + 2
+          )
 
-        const totalPageCount = Math.ceil(firstPage.count / firstPage.results.length);
-        const remainingPages = Array.from(
-          {length: totalPageCount - 1},
-          (_, i) => i + 2
-        )
+          const results = await Promise.all(
+            remainingPages.map((page) => {
+              return fetchApi<PaginatedResponse<Place>>(
+                "places/?" + buildUrl(search ?? "", true, page),
+              ).then((data) => data.results);
+            })
+          )
 
-        const results = await Promise.all(
-          remainingPages.map((page) => {
-            return fetchApi("places/?" + buildUrl(search ?? "", true, page)).then((data: FetchedData) => data.results);
-          })
-        )
-
-        setPlaces([...firstPage.results, ...results.flat()]);
+          setPlaces([...firstPage.results, ...results.flat()]);
+          return;
+        }
+        setPlaces(firstPage.results);
+      } catch {
+        setPlaces([]);
+        setLoadError("Could not load places. Make sure the backend is running.");
+      } finally {
         setIsLoading(false);
-        return;
-
       }
-      setPlaces(firstPage.results);
-      setIsLoading(false);
     }
 
     fetchPlaces();
-  }, [search, position, category, city, radius, minRating, maxRating, priceLevel, openingStatus])
+  }, [search, category, city, buildUrl])
 
   return (
     <>
@@ -147,7 +135,12 @@ export default function Map(props: MapProps) {
         <div className="flex flex-col p-2.5 gap-2.5 w-full max-w-75">
           <div className="flex w-full gap-2.5">
             <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full rounded-xl" />
-            <MapList places={places} onPlaceClick={handleMapListPlaceClick} isLoading={isLoading}  />
+            <MapList
+              places={places}
+              onPlaceClick={handleMapListPlaceClick}
+              isLoading={isLoading}
+              error={loadError}
+            />
           </div>
           <Filters position={position} />
         </div>
