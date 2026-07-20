@@ -16,3 +16,5 @@ extend-select = [
     "SIM",
     "TID",
 ]
+
+ignore = ["F403", "F405"]

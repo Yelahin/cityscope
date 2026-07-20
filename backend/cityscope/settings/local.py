@@ -1,6 +1,6 @@
 from decouple import config
 
-from cityscope.settings.base import INSTALLED_APPS, SIMPLE_JWT
+from cityscope.settings.base import *
 
 DEBUG = config("DJANGO_DEBUG", default=True, cast=bool)
 
