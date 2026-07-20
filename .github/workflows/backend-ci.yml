@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SECRET_KEY: test_CI_secret_key
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+      POSTGRES_HOST: localhost
     defaults:
       run:
         working-directory: backend
