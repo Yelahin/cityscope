@@ -35,7 +35,7 @@ class ImportPlacesView(FormView):
 
         # Overpass API source
         if source == "Overpass":
-            query = get_overpass_query(category=category, city=city)
+            query = get_overpass_query(categories=[category], city=city)
             try:
                 upload_data_to_database(query=query, city=city)
 

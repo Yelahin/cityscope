@@ -52,22 +52,29 @@ def fetch_overpass_api(query: str) -> tuple[list, SourceRecord]:
 
 
 # Returns Overpass QL request using category and city filters
-def get_overpass_query(category: Category, city: City) -> str:
+def get_overpass_query(categories: list[Category], city: City) -> str:
     # Transform human readable cateogry to Overpass QL version
-    cat = category.name
-    tag = category_tags[cat]["tag"]
-    value = category_tags[cat]["value"]
+    query_categories = ""
+
+    for category in categories:
+        tag = category_tags[category.name]["tag"]
+        value = category_tags[category.name]["value"]
+
+        query_categories += f"""
+            node["{tag}"="{value}"](area.city);
+            way["{tag}"="{value}"](area.city);
+            relation["{tag}"="{value}"](area.city);
+        """
+
 
     query = f"""
-    [out:json][timeout:25];
+    [out:json][timeout:120];
     (
         area["name:en"="{city.name}"];
         area["name"="{city.name}"];
     )->.city;
     (
-        node["{tag}"="{value}"](area.city);
-        way["{tag}"="{value}"](area.city);
-        relation["{tag}"="{value}"](area.city);
+        {query_categories}
     );
     out center;
     """
