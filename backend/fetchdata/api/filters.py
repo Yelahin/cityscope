@@ -1,4 +1,5 @@
 import logging
+
 from django.db.models import (
     Case,
     Value,
@@ -7,7 +8,9 @@ from django.db.models import (
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
+
 from core.models import Place
+
 from .utils import get_calculated_distance
 
 logger = logging.getLogger(__name__)

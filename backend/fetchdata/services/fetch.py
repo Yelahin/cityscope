@@ -67,7 +67,7 @@ def get_overpass_query(categories: list[Category], city: City) -> str:
         """
 
 
-    query = f"""
+    return f"""
     [out:json][timeout:120];
     (
         area["name:en"="{city.name}"];
@@ -78,5 +78,3 @@ def get_overpass_query(categories: list[Category], city: City) -> str:
     );
     out center;
     """
-
-    return query

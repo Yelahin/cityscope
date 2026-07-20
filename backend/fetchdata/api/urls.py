@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import PlaceViewSet, CategoryListView, CityListView
+
+from .views import CategoryListView, CityListView, PlaceViewSet
 
 router = routers.DefaultRouter()
 router.register(r"places", PlaceViewSet)

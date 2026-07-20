@@ -1,9 +1,14 @@
-import overpy
 import logging
 import time
+
+import overpy
 from celery import shared_task
-from core.models import City, Category
-from fetchdata.services.fetch import get_overpass_query, upload_data_to_database
+
+from core.models import Category, City
+from fetchdata.services.fetch import (
+    get_overpass_query,
+    upload_data_to_database,
+)
 
 logger = logging.getLogger(__name__)
 

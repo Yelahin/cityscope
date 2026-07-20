@@ -50,8 +50,7 @@ def transform_element(element, sourcerecord: SourceRecord, city: City) -> dict:
     element.tags["sourcerecord"] = sourcerecord
     element.tags["city"] = city
 
-    result = {key: value(element) for key, value in ELEMENTS_FIELDS.items()}
-    return result
+    return {key: value(element) for key, value in ELEMENTS_FIELDS.items()}
 
 
 # Transform field functions
@@ -76,6 +75,8 @@ def get_name_from_element(element) -> str | None:
             > 1
         ):
             return ascii_text
+        
+    return None
 
 
 def get_address_from_element(element) -> str | None:
@@ -88,6 +89,8 @@ def get_address_from_element(element) -> str | None:
     address = [element.tags.get(tag) for tag in tags if element.tags.get(tag)]
     if any(address):
         return " ".join(address)
+    
+    return None
 
 
 def get_category_from_element(element) -> Category | None:
@@ -103,6 +106,8 @@ def get_category_from_element(element) -> Category | None:
     if category:
         cat, created = Category.objects.get_or_create(name=category)
         return cat
+    
+    return None
 
 
 def get_latitude_from_element(element) -> float | None:
