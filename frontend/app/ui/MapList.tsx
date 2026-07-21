@@ -64,7 +64,7 @@ export default function MapList ({places, onPlaceClick, isLoading, error}: {
             )
         } else {
             return (
-                <ul className="mt-24 w-full h-[calc(var(--height-main-content)-var(--height-header))] overflow-auto overscroll-contain">
+                <ul className="mt-24 w-full h-[calc(var(--height-main-content)-calc(var(--height-header)*1.75))] overflow-auto overscroll-contain">
                     <InfiniteScroll 
                         dataLength={displayCount} 
                         next={fetchMoreData} 

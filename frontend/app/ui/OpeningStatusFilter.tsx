@@ -2,7 +2,6 @@ import { IoCheckmark } from "react-icons/io5"
 import List from "./List"
 import ListItem from "./ListItem"
 import { useState, Dispatch, SetStateAction } from "react"
-import StarRating from "./StarRatings";
 import { PrimaryButton } from "./PrimaryButton";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SecondaryButton } from "./SecondaryButton";
