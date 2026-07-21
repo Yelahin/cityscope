@@ -72,6 +72,7 @@ docker exec cityscope-backend python manage.py migrate
 - **Map**: `react-leaflet`
 
 ### Project Structure
+
 ```
 cityscope/
 ├── backend/
@@ -94,13 +95,19 @@ cityscope/
 ### Pipeline
 
 #### Backend
+
 `cityscope` and `core` configure all **settings**, **databases**, and **dependencies**
+
 `fetchdata` **fetches**, **transforms**, and **saves** data to the database
+
 `users` handles **permissions** and **authentication** logic for the application and its users
 
 #### Frontend
+
 `app` configures all **pages** for the frontend app
+
 `lib` stores core logic for the frontend, connects to the **backend API**
+
 `ui` stores all shared **components** used across the frontend app
 
 ### API
