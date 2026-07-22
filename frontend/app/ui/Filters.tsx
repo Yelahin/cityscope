@@ -75,55 +75,60 @@ export default function Filters ({position}: {position: [number, number] | undef
     }
 
     return (
-        <ScrollableRow reload={requiredFiltersSelected}>
-            <PlaceFilter
-                placeholder="City" 
-                isOpen={openFilter === "City"} 
-                onToggle={() => toggleFilter("City")}
-                filter={<ListFilter objects={cities} placeholder="City" setOpenFilter={setOpenFilter} />}
-            />
-            <PlaceFilter 
-                placeholder="Category" 
-                isOpen={openFilter === "Category"} 
-                onToggle={() => toggleFilter("Category")}
-                filter={<ListFilter objects={categories} placeholder="Category" setOpenFilter={setOpenFilter} />}
-            />
+        <div className="flex max-w-75 w-full gap-2.5">
+            <ScrollableRow reload={requiredFiltersSelected}>
+                <PlaceFilter
+                    placeholder="City" 
+                    isOpen={openFilter === "City"} 
+                    onToggle={() => toggleFilter("City")}
+                    filter={<ListFilter objects={cities} placeholder="City" setOpenFilter={setOpenFilter} />}
+                />
+                <PlaceFilter 
+                    placeholder="Category" 
+                    isOpen={openFilter === "Category"} 
+                    onToggle={() => toggleFilter("Category")}
+                    filter={<ListFilter objects={categories} placeholder="Category" setOpenFilter={setOpenFilter} />}
+                />
 
-            {position && requiredFiltersSelected &&
-            <PlaceFilter
-                placeholder="Radius"
-                isOpen={openFilter === "Radius"}
-                onToggle={() => toggleFilter("Radius")}
-                filter={<RadiusFilter setOpenFilter={setOpenFilter} />}
-            />
-            }
-            {requiredFiltersSelected &&
-                <>
-                    <PlaceFilter
-                        placeholder="Rating"
-                        param="rating_max"
-                        isOpen={openFilter === "Rating"}
-                        onToggle={() => toggleFilter("Rating")}
-                        filter={<RatingFilter setOpenFilter={setOpenFilter} />}
-                    />
-                    <PlaceFilter
-                        placeholder="Price level"
-                        param="price_level"
-                        isOpen={openFilter === "Price level"}
-                        onToggle={() => toggleFilter("Price level")}
-                        filter={<ListFilter selectById={false} objects={priceLevels} placeholder="Price level" param="price_level" setOpenFilter={setOpenFilter} />}
-                    />
-                    <PlaceFilter
-                        placeholder="Opening status"
-                        param="opening_status"
-                        isOpen={openFilter === "Opening status"}
-                        onToggle={() => toggleFilter("Opening status")}
-                        filter={<OpeningStatusFilter setOpenFilter={setOpenFilter} />}
-                    />
-                    <SaveSearch />
-                </>
-            }
-            <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
-        </ScrollableRow>
+                {position && requiredFiltersSelected &&
+                <PlaceFilter
+                    placeholder="Radius"
+                    isOpen={openFilter === "Radius"}
+                    onToggle={() => toggleFilter("Radius")}
+                    filter={<RadiusFilter setOpenFilter={setOpenFilter} />}
+                />
+                }
+                {requiredFiltersSelected &&
+                    <>
+                        <PlaceFilter
+                            placeholder="Rating"
+                            param="rating_max"
+                            isOpen={openFilter === "Rating"}
+                            onToggle={() => toggleFilter("Rating")}
+                            filter={<RatingFilter setOpenFilter={setOpenFilter} />}
+                        />
+                        <PlaceFilter
+                            placeholder="Price level"
+                            param="price_level"
+                            isOpen={openFilter === "Price level"}
+                            onToggle={() => toggleFilter("Price level")}
+                            filter={<ListFilter selectById={false} objects={priceLevels} placeholder="Price level" param="price_level" setOpenFilter={setOpenFilter} />}
+                        />
+                        <PlaceFilter
+                            placeholder="Opening status"
+                            param="opening_status"
+                            isOpen={openFilter === "Opening status"}
+                            onToggle={() => toggleFilter("Opening status")}
+                            filter={<OpeningStatusFilter setOpenFilter={setOpenFilter} />}
+                        />
+                        <SaveSearch />
+                    </>
+                }
+                <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
+            </ScrollableRow>
+            <button 
+                className="text-sm rounded-full px-2 cursor-pointer whitespace-nowrap text-white bg-primary hover:bg-blue-400 active:bg-blue-300 transition"
+            >Apply</button>
+        </div>
     );
 }

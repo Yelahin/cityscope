@@ -28,7 +28,7 @@ export default function ScrollableRow ({children, reload}: {children: React.Reac
     }
 
     return (
-        <div className="relative flex items-center w-full h-[calc(var(--height-header)/2)]">
+        <div className="relative flex items-center min-w-0 max-w-65 h-[calc(var(--height-header)/2)]">
             {canScrollLeft && (<button onClick={() => scroll("left")} className="absolute -left-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer shrink-0">
                 <IoChevronBack className="text-primary" />
             </button>)}
