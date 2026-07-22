@@ -40,6 +40,10 @@ POSTGRES_PASSWORD=password-of-your-db
 POSTGRES_HOST=cityscope-postgres
 POSTGRES_PORT=5432
 OVERPASS_API_ENDPOINT=your-overpass-endpoint # For example: "https://overpass.private.coffee/api/interpreter"
+ALLOWED_HOSTS=your-api-domain                   # <- production only, comma-separated
+AUTH_COOKIE_DOMAIN=your-shared-domain           # <- production only, for example "example.com" (optional)
+CORS_ALLOWED_ORIGINS=your-frontend-origin       # <- production only, for example "https://cityscope.com"
+CSRF_TRUSTED_ORIGINS=your-frontend-origin       # <- production only, for example "https://cityscope.com"
 ```
 
 **Frontend**:
