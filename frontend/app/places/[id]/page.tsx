@@ -51,7 +51,7 @@ export default function PlaceDetails() {
 
         setIsUpdating(true);
         try {
-            await fetchApi(`places/${place.id}/favorite/`, {
+            await fetchApi(`places/${place.id}/favorite/`, undefined, {
                 method: place.is_favorite ? "DELETE" : "POST",
             });
             setPlace({...place, is_favorite: !place.is_favorite});

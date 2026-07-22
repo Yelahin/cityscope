@@ -6,13 +6,12 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import SearchBar from "./SearchBar";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import fetchApi from "@/app/lib/api/client";
+import { fetchAllPages } from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
 import MapList from "./MapList";
 import Filters from "./Filters";
 import type {Place} from "../lib/api/types";
-import type {PaginatedResponse} from "../lib/api/client";
 
 interface MapProps {
     position?: [number, number];
@@ -95,29 +94,12 @@ export default function Map(props: MapProps) {
       setIsLoading(true);
       setLoadError(null);
       try {
-        const firstPage = await fetchApi<PaginatedResponse<Place>>(
+        const places = await fetchAllPages<Place>(
           "places/?" + buildUrl(search ?? "", true, 1),
+          1000
         );
 
-        if (firstPage.next !== null) {
-          const totalPageCount = Math.ceil(firstPage.count / firstPage.results.length);
-          const remainingPages = Array.from(
-            {length: totalPageCount - 1},
-            (_, i) => i + 2
-          )
-
-          const results = await Promise.all(
-            remainingPages.map((page) => {
-              return fetchApi<PaginatedResponse<Place>>(
-                "places/?" + buildUrl(search ?? "", true, page),
-              ).then((data) => data.results);
-            })
-          )
-
-          setPlaces([...firstPage.results, ...results.flat()]);
-          return;
-        }
-        setPlaces(firstPage.results);
+        setPlaces([...places]);
       } catch {
         setPlaces([]);
         setLoadError("Could not load places. Make sure the backend is running.");

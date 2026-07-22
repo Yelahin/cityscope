@@ -38,7 +38,7 @@ export default function SignUp () {
         if (!validate()) return;
         
         try {
-            await fetchApi("register/", {
+            await fetchApi("register/", undefined, {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({username, email, password})

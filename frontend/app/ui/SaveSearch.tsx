@@ -61,7 +61,7 @@ export default function SaveSearch() {
         setIsSubmitting(true);
 
         try {
-            await fetchApi<SavedSearch>("searches/", {
+            await fetchApi<SavedSearch>("searches/", undefined, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({name: trimmedName, params}),
