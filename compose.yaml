@@ -39,24 +39,37 @@ services:
   broker:
     container_name: redis
     image: redis:latest
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   celery_beat:
     container_name: celery_beat
+    env_file: backend/.env
     build: ./backend
     volumes:
       - ./backend:/app/backend
     command: celery -A cityscope beat -l INFO
     depends_on:
-      - broker
+      db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   celery_worker:
     container_name: celery_worker
+    env_file: backend/.env
     build: ./backend
     volumes:
       - ./backend:/app/backend
     command: celery -A cityscope worker -l INFO
     depends_on:
-      - broker
+      db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
 volumes:
   pgdata:
