@@ -111,7 +111,7 @@ export default function Map(props: MapProps) {
     }
 
     fetchPlaces();
-  }, [search, category, city, buildUrl])
+  }, [search, category, city, buildUrl, shouldFetch])
 
   return (
     <>

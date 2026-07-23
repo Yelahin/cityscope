@@ -3,7 +3,7 @@
 import { PrimaryButtonLink } from "./ui/PrimaryButton";
 import { OutlineButton } from "./ui/OutlineButton";
 
-export default function Error ({ error, reset }: {error: Error, reset: () => void}) {
+export default function Error ({ reset }: {reset: () => void}) {
     return (
         <html>
             <body>

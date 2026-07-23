@@ -27,7 +27,7 @@ export default function RadiusFilter ({
                 return rest;
             })
         }
-    }, [radius])
+    }, [radius, setSelectedFilters])
 
     function handleClear () {
         setRadius(null);
