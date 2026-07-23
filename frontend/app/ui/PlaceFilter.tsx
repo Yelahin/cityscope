@@ -1,21 +1,25 @@
-import { useSearchParams } from "next/navigation"
-
 export default function PlaceFilter ({
     placeholder,
     param,
+    selectedFilters,
     isOpen,
     onToggle,
     filter
 }: {
     placeholder: string, 
     param?: string,
+    selectedFilters: Record<string, number | string | number[] | string[]>,
     isOpen: boolean,
     onToggle: () => void,
     filter: React.ReactNode
 }) {
-    const key = param ? param : placeholder
-    const searchParams = useSearchParams();
-    const selectedCount = searchParams.get(key.toLowerCase())?.split(",").filter(Boolean).length ?? 0
+    const key = param ? param : placeholder.toLowerCase();
+    let selectedCount;
+    if (Object.keys(selectedFilters).includes(key)) {
+        selectedCount = Array.isArray(selectedFilters[key]) ? selectedFilters[key].length : 1;
+    } else {
+        selectedCount = 0;
+    }
 
     return (
         <>

@@ -20,10 +20,9 @@ export default function Filters ({position}: {position: [number, number] | undef
     const [categories, setCategories] = useState<FilterOption[]>([]);
     const [cities, setCities] = useState<FilterOption[]>([]);
     const router = useRouter();
-    const searchParams = useSearchParams()
+    const searchParams = useSearchParams();
     const search = searchParams.get("search");
-    const requiredFilters = (search || searchParams.get("category") || searchParams.get("city"));
-    const requiredFiltersSelected = requiredFilters !== "" && requiredFilters !== null;
+    const [selectedFilters, setSelectedFilters] = useState<Record<string, number | string | number[] | string[]>>({});
     const priceLevels = [
         "0$ - 10$",
         "5$ - 12$",
@@ -66,68 +65,125 @@ export default function Filters ({position}: {position: [number, number] | undef
     }
 
     function handleClear () {
-        if (search) {
-            router.push(`?search=${search}`);
-        } else {
-            router.push("?");
-        }
+        setSelectedFilters({});
         setOpenFilter(null);
+        router.push(search ? `?search=${search}` : "?")
+    }
+
+    function handleApply () {
+        const params = new URLSearchParams(search ? `search=${search}` : "");
+        Object.entries(selectedFilters).forEach(([key, value]) => {
+            params.set(key, Array.isArray(value) ? value.join(",") : String(value));
+        });
+        router.push("?" + params.toString());
     }
 
     return (
         <div className="flex max-w-75 w-full gap-2.5">
-            <ScrollableRow reload={requiredFiltersSelected}>
+            <ScrollableRow >
                 <PlaceFilter
                     placeholder="City" 
+                    selectedFilters={selectedFilters}
                     isOpen={openFilter === "City"} 
                     onToggle={() => toggleFilter("City")}
-                    filter={<ListFilter objects={cities} placeholder="City" setOpenFilter={setOpenFilter} />}
+                    filter={
+                        <ListFilter 
+                            objects={cities} 
+                            placeholder="City" 
+                            setOpenFilter={setOpenFilter}
+                            selectedFilters={selectedFilters}
+                            setSelectedFilters={setSelectedFilters}
+                        />
+                    }
                 />
                 <PlaceFilter 
                     placeholder="Category" 
+                    selectedFilters={selectedFilters}
                     isOpen={openFilter === "Category"} 
                     onToggle={() => toggleFilter("Category")}
-                    filter={<ListFilter objects={categories} placeholder="Category" setOpenFilter={setOpenFilter} />}
+                    filter={
+                        <ListFilter 
+                            objects={categories} 
+                            placeholder="Category" 
+                            setOpenFilter={setOpenFilter}
+                            selectedFilters={selectedFilters}
+                            setSelectedFilters={setSelectedFilters}
+                        />
+                    }
                 />
 
-                {position && requiredFiltersSelected &&
+                {position &&
+                    <PlaceFilter
+                        placeholder="Radius"
+                        selectedFilters={selectedFilters}
+                        isOpen={openFilter === "Radius"}
+                        onToggle={() => toggleFilter("Radius")}
+                        filter={
+                            <RadiusFilter 
+                                setOpenFilter={setOpenFilter} 
+                                selectedFilters={selectedFilters}
+                                setSelectedFilters={setSelectedFilters}
+                            />
+                        }
+                    />
+                }
                 <PlaceFilter
-                    placeholder="Radius"
-                    isOpen={openFilter === "Radius"}
-                    onToggle={() => toggleFilter("Radius")}
-                    filter={<RadiusFilter setOpenFilter={setOpenFilter} />}
+                    placeholder="Rating"
+                    param="rating_max"
+                    selectedFilters={selectedFilters}
+                    isOpen={openFilter === "Rating"}
+                    onToggle={() => toggleFilter("Rating")}
+                    filter={
+                        <RatingFilter 
+                            setOpenFilter={setOpenFilter} 
+                            selectedFilters={selectedFilters}
+                            setSelectedFilters={setSelectedFilters}
+                        />
+                    }
                 />
-                }
-                {requiredFiltersSelected &&
-                    <>
-                        <PlaceFilter
-                            placeholder="Rating"
-                            param="rating_max"
-                            isOpen={openFilter === "Rating"}
-                            onToggle={() => toggleFilter("Rating")}
-                            filter={<RatingFilter setOpenFilter={setOpenFilter} />}
-                        />
-                        <PlaceFilter
-                            placeholder="Price level"
+                <PlaceFilter
+                    placeholder="Price level"
+                    param="price_level"
+                    selectedFilters={selectedFilters}
+                    isOpen={openFilter === "Price level"}
+                    onToggle={() => toggleFilter("Price level")}
+                    filter={
+                        <ListFilter 
+                            selectById={false} 
+                            objects={priceLevels} 
+                            placeholder="Price level" 
                             param="price_level"
-                            isOpen={openFilter === "Price level"}
-                            onToggle={() => toggleFilter("Price level")}
-                            filter={<ListFilter selectById={false} objects={priceLevels} placeholder="Price level" param="price_level" setOpenFilter={setOpenFilter} />}
+                            selectedFilters={selectedFilters}
+                            setSelectedFilters={setSelectedFilters}
+                            setOpenFilter={setOpenFilter} 
                         />
-                        <PlaceFilter
-                            placeholder="Opening status"
-                            param="opening_status"
-                            isOpen={openFilter === "Opening status"}
-                            onToggle={() => toggleFilter("Opening status")}
-                            filter={<OpeningStatusFilter setOpenFilter={setOpenFilter} />}
+                    }
+                />
+                <PlaceFilter
+                    placeholder="Opening status"
+                    param="opening_status"
+                    selectedFilters={selectedFilters}
+                    isOpen={openFilter === "Opening status"}
+                    onToggle={() => toggleFilter("Opening status")}
+                    filter={
+                        <OpeningStatusFilter 
+                            setOpenFilter={setOpenFilter}
+                            selectedFilters={selectedFilters}
+                            setSelectedFilters={setSelectedFilters}
                         />
-                        <SaveSearch />
-                    </>
-                }
-                <button onClick={handleClear} className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer">Clear All</button>
+                    }
+                />
+                <SaveSearch />
+                <button 
+                    className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer"
+                    onClick={handleClear} 
+                >
+                    Clear All
+                </button>
             </ScrollableRow>
             <button 
                 className="text-sm rounded-full px-2 cursor-pointer whitespace-nowrap text-white bg-primary hover:bg-blue-400 active:bg-blue-300 transition"
+                onClick={handleApply}
             >Apply</button>
         </div>
     );

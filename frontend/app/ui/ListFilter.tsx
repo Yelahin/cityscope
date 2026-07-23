@@ -3,7 +3,6 @@ import Input from "./Input";
 import { IoCheckmark } from "react-icons/io5";
 import { PrimaryButton } from "./PrimaryButton";
 import { SecondaryButton } from "./SecondaryButton";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import List from "./List";
 import ListItem from "./ListItem";
 
@@ -18,24 +17,20 @@ export default function ListFilter ({
     placeholder,
     param,
     setOpenFilter,
+    selectedFilters,
+    setSelectedFilters,
     selectById = true,
 }: {
     objects: FilterOption[], 
     placeholder: string,
     param?: string,
-    setOpenFilter: Dispatch<SetStateAction<string | null>>
+    setOpenFilter: Dispatch<SetStateAction<string | null>>,
+    selectedFilters: Record<string, number | string | number[] | string[]>,
+    setSelectedFilters: Dispatch<SetStateAction<Record<string, number | string | number[] | string[]>>>,
     selectById?: boolean
 }) {
     const key = param ? param : placeholder.toLowerCase();
-    const router = useRouter();
-    const searchParams = useSearchParams();
     const [searchValue, setSearchValue] = useState<string>("");
-    const [selectedObjects, setSelectedObjects] = useState<(number | string)[]>(selectById 
-        ? searchParams.get(key)?.split(",").map(Number) ?? []
-        : searchParams.get(key)?.split(",") ?? []
-    );
-    const params = new URLSearchParams(searchParams.toString());
-    const pathName = usePathname();
 
 
     const filtered = useMemo(() => {
@@ -43,28 +38,11 @@ export default function ListFilter ({
         return objects.filter((obj) => obj.name.toLowerCase().includes(searchValue.toLowerCase()));
     }, [objects, searchValue])
 
-    function handleApply () {
-        if (selectedObjects.length === 0) {
-            params.delete(key);
-        } else {
-            params.set(key, selectedObjects.join(","));
-        }
-        if (["search", "category", "city"].some((element) => params.toString().includes(element))) {
-            router.push("?" + params.toString());
-        } else {
-            router.push(pathName);
-        }
-        setOpenFilter(null);
-    }
-
     function handleClear () {
-        setSelectedObjects([]);
-        params.delete(key);
-        if (["search", "category", "city"].some((element) => params.toString().includes(element))) {
-            router.push("?" + params.toString());
-        } else {
-            router.push(pathName);
-        }
+        setSelectedFilters(prev => {
+            const {[key]: _, ...rest} = prev;
+            return rest;
+        })
         setOpenFilter(null);
     }
 
@@ -79,22 +57,39 @@ export default function ListFilter ({
             />
             <List>
                 {filtered.map((object) => {
+                    const value = selectById ? object.id : object.name;
                     return (
-                        <ListItem key={object.id} onClick={() => 
-                            selectedObjects.includes(selectById ? object.id : object.name)
-                            ? setSelectedObjects(selectedObjects.filter((obj) => obj !== (selectById ? object.id : object.name)))
-                            : setSelectedObjects([...selectedObjects, selectById ? object.id : object.name])
-                        }>
+                        <ListItem key={object.id} onClick={() => {
+                            setSelectedFilters(prev => {
+                                const currentArray: (string | number)[] = Array.isArray(prev[key]) ? prev[key] : [];
+                                
+                                const updated = currentArray.includes(value)
+                                    ? currentArray.filter(v => v !== value)
+                                    : [...currentArray, value];
+
+                                const result = updated as number[] | string[];                                
+
+                                if (result.length === 0) {
+                                    const {[key]: _, ...rest} = prev;
+                                    return rest;
+                                }
+
+                                return {...prev, [key]: result}
+                            });
+                        }}>
                             {object.name}
                             <div className="flex justify-center items-center p-0 m-0 w-7.5">
-                                {selectedObjects.includes(selectById ? object.id : object.name) && <IoCheckmark className="text-xl text-primary" />}
+                                {(() => {
+                                    const currentArray: (string | number)[] = Array.isArray(selectedFilters[key]) ? selectedFilters[key] : [];
+                                    return currentArray.includes(value) && <IoCheckmark className="text-xl text-primary" />
+                                })()}
                             </div>
                         </ListItem>
                     )
                 })}
             </List>
             <div className="flex items-center gap-2.5 mt-2.5">
-                <PrimaryButton onClick={handleApply}>Apply</PrimaryButton>
+                <PrimaryButton onClick={() => setOpenFilter(null)}>Close</PrimaryButton>
                 <SecondaryButton onClick={handleClear}>Clear All</SecondaryButton>
             </div>
         </div>

@@ -1,36 +1,28 @@
 import { IoCheckmark } from "react-icons/io5"
 import List from "./List"
 import ListItem from "./ListItem"
-import { useState, Dispatch, SetStateAction } from "react"
-import StarRating from "./StarRatings";
+import { Dispatch, SetStateAction } from "react"
 import { PrimaryButton } from "./PrimaryButton";
-import { useRouter, useSearchParams } from "next/navigation";
 import { SecondaryButton } from "./SecondaryButton";
 
-export default function OpeningStatusFilter ({setOpenFilter}: {setOpenFilter: Dispatch<SetStateAction<string | null>>}) {
+export default function OpeningStatusFilter ({
+    setOpenFilter,
+    selectedFilters,
+    setSelectedFilters,
+}: {
+    setOpenFilter: Dispatch<SetStateAction<string | null>>,
+    selectedFilters: Record<string, number | string | number[] | string[]>,
+    setSelectedFilters: Dispatch<SetStateAction<Record<string, number | string | number[] | string[]>>>,
+}) {
     const key = "opening_status";
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const params = new URLSearchParams(searchParams.toString());
-    const statusParams = searchParams.get(key)
-    const [selectedOpeningStatus, setSelectedOpeningStatus] = useState<string | null>(statusParams ?? null);
-
     const openingStatus = ["OPEN", "CLOSED"];
 
-    function handleApply () {
-        if (selectedOpeningStatus === null) {
-            params.delete(key);
-        } else {
-            params.set(key, selectedOpeningStatus);
-        }
-        router.push("?" + params.toString());
-        setOpenFilter(null);
-    }
-
     function handleClear () {
+        setSelectedFilters(prev => {
+            const {[key]: _, ...rest} = prev;
+            return rest;
+        });
         setOpenFilter(null);
-        params.delete(key);
-        router.push("?" + params.toString());
     }
     
 
@@ -39,15 +31,26 @@ export default function OpeningStatusFilter ({setOpenFilter}: {setOpenFilter: Di
             <List>
                 {openingStatus.map((object) => {
                     return (
-                        <ListItem key={object} className="h-6.5" onClick={() => setSelectedOpeningStatus(object !== selectedOpeningStatus ? object : null)}>
+                        <ListItem key={object} className="h-6.5" onClick={() => {
+                            if (key in selectedFilters && selectedFilters[key] === object) {
+                                setSelectedFilters(prev => {
+                                    const {[key]: _, ...rest} = prev;
+                                    return rest;
+                                })
+                            } else {
+                                setSelectedFilters(prev => {
+                                    return {...prev, [key]: object};
+                                })
+                            }
+                        }}>
                                 <p className={`${object === "OPEN" ? "text-green-500" : "text-red-500"}`}>{object}</p>
-                                {selectedOpeningStatus === object && <IoCheckmark className="text-xl text-primary" />}
+                                {selectedFilters[key] === object && <IoCheckmark className="text-xl text-primary" />}
                         </ListItem>
                     )
                 })}
             </List>
             <div className="flex gap-2.5">
-                <PrimaryButton onClick={handleApply}>Apply</PrimaryButton>
+                <PrimaryButton onClick={() => setOpenFilter(null)}>Close</PrimaryButton>
                 <SecondaryButton onClick={handleClear}>Clear</SecondaryButton>
             </div>
         </div>
