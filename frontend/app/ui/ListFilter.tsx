@@ -20,6 +20,7 @@ export default function ListFilter ({
     selectedFilters,
     setSelectedFilters,
     selectById = true,
+    limit,
 }: {
     objects: FilterOption[], 
     placeholder: string,
@@ -27,10 +28,13 @@ export default function ListFilter ({
     setOpenFilter: Dispatch<SetStateAction<string | null>>,
     selectedFilters: Record<string, number | string | number[] | string[]>,
     setSelectedFilters: Dispatch<SetStateAction<Record<string, number | string | number[] | string[]>>>,
-    selectById?: boolean
+    selectById?: boolean,
+    limit?: number
 }) {
     const key = param ? param : placeholder.toLowerCase();
     const [searchValue, setSearchValue] = useState<string>("");
+
+    const objArray = Array.isArray(selectedFilters[key]) ? selectedFilters[key] : [];
 
 
     const filtered = useMemo(() => {
@@ -48,6 +52,12 @@ export default function ListFilter ({
 
     return (
         <div>
+            {limit && 
+                <div className="flex mb-1.5">
+                    <span className="text-sm text-primary">{objArray.length}</span>
+                    <p className="text-sm text-gray-400">{`/${limit}`}</p>
+                </div>
+            }
             <Input 
                 className="rounded-t-md"
                 placeholder={`Enter ${placeholder.toLowerCase()}`}
@@ -65,7 +75,9 @@ export default function ListFilter ({
                                 
                                 const updated = currentArray.includes(value)
                                     ? currentArray.filter(v => v !== value)
-                                    : [...currentArray, value];
+                                    : limit 
+                                        ? [...currentArray, value].length <= limit ? [...currentArray, value] : currentArray
+                                        : [...currentArray, value]
 
                                 const result = updated as number[] | string[];                                
 

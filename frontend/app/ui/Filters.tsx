@@ -93,6 +93,7 @@ export default function Filters ({position}: {position: [number, number] | undef
                             setOpenFilter={setOpenFilter}
                             selectedFilters={selectedFilters}
                             setSelectedFilters={setSelectedFilters}
+                            limit={1}
                         />
                     }
                 />
@@ -108,6 +109,7 @@ export default function Filters ({position}: {position: [number, number] | undef
                             setOpenFilter={setOpenFilter}
                             selectedFilters={selectedFilters}
                             setSelectedFilters={setSelectedFilters}
+                            limit={3}
                         />
                     }
                 />

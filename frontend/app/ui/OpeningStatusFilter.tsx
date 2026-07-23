@@ -43,8 +43,8 @@ export default function OpeningStatusFilter ({
                                 })
                             }
                         }}>
-                                <p className={`${object === "OPEN" ? "text-green-500" : "text-red-500"}`}>{object}</p>
-                                {selectedFilters[key] === object && <IoCheckmark className="text-xl text-primary" />}
+                            <p className={`${object === "OPEN" ? "text-green-500" : "text-red-500"}`}>{object}</p>
+                            {selectedFilters[key] === object && <IoCheckmark className="text-xl text-primary" />}
                         </ListItem>
                     )
                 })}
