@@ -1,10 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import { IoChevronForward } from "react-icons/io5";
 
 
 
-export default function ScrollableRow ({children}: {children: React.ReactNode}) {
+export default function ScrollableRow ({
+    children,
+    requiredToSelect,
+    scrollTrigger,
+}: {
+    children: React.ReactNode,
+    requiredToSelect: string[],
+    scrollTrigger: number,
+}) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
     const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
@@ -21,6 +29,12 @@ export default function ScrollableRow ({children}: {children: React.ReactNode}) 
     useEffect(() => {
         checkScroll();
     }, [])
+
+    useEffect(() => {
+        if (requiredToSelect.length > 0) {
+            scrollRef.current?.scrollTo({left: 0, behavior: "smooth"});
+        }
+    }, [scrollTrigger, requiredToSelect])
 
 
     function scroll(direction: "left" | "right") {

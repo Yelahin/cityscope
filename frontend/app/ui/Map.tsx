@@ -80,8 +80,10 @@ export default function Map(props: MapProps) {
     }
   }
 
+  const shouldFetch = !!search || (!!category && !!city);
+
   useEffect(() => {
-    if (!search && !category && !city) {
+    if (!shouldFetch) {
       async function clearPlaces () {
         setPlaces([]);
         setLoadError(null);

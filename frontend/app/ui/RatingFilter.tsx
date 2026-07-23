@@ -33,7 +33,7 @@ export default function RatingFilter ({
                 {rating.map((object) => {
                     return (
                         <ListItem key={object} className="h-6.5" onClick={() => {
-                            if (Object.keys(selectedFilters).includes("rating_min") && selectedFilters["rating_min"] === object) {
+                            if ("rating_min" in selectedFilters && selectedFilters["rating_min"] === object) {
                                 setSelectedFilters(prev => {
                                     const rest = {...prev};
                                     delete rest["rating_min"];

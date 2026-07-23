@@ -21,6 +21,7 @@ export default function ListFilter ({
     setSelectedFilters,
     selectById = true,
     limit,
+    setRequiredToSelect,
 }: {
     objects: FilterOption[], 
     placeholder: string,
@@ -29,7 +30,8 @@ export default function ListFilter ({
     selectedFilters: Record<string, number | string | number[] | string[]>,
     setSelectedFilters: Dispatch<SetStateAction<Record<string, number | string | number[] | string[]>>>,
     selectById?: boolean,
-    limit?: number
+    limit?: number,
+    setRequiredToSelect?: Dispatch<SetStateAction<string[]>>,
 }) {
     const key = param ? param : placeholder.toLowerCase();
     const [searchValue, setSearchValue] = useState<string>("");
@@ -85,9 +87,10 @@ export default function ListFilter ({
                                     const {[key]: _, ...rest} = prev;
                                     return rest;
                                 }
-
-                                return {...prev, [key]: result}
+                                
+                                return {...prev, [key]: result};
                             });
+                            if (setRequiredToSelect) setRequiredToSelect(prev => prev.filter((fil) => fil !== key));
                         }}>
                             {object.name}
                             <div className="flex justify-center items-center p-0 m-0 w-7.5">
