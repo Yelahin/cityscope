@@ -1,6 +1,9 @@
-import factory
-from core.models import Place, Category, City, SourceRecord
 from random import randrange
+
+import factory
+
+from core.models import Category, City, Place, SourceRecord
+
 
 class CategoryFactory(factory.django.DjangoModelFactory): 
     class Meta: 

@@ -1,4 +1,5 @@
 import factory
+
 from users.models import SavedSearch
 
 

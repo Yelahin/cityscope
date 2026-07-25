@@ -19,14 +19,13 @@ class ImportPlacesView(FormView):
 
     # Add additional context to the page
     def get_context_data(self, **kwargs):
-        context = {
+        return {
             "title": "Import Places",
             "page_name": "Import Places",
             "category_name": "Custom Pages",
             **super().get_context_data(**kwargs),
             **admin.site.each_context(self.request),
         }
-        return context
 
     def form_valid(self, form):
         source = form.cleaned_data["sourcerecord"].name
@@ -35,7 +34,7 @@ class ImportPlacesView(FormView):
 
         # Overpass API source
         if source == "Overpass":
-            query = get_overpass_query(category=category, city=city)
+            query = get_overpass_query(categories=[category], city=city)
             try:
                 upload_data_to_database(query=query, city=city)
 
@@ -48,6 +47,7 @@ class ImportPlacesView(FormView):
                 return self.form_invalid(form)
 
             return super().form_valid(form)
+        return super().form_invalid(form)
 
 
 def custom_pages_index(request):

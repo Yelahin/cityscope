@@ -19,6 +19,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000
 # Application definition
 
 INSTALLED_APPS = [
+    "django_celery_beat",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -78,6 +79,17 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://broker:6379/1",
+    }
+}
+
+CELERY_BROKER_URL = "redis://broker:6379/0"
+CELERY_RESULT_BACKEND = "redis://broker:6379/0"
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = "Europe/Paris"
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

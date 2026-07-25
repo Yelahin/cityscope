@@ -1,6 +1,5 @@
 import logging
-from rest_framework.exceptions import ValidationError
-from rest_framework.pagination import PageNumberPagination
+
 from django.db.models import (
     ExpressionWrapper,
     F,
@@ -8,6 +7,9 @@ from django.db.models import (
     Value,
 )
 from django.db.models.functions import ACos, Cos, Radians, Sin
+from rest_framework.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
+
 from cityscope.settings.base import KILOMETERS
 
 logger = logging.getLogger(__name__)
@@ -44,7 +46,7 @@ def get_calculated_distance(latitude, longitude, logger=logger) -> FloatField:
         )
 
     # Calculate distance
-    distance = ExpressionWrapper(
+    return ExpressionWrapper(
         KILOMETERS
         * ACos(
             Cos(Radians(F("latitude")))
@@ -54,8 +56,6 @@ def get_calculated_distance(latitude, longitude, logger=logger) -> FloatField:
         ),
         output_field=FloatField(),
     )
-
-    return distance
 
 
 class StandardResultSetPagination(PageNumberPagination):
