@@ -1,11 +1,10 @@
-from django.views.generic import CreateView
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import LoginView
-from django.contrib.auth import logout
-from .forms import RegistrationForm
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView
 
+from .forms import RegistrationForm
 
 # Create your views here.
 
