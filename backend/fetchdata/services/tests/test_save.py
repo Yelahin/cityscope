@@ -1,12 +1,18 @@
 from django.test import TestCase
-from fetchdata.services.tests.factories import OverpyNodeFactory, OverpyWayFactory, OverpyRelationFactory
+
+from core.models import City, Place, SourceRecord
 from fetchdata.services.save import save_places_to_db
+from fetchdata.services.tests.factories import (
+    OverpyNodeFactory,
+    OverpyRelationFactory,
+    OverpyWayFactory,
+)
 from fetchdata.services.transform import get_transformed_data
-from core.models import City, SourceRecord, Place
+
 
 class SaveOverpassAPIPipeline(TestCase):
     def setUp(self):
-        self.source = SourceRecord.objects.create(name="Ovepass", source_type=SourceRecord.API)
+        self.source = SourceRecord.objects.create(name="Overpass", source_type=SourceRecord.API)
         self.city = City.objects.create(name="London")
 
     def test_save_places_to_db_one(self):
@@ -36,4 +42,3 @@ class SaveOverpassAPIPipeline(TestCase):
         save_places_to_db([])
 
         self.assertEqual(Place.objects.count(), 0)
-
