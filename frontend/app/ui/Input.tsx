@@ -9,10 +9,11 @@ interface InputProps {
     value: string | number,
     isButton: boolean,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onSubmit?: () => void
+    onSubmit?: () => void,
+    limit?: number,
 }
 
-export default function Input ({ placeholder, type, className, value, isButton, onChange, onSubmit }: InputProps) {
+export default function Input ({ placeholder, type, className, value, isButton, onChange, onSubmit, limit }: InputProps) {
     return (
         <div className={`flex gap-1 items-center border-[0.5px] border-border-primary p-2 inset-shadow-sm bg-dark-primary
         ${className}`}>
@@ -33,7 +34,13 @@ export default function Input ({ placeholder, type, className, value, isButton, 
                 <button 
                     type="submit" 
                     onClick={onSubmit}
-                    className="cursor-pointer text-primary">
+                    className={
+                        `cursor-pointer 
+                        ${limit 
+                            ? String(value).length >= limit || String(value).length == 0 ? "text-primary" : "text-red-500"
+                            : "text-primary"
+                        }`
+                    }>
                     <FaSearch />
                 </button>
             }           

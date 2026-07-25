@@ -100,7 +100,7 @@ export default function Filters ({position}: {position: [number, number] | undef
     }
 
     function handleApply () {
-        if ((search && search !== "")  || ("category" in selectedFilters && "city" in selectedFilters)) {
+        if ((search && search !== "") || ("category" in selectedFilters && "city" in selectedFilters)) {
             const params = new URLSearchParams(search ? `search=${search}` : "");
             Object.entries(selectedFilters).forEach(([key, value]) => {
                 params.set(key, Array.isArray(value) ? value.join(",") : String(value));

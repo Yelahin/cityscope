@@ -2,7 +2,15 @@ import { useState } from "react";
 import Input from "./Input";
 import { useSearchParams } from "next/navigation";
 
-export default function SearchBar ({handleSubmit, className}: {handleSubmit: (value: string) => void, className?: string}) {
+export default function SearchBar ({
+    handleSubmit,
+    className,
+    limit,
+}: {
+    handleSubmit: (value: string) => void,
+    className?: string,
+    limit?: number,
+}) {
     const search = useSearchParams().get("search");
     const [searchValue, setSearchValue] = useState(search ? search : "");
 
@@ -14,6 +22,7 @@ export default function SearchBar ({handleSubmit, className}: {handleSubmit: (va
         value={searchValue} 
         onChange={(e) => setSearchValue(e.target.value) }
         onSubmit={() => handleSubmit(searchValue)}
+        limit={limit}
         />
     )
 }

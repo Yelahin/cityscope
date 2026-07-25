@@ -19,6 +19,7 @@ interface MapProps {
 }
 
 const defaultPosition: [number, number] = [30, 0]
+const searchBarMinLength = 3;
 
 export default function Map(props: MapProps) {
   const { position, zoom } = props;
@@ -80,7 +81,7 @@ export default function Map(props: MapProps) {
     }
   }
 
-  const shouldFetch = !!search || (!!category && !!city);
+  const shouldFetch = (!!search && search.length >= searchBarMinLength) || (!!category && !!city);
 
   useEffect(() => {
     if (!shouldFetch) {
@@ -118,7 +119,7 @@ export default function Map(props: MapProps) {
       <div className="fixed flex items-center justify-between z-1000 left-0 w-full pointer-events-none *:pointer-events-auto">
         <div className="flex flex-col p-2.5 gap-2.5 w-full max-w-75">
           <div className="flex w-full gap-2.5">
-            <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full rounded-xl" />
+            <SearchBar handleSubmit={handleSubmit} limit={searchBarMinLength} className="max-w-90 w-full rounded-xl" />
             <MapList
               places={places}
               onPlaceClick={handleMapListPlaceClick}
