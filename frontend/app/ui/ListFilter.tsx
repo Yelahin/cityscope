@@ -30,7 +30,7 @@ export default function ListFilter ({
     selectedFilters: Record<string, number | string | number[] | string[]>,
     setSelectedFilters: Dispatch<SetStateAction<Record<string, number | string | number[] | string[]>>>,
     selectById?: boolean,
-    limit?: number,
+    limit: number,
     setRequiredToSelect?: Dispatch<SetStateAction<string[]>>,
 }) {
     const key = param ? param : placeholder.toLowerCase();
@@ -49,7 +49,6 @@ export default function ListFilter ({
             const {[key]: _, ...rest} = prev;
             return rest;
         })
-        setOpenFilter(null);
     }
 
     return (
@@ -108,7 +107,7 @@ export default function ListFilter ({
             </List>
             <div className="flex items-center gap-2.5 mt-2.5">
                 <PrimaryButton onClick={() => setOpenFilter(null)}>Close</PrimaryButton>
-                <SecondaryButton onClick={handleClear}>Clear All</SecondaryButton>
+                <SecondaryButton onClick={handleClear}>{limit > 1 ? "Clear All" : "Clear"}</SecondaryButton>
             </div>
         </div>
     )

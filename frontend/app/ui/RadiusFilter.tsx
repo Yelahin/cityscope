@@ -35,7 +35,6 @@ export default function RadiusFilter ({
             const {[key]: _, ...rest} = prev;
             return rest;
         });
-        setOpenFilter(null);
     }
 
     return (

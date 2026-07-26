@@ -197,7 +197,8 @@ export default function Filters ({position}: {position: [number, number] | undef
                             param="price_level"
                             selectedFilters={selectedFilters}
                             setSelectedFilters={setSelectedFilters}
-                            setOpenFilter={setOpenFilter} 
+                            setOpenFilter={setOpenFilter}
+                            limit={priceLevels.length}
                         />
                     }
                 />

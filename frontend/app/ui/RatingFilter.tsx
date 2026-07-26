@@ -24,7 +24,6 @@ export default function RatingFilter ({
             delete rest["rating_max"];
             return rest;
         })
-        setOpenFilter(null);
     }
     
     return (

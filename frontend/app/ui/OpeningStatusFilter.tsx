@@ -22,7 +22,6 @@ export default function OpeningStatusFilter ({
             const {[key]: _, ...rest} = prev;
             return rest;
         });
-        setOpenFilter(null);
     }
     
 
