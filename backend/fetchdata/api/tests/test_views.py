@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
-from rest_framework.test import APITestCase
 from django.urls import reverse
+from rest_framework import status
+from rest_framework.exceptions import ErrorDetail
+from rest_framework.test import APITestCase
 
-from core.models import Place, City, Category
+from core.models import Category, City, Place
 
 from .factories import PlaceFactory
 
@@ -541,3 +542,82 @@ class PlaceTestCase(APITestCase):
         response = self.client.get(reverse("place-list"))
         self.assertEqual(response.status_code, 200)
         self.assertFalse("distance" in response.data["results"][0])
+
+    def test_place_city_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?city=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["city"][0], ErrorDetail)
+
+    def test_place_category_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?category=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["category"][0], ErrorDetail)
+
+        response =  self.client.get(reverse("place-list") + "?category=invalid_param,another_invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["category"][0], ErrorDetail)
+
+    def test_place_rating_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?rating=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["rating"][0], ErrorDetail)
+
+    def test_place_rating_min_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?rating_min=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["rating_min"][0], ErrorDetail)
+
+    def test_place_rating_max_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?rating_max=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["rating_max"][0], ErrorDetail)
+
+    def test_place_opening_status_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?opening_status=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["opening_status"][0], ErrorDetail)
+
+    def test_place_radius_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?radius=invalid_param&lat=2&lon=3")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["radius"][0], ErrorDetail)    
+
+    def test_place_radius_not_provided_user_coordinates(self):
+        response =  self.client.get(reverse("place-list") + "?radius=100")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["radius"][0], ErrorDetail)
+
+    def test_place_radius_can_not_be_negative(self):
+        response =  self.client.get(reverse("place-list") + "?radius=-100&lat=-90&lon=180")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["radius"][0], ErrorDetail)
+
+    def test_place_lat_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?lat=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["lat"][0], ErrorDetail)
+
+    def test_place_lon_invalid_params(self):
+        response =  self.client.get(reverse("place-list") + "?lon=invalid_param")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["lon"][0], ErrorDetail)
+
+    def test_place_lat_less_than_negative_90(self):
+        response =  self.client.get(reverse("place-list") + "?lat=-91&lon=-180")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["lat"][0], ErrorDetail)
+
+    def test_place_lat_greater_than_90(self):
+        response =  self.client.get(reverse("place-list") + "?lat=91&lon=180")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["lat"][0], ErrorDetail)
+
+    def test_place_lon_less_than_negative_180(self):
+        response =  self.client.get(reverse("place-list") + "?lat=-90&lon=-181")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["lon"][0], ErrorDetail)
+
+    def test_place_lon_greater_than_180(self):
+        response =  self.client.get(reverse("place-list") + "?lat=90&lon=181")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsInstance(response.data["lon"][0], ErrorDetail)
