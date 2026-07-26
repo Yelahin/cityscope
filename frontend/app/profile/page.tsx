@@ -59,7 +59,7 @@ export default function Profile() {
 
     async function removeFavorite(place: Place) {
         try {
-            await fetchApi(`places/${place.id}/favorite/`, {method: "DELETE"});
+            await fetchApi(`places/${place.id}/favorite/`, undefined, {method: "DELETE"});
             setFavorites((current) => current.filter((item) => item.id !== place.id));
         } catch (requestError) {
             if (requestError instanceof ApiError && requestError.status === 401) {
@@ -72,7 +72,7 @@ export default function Profile() {
 
     async function deleteSearch(search: SavedSearch) {
         try {
-            await fetchApi(`searches/${search.id}/`, {method: "DELETE"});
+            await fetchApi(`searches/${search.id}/`, undefined, {method: "DELETE"});
             setSearches((current) => current.filter((item) => item.id !== search.id));
         } catch (requestError) {
             if (requestError instanceof ApiError && requestError.status === 401) {

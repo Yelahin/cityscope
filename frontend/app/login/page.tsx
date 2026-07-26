@@ -19,7 +19,7 @@ export default function Login() {
         setIsSubmitting(true);
 
         try {
-            await fetchApi("token/", {
+            await fetchApi("token/", undefined, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({username, password}),

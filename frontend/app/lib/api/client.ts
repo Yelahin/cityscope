@@ -40,6 +40,7 @@ function isUnsafeMethod(method?: string) {
 
 export default async function fetchApi<T = ApiErrorResponse>(
     path: string,
+    pageSize?: number,
     options?: RequestInit,
 ): Promise<T> {
     const headers = new Headers(options?.headers);
@@ -47,7 +48,14 @@ export default async function fetchApi<T = ApiErrorResponse>(
         headers.set("X-CSRFToken", await getCsrfToken());
     }
 
-    const response = await fetch(apiUrl + path, {
+    let query = apiUrl + path;
+
+    if (!!pageSize) {
+        const separator = query.includes("?") ? "&" : "?";
+        query += `${separator}page_size=${pageSize}`;
+    }
+
+    const response = await fetch(query, {
         ...options,
         credentials: "include",
         headers,
@@ -70,7 +78,7 @@ export interface PaginatedResponse<T> {
     results: T[];
 }
 
-export async function fetchAllPages<T>(path: string) {
+export async function fetchAllPages<T>(path: string, pageSize?: number) {
     const results: T[] = [];
     let page = 1;
 
@@ -78,6 +86,7 @@ export async function fetchAllPages<T>(path: string) {
         const separator = path.includes("?") ? "&" : "?";
         const response: PaginatedResponse<T> = await fetchApi(
             `${path}${separator}page=${page}`,
+            pageSize,
         );
         results.push(...response.results);
 

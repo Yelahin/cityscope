@@ -6,13 +6,12 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import SearchBar from "./SearchBar";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import fetchApi from "@/app/lib/api/client";
+import { fetchAllPages } from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
 import MapList from "./MapList";
 import Filters from "./Filters";
 import type {Place} from "../lib/api/types";
-import type {PaginatedResponse} from "../lib/api/client";
 
 interface MapProps {
     position?: [number, number];
@@ -20,6 +19,7 @@ interface MapProps {
 }
 
 const defaultPosition: [number, number] = [30, 0]
+const searchBarMinLength = 3;
 
 export default function Map(props: MapProps) {
   const { position, zoom } = props;
@@ -81,8 +81,10 @@ export default function Map(props: MapProps) {
     }
   }
 
+  const shouldFetch = (!!search && search.length >= searchBarMinLength) || (!!category && !!city);
+
   useEffect(() => {
-    if (!search && !category && !city) {
+    if (!shouldFetch) {
       async function clearPlaces () {
         setPlaces([]);
         setLoadError(null);
@@ -95,29 +97,12 @@ export default function Map(props: MapProps) {
       setIsLoading(true);
       setLoadError(null);
       try {
-        const firstPage = await fetchApi<PaginatedResponse<Place>>(
+        const places = await fetchAllPages<Place>(
           "places/?" + buildUrl(search ?? "", true, 1),
+          1000
         );
 
-        if (firstPage.next !== null) {
-          const totalPageCount = Math.ceil(firstPage.count / firstPage.results.length);
-          const remainingPages = Array.from(
-            {length: totalPageCount - 1},
-            (_, i) => i + 2
-          )
-
-          const results = await Promise.all(
-            remainingPages.map((page) => {
-              return fetchApi<PaginatedResponse<Place>>(
-                "places/?" + buildUrl(search ?? "", true, page),
-              ).then((data) => data.results);
-            })
-          )
-
-          setPlaces([...firstPage.results, ...results.flat()]);
-          return;
-        }
-        setPlaces(firstPage.results);
+        setPlaces([...places]);
       } catch {
         setPlaces([]);
         setLoadError("Could not load places. Make sure the backend is running.");
@@ -127,14 +112,14 @@ export default function Map(props: MapProps) {
     }
 
     fetchPlaces();
-  }, [search, category, city, buildUrl])
+  }, [search, category, city, buildUrl, shouldFetch])
 
   return (
     <>
       <div className="fixed flex items-center justify-between z-1000 left-0 w-full pointer-events-none *:pointer-events-auto">
         <div className="flex flex-col p-2.5 gap-2.5 w-full max-w-75">
           <div className="flex w-full gap-2.5">
-            <SearchBar handleSubmit={handleSubmit} className="max-w-90 w-full rounded-xl" />
+            <SearchBar handleSubmit={handleSubmit} limit={searchBarMinLength} className="max-w-90 w-full rounded-xl" />
             <MapList
               places={places}
               onPlaceClick={handleMapListPlaceClick}
