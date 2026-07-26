@@ -236,6 +236,36 @@ class PlaceTestCase(APITestCase):
         self.place_count = 50
         PlaceFactory.create_batch(self.place_count)
 
+    def test_place_pagination(self):
+        page_size = 5
+        page_count = -(-(self.place_count + 6) // page_size)
+
+        PlaceFactory(name="1")
+        PlaceFactory(name="1")
+        PlaceFactory(name="1")
+        PlaceFactory(name="1")
+        PlaceFactory(name="1")
+
+        response = self.client.get(reverse("place-list") + f"?page_size={page_size}&ordering=name")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["results"][0]["name"], "1")
+        self.assertEqual(response.data["results"][1]["name"], "1")
+        self.assertEqual(response.data["results"][2]["name"], "1")
+        self.assertEqual(response.data["results"][3]["name"], "1")
+        self.assertEqual(response.data["results"][4]["name"], "1")
+
+        response = self.client.get(reverse("place-list") + f"?page_size={page_size}&ordering=name&page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.data["results"][0]["name"], "1")
+
+        for page in range(1, page_count+1):
+            response = self.client.get(reverse("place-list") + f"?page_size={page_size}&page={page}")
+            self.assertEqual(response.status_code, 200)
+            if page != page_count:
+                self.assertNotEqual(response.data["next"], None)
+            else:
+                self.assertEqual(response.data["next"], None)
+
     def test_place_filter_name(self):
         # Test exact match
         PlaceFactory(name=self.place.name[:-2])
