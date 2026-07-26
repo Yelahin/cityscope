@@ -54,7 +54,7 @@ export default function ListFilter ({
 
     return (
         <div>
-            {limit && 
+            {(limit && limit > 1) &&
                 <div className="flex mb-1.5">
                     <span className="text-sm text-primary">{objArray.length}</span>
                     <p className="text-sm text-gray-400">{`/${limit}`}</p>
@@ -75,11 +75,14 @@ export default function ListFilter ({
                             setSelectedFilters(prev => {
                                 const currentArray: (string | number)[] = Array.isArray(prev[key]) ? prev[key] : [];
                                 
-                                const updated = currentArray.includes(value)
-                                    ? currentArray.filter(v => v !== value)
-                                    : limit 
-                                        ? [...currentArray, value].length <= limit ? [...currentArray, value] : currentArray
+                                let updated; 
+                                if (currentArray.includes(value)) {
+                                    updated = currentArray.filter(v => v !== value);
+                                } else  {
+                                    updated = limit
+                                        ? limit === 1 ? [value] : [...currentArray, value].length <= limit ? [...currentArray, value] : currentArray
                                         : [...currentArray, value]
+                                }
 
                                 const result = updated as number[] | string[];                                
 
