@@ -3,19 +3,17 @@ import PlaceFilter from "./PlaceFilter";
 import ScrollableRow from "./ScrollableRow";
 import ListFilter from "./ListFilter";
 import RadiusFilter from "./RadiusFilter";
-import fetchApi, {PaginatedResponse} from "../lib/api/client";
+import fetchApi from "../lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import RatingFilter from "./RatingFilter";
 import OpeningStatusFilter from "./OpeningStatusFilter";
 import SaveSearch from "./SaveSearch";
+import { PaginatedResponse, FilterOption } from "../lib/types";
+import { categoriesCheck, cityCheck, isNumeric, ratingCheck, priceLevelCheck, openingStatusCheck } from "../lib/validation/filterValidation";
 
 
-export interface FilterOption {
-    id: number,
-    name: string
-}
 
-const priceLevels = [
+export const priceLevels = [
     "0$ - 10$",
     "5$ - 12$",
     "7$ - 16$",
@@ -51,16 +49,17 @@ export default function Filters ({position}: {position: [number, number] | undef
     const [scrollTrigger, setScrollTrigger] = useState<number>(0);
 
     useEffect(() => {
-        function fetchFilters () {
-            fetchApi<PaginatedResponse<FilterOption>>("categories/")
+        fetchApi<PaginatedResponse<FilterOption>>("categories/")
             .then((categories) => setCategories(categories.results))
             .catch(() => setCategories([]));
 
-            fetchApi<PaginatedResponse<FilterOption>>("cities/")
+        fetchApi<PaginatedResponse<FilterOption>>("cities/")
             .then((cities) => setCities(cities.results))
             .catch(() => setCities([]));
-        }
-        fetchFilters();
+    }, [])
+
+    useEffect(() => {
+        if (cities.length === 0 || categories.length === 0) return;
 
         const category = searchParams.get("category");
         const city = searchParams.get("city");
@@ -72,13 +71,13 @@ export default function Filters ({position}: {position: [number, number] | undef
 
         const filtersFromUrl: Record<string, number | string | number[] | string[]> = {};
 
-        if (category) filtersFromUrl["category"] = category.split(",").map(Number);
-        if (city) filtersFromUrl["city"] = city.split(",").map(Number);
-        if (radius) filtersFromUrl["radius"] = Number(radius);
-        if (minRating) filtersFromUrl["rating_min"] = Number(minRating);
-        if (maxRating) filtersFromUrl["rating_max"] = Number(maxRating);
-        if (priceLevel) filtersFromUrl["price_level"] = priceLevel.split(",");
-        if (openingStatus) filtersFromUrl["opening_status"] = openingStatus;
+        if (category && categoriesCheck(category, categories)) filtersFromUrl["category"] = category.split(",").map(Number);
+        if (cityCheck(city, cities)) filtersFromUrl["city"] = [Number(city)];
+        if (radius && isNumeric(radius)) filtersFromUrl["radius"] = Number(radius);
+        if (ratingCheck(minRating, maxRating)) filtersFromUrl["rating_min"] = Number(minRating);
+        if (ratingCheck(minRating, maxRating)) filtersFromUrl["rating_max"] = Number(maxRating);
+        if (priceLevel && priceLevelCheck(priceLevel, priceLevels)) filtersFromUrl["price_level"] = priceLevel.split(",");
+        if (openingStatus && openingStatusCheck(openingStatus)) filtersFromUrl["opening_status"] = openingStatus;
 
         async function setFilters () {
             if (Object.keys(filtersFromUrl).length > 0) {
@@ -87,7 +86,7 @@ export default function Filters ({position}: {position: [number, number] | undef
         }
 
         setFilters();
-    }, [searchParams])
+    }, [searchParams, cities, categories])
 
     function toggleFilter (name: string) {
         setOpenFilter(prev => (prev === name ? null : name));

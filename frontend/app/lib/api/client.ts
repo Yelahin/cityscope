@@ -1,10 +1,7 @@
+import { ApiErrorResponse, PaginatedResponse } from "../types";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export interface ApiErrorResponse {
-    detail?: string;
-    message?: string | Record<string, string[]>;
-    [key: string]: unknown;
-}
 
 export class ApiError extends Error {
     status: number;
@@ -69,13 +66,6 @@ export default async function fetchApi<T = ApiErrorResponse>(
     }
 
     return data as T;
-}
-
-export interface PaginatedResponse<T> {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: T[];
 }
 
 export async function fetchAllPages<T>(path: string, pageSize?: number) {

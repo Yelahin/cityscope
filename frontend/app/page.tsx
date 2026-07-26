@@ -3,13 +3,10 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Loading from "./loading";
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Coordinates } from "./lib/types";
 
 const Map = dynamic(() => import("./ui/Map"), {ssr: false})
 
-interface Coordinates {
-    latitude: number | null;
-    longitude: number | null;
-}
 
 export default function Home () {
     const [userCoordinates, setUserCoordinates] = useState<Coordinates>({latitude: null, longitude: null});
