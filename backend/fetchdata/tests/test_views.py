@@ -1,10 +1,17 @@
-from django.test import TestCase
 from unittest.mock import patch
-from django.urls import reverse
-from fetchdata.services.tests.factories import OverpyNodeFactory, OverpyWayFactory, OverpyRelationFactory
-from core.models import SourceRecord, City, Category, Place
+
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
 from overpy.exception import OverPyException
+
+from core.models import Category, City, Place, SourceRecord
+from fetchdata.services.tests.factories import (
+    OverpyNodeFactory,
+    OverpyRelationFactory,
+    OverpyWayFactory,
+)
+
 
 class ImportPlaceViewTestCase(TestCase):
     def setUp(self):
@@ -74,7 +81,7 @@ class ImportPlaceViewTestCase(TestCase):
         self.assertFormError(response.context["form"], None, "Overpy raised an exception!")
 
     @patch("fetchdata.services.fetch.api.query")
-    def test_form_overpy_error(self, mock_query):
+    def test_form_error(self, mock_query):
         mock_query.side_effect = Exception()
 
         response = self.client.post(reverse(f"admin:{self.url}"), data={
