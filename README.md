@@ -128,3 +128,11 @@ cityscope/
 └── backend/
     └── docs
 ```
+
+## Tests
+
+### Backend
+To run the backend tests, execute the following command:
+```bash
+docker exec -it cityscope-backend python manage.py test
+```
