@@ -70,7 +70,16 @@ class PlaceFilterSet(filters.FilterSet):
                 "Can not filter by radius without users coordinates provided!"
             )
             raise ValidationError(
-                "Radius filter expect users coordinates: lat, lon"
+                {"radius": ["Radius filter expect users coordinates: lat, lon"]}
+            )
+
+        # Check if radius is negative value
+        if radius and radius < 0: 
+            logger.exception(
+                "Can not filter by negative radius!"
+            )
+            raise ValidationError(
+                {"radius": ["Radius can't be a negative number"]}
             )
 
         distance = get_calculated_distance(latitude, longitude, logger)
