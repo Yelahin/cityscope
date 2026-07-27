@@ -46,6 +46,54 @@ class ImportPlaceViewTestCase(TestCase):
         self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
 
     @patch("fetchdata.services.fetch.api.query")
+    def test_valid_form_duplicates(self, mock_query):
+        # Test upload all duplicates
+        nodes = OverpyNodeFactory.build_batch(10)
+        ways = OverpyWayFactory.build_batch(10)
+        relations = OverpyRelationFactory.build_batch(10)
+
+        mock_query.return_value.nodes = nodes
+        mock_query.return_value.ways = ways
+        mock_query.return_value.relations = relations
+
+        self.assertEqual(Place.objects.count(), 0)
+
+        response = self.client.post(reverse(f"admin:{self.url}"), data={
+            "sourcerecord": self.source.id,
+            "city": self.city.id,
+            "category": self.category.id,
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
+
+        response = self.client.post(reverse(f"admin:{self.url}"), data={
+            "sourcerecord": self.source.id,
+            "city": self.city.id,
+            "category": self.category.id,
+        }) 
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
+
+        # Test combined duplicates and new elements
+        mock_query.return_value.nodes = nodes + OverpyNodeFactory.build_batch(5)
+        mock_query.return_value.ways = ways + OverpyWayFactory.build_batch(5)
+        mock_query.return_value.relations = relations + OverpyRelationFactory.build_batch(5)
+
+        self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
+
+        response = self.client.post(reverse(f"admin:{self.url}"), data={
+            "sourcerecord": self.source.id,
+            "city": self.city.id,
+            "category": self.category.id,
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Place.objects.count(), len(nodes + ways + relations) + 15)
+
+
+    @patch("fetchdata.services.fetch.api.query")
     def test_invalid_form(self, mock_query):
         nodes = OverpyNodeFactory.build_batch(10)
         ways = OverpyWayFactory.build_batch(10)

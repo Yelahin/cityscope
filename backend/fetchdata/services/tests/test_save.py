@@ -38,6 +38,40 @@ class SaveOverpassAPIPipeline(TestCase):
         self.assertEqual(Place.objects.filter(city=self.city).count(), len(elements))
         self.assertEqual(Place.objects.filter(sourcerecord=self.source).count(), len(elements))
 
+    def test_save_places_to_db_duplicates(self):
+        # Test single element
+        self.assertEqual(Place.objects.count(), 0)
+
+        node = OverpyNodeFactory.build()
+        transformed_data = get_transformed_data(([node], self.source), self.city)
+        save_places_to_db(transformed_data)
+        self.assertEqual(Place.objects.count(), 1)
+
+        save_places_to_db(transformed_data)
+        self.assertEqual(Place.objects.count(), 1)
+
+        # Test multiple duplicates
+        elements = OverpyNodeFactory.build_batch(10) + OverpyWayFactory.build_batch(10) + OverpyRelationFactory.build_batch(10)
+        transformed_data = get_transformed_data((elements, self.source), self.city)
+
+        save_places_to_db(transformed_data)
+        self.assertEqual(Place.objects.count(), len(elements) + 1)
+        self.assertEqual(Place.objects.filter(city=self.city).count(), len(elements) + 1)
+        self.assertEqual(Place.objects.filter(sourcerecord=self.source).count(), len(elements) + 1)
+
+        save_places_to_db(transformed_data)
+        self.assertEqual(Place.objects.count(), len(elements) + 1)
+        self.assertEqual(Place.objects.filter(city=self.city).count(), len(elements) + 1)
+        self.assertEqual(Place.objects.filter(sourcerecord=self.source).count(), len(elements) + 1)
+
+        # Test new elements with duplicates combined
+        self.assertEqual(Place.objects.count(), len(elements) + 1)
+        combined_elements = elements + OverpyNodeFactory.build_batch(10) + OverpyWayFactory.build_batch(5) + OverpyRelationFactory.build_batch(5)
+        transformed_data = get_transformed_data((combined_elements, self.source), self.city)
+
+        save_places_to_db(transformed_data)
+        self.assertEqual(Place.objects.count(), len(combined_elements) + 1)
+
     def test_save_places_to_db_empty(self):
         save_places_to_db([])
 

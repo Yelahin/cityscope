@@ -85,6 +85,33 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
         self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
 
     @patch("fetchdata.services.fetch.api.query")
+    def test_upload_data_to_database_duplicates(self, mock_api):
+        # Test upload all duplicates
+        mock_api.return_value.nodes = self.nodes
+        mock_api.return_value.ways = self.ways
+        mock_api.return_value.relations = self.relations
+
+        self.assertEqual(Place.objects.count(), 0)
+
+        category = Category.objects.create(name="Cafe")
+        query = get_overpass_query(categories=[category], city=self.city)
+
+        upload_data_to_database(query, self.city)
+
+        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+        upload_data_to_database(query, self.city)
+        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+
+        # Test upload combined duplicates and new elements
+        mock_api.return_value.nodes = self.nodes + OverpyNodeFactory.build_batch(5)
+        mock_api.return_value.ways = self.ways + OverpyWayFactory.build_batch(5)
+        mock_api.return_value.relations = self.relations + OverpyRelationFactory.build_batch(5)
+
+        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+        upload_data_to_database(query, self.city)
+        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations) + 15)
+
+    @patch("fetchdata.services.fetch.api.query")
     def test_upload_data_to_database_overpy_exception(self, mock_query):
         mock_query.side_effect = OverPyException()
 
