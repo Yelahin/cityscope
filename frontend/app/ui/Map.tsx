@@ -10,8 +10,9 @@ import { fetchAllPages } from "@/app/lib/api/client";
 import MapController from "./MapController";
 import UserMarker from "./UserMarker";
 import MapList from "./MapList";
-import Filters from "./Filters";
-import type {Place} from "../lib/api/types";
+import Filters, { priceLevels } from "./Filters";
+import { Place } from "../lib/api/types";
+import { isNumeric, ratingCheck, priceLevelCheck, openingStatusCheck } from "../lib/validation/filterValidation";
 
 interface MapProps {
     position?: [number, number];
@@ -48,11 +49,11 @@ export default function Map(props: MapProps) {
       (showPosition && position) ? `lat=${position[0]}&lon=${position[1]}` : "",
       category ? `category=${category}` : "",
       city ? `city=${city}` : "",
-      radius ? `radius=${radius}` : "",
-      (minRating && maxRating) ? `rating_min=${minRating}` : "",
-      (minRating && maxRating) ? `rating_max=${maxRating}` : "",
-      priceLevel ? `price_level=${priceLevel}` : "",
-      openingStatus ? `opening_status=${openingStatus}` : "",
+      (radius && isNumeric(radius)) ? `radius=${radius}` : "",
+      (minRating && maxRating && ratingCheck(minRating, maxRating)) ? `rating_min=${minRating}` : "",
+      (minRating && maxRating && ratingCheck(minRating, maxRating)) ? `rating_max=${maxRating}` : "",
+      (priceLevel && priceLevelCheck(priceLevel, priceLevels)) ? `price_level=${priceLevel}` : "",
+      (openingStatus && openingStatusCheck(openingStatus)) ? `opening_status=${openingStatus}` : "",
       page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");
@@ -75,7 +76,11 @@ export default function Map(props: MapProps) {
 
   function handleSubmit (value: string): void {
     if ([value, city, category].some((element) => element !== null && element !== "")) {
-      router.push("?" + buildUrl(value, false));
+      if (value.length >= searchBarMinLength && value.length !== 0) {
+        router.push("?" + buildUrl(value, false));
+      } else {
+        router.push("?" + buildUrl("", false));
+      }
     } else {
       router.push(pathName);
     }

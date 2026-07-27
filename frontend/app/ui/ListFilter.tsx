@@ -5,11 +5,7 @@ import { PrimaryButton } from "./PrimaryButton";
 import { SecondaryButton } from "./SecondaryButton";
 import List from "./List";
 import ListItem from "./ListItem";
-
-interface FilterOption {
-    id: number, 
-    name: string
-}
+import { FilterOption } from "../lib/types";
 
 
 export default function ListFilter ({
