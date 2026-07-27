@@ -80,9 +80,7 @@ export default function Filters ({position}: {position: [number, number] | undef
         if (openingStatus && openingStatusCheck(openingStatus)) filtersFromUrl["opening_status"] = openingStatus;
 
         async function setFilters () {
-            if (Object.keys(filtersFromUrl).length > 0) {
-                setSelectedFilters(prev => ({ ...prev, ...filtersFromUrl }));
-            }
+            setSelectedFilters(filtersFromUrl);
         }
 
         setFilters();

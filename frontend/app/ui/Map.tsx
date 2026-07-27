@@ -76,7 +76,11 @@ export default function Map(props: MapProps) {
 
   function handleSubmit (value: string): void {
     if ([value, city, category].some((element) => element !== null && element !== "")) {
-      router.push("?" + buildUrl(value, false));
+      if (value.length >= searchBarMinLength && value.length !== 0) {
+        router.push("?" + buildUrl(value, false));
+      } else {
+        router.push("?" + buildUrl("", false));
+      }
     } else {
       router.push(pathName);
     }
