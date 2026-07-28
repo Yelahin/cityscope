@@ -12,10 +12,10 @@ export default function Header () {
     return (
         <header className="flex z-10000 fixed w-full h-header items-center justify-between px-2.5 border-b-[0.5px] border-border-primary">
             <div className="flex items-center">
-                <Link href="/" onClick={() => setIsBurgerMenu(false)}>
+                <Link href="/" onClick={() => setIsBurgerMenu(false)} data-testid="cityscope-icon-link">
                    <IoLocationSharp className="w-5.5 h-5.5 m-0 p-0 text-primary" />
                 </Link>
-                <Link href="/" onClick={() => setIsBurgerMenu(false)}>
+                <Link href="/" onClick={() => setIsBurgerMenu(false)} data-testid="cityscope-logo-link">
                     <span className="font-bold">Cityscope</span>
                 </Link>
             </div>
