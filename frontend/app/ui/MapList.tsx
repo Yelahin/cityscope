@@ -30,14 +30,14 @@ export default function MapList ({places, onPlaceClick, isLoading, error}: {
     function fetchMoreData () {
         setTimeout(() => {
             setDisplayCount(prev => prev + itemsPerPage)
-        }, 500)
+        }, 500);
     }
 
     function displayPlacesList  () {
         if (searchParams.size === 0) {
             return (
                 <div className="flex flex-col h-full w-full justify-center items-center gap-2 text-gray-500">
-                    <IoSearch className="text-8xl"/>
+                    <IoSearch className="text-8xl" data-testid="start-search" />
                     <p className="text-xl">Start Searching!</p>
                 </div>
             )
@@ -51,14 +51,14 @@ export default function MapList ({places, onPlaceClick, isLoading, error}: {
         } else if (error) {
             return (
                 <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-gray-500">
-                    <MdErrorOutline className="text-8xl"/>
+                    <MdErrorOutline className="text-8xl" data-testid="error-state" />
                     <p className="text-center text-xl">{error}</p>
                 </div>
             )
         } else if (places.length === 0) {
             return (
                 <div className="flex flex-col h-full w-full justify-center items-center gap-2 text-gray-500">
-                    <MdErrorOutline className="text-8xl"/>
+                    <MdErrorOutline className="text-8xl" data-testid="empty-results" />
                     <p className="text-xl text-center">No results found</p>
                 </div>
             )
@@ -69,7 +69,8 @@ export default function MapList ({places, onPlaceClick, isLoading, error}: {
                         dataLength={displayCount} 
                         next={fetchMoreData} 
                         hasMore={hasMore} 
-                        loader={<div className="flex justify-center mt-3"><Spinner /></div>} 
+                        loader={<div className="flex justify-center mt-3"><Spinner /></div>}
+                        data-testid="infinite-scroll"
                     >
                         {displayedPlaces.map((place: Place) => {
                             const priceLevel = <p className="text-gray-400 text-sm">{place?.price_level}</p>
@@ -136,7 +137,7 @@ export default function MapList ({places, onPlaceClick, isLoading, error}: {
             </button>
 
             <div className={`-z-1 top-header left-0 w-full max-w-75 h-main-content bg-dark-primary
-                ${isOpen ? "fixed" : "hidden"}`}>
+                ${isOpen ? "fixed" : "hidden"}`} data-testid="map-list">
                 {displayPlacesList()}
             </div>
         </>
