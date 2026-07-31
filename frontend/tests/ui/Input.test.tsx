@@ -2,7 +2,6 @@ import Input from '@/app/ui/Input';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { it, expect, describe } from 'vitest';
 
 
 describe('Input', () => {

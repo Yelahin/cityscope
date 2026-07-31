@@ -1,6 +1,5 @@
 import Footer from '@/app/ui/footer';
 import { render, screen, within } from '@testing-library/react';
-import { it, expect, describe } from 'vitest';
 
 describe('Footer', () => {
     it('should display project owner name', () => {

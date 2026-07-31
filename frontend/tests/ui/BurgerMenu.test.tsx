@@ -3,7 +3,6 @@ import BurgerMenu from '@/app/ui/BurgerMenu';
 import { authenticatedUserPages, unAuthenticatedUserPages } from '@/app/ui/BurgerMenu';
 import { render, screen, within } from '@testing-library/react';
 import { useState } from 'react';
-import { it, expect, describe } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
 const push = vi.fn();

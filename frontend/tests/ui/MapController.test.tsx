@@ -3,7 +3,6 @@ import MapController from '@/app/ui/MapController';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { MapContainer } from 'react-leaflet';
-import { it, expect, describe } from 'vitest';
 import L from "leaflet";
 
 const flyToBounds = vi.fn();

@@ -1,7 +1,6 @@
 import { useAuth } from '@/app/ui/AuthContext';
 import AuthNavigation from '@/app/ui/AuthNavigation';
 import { render, screen } from '@testing-library/react';
-import { it, expect, describe } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
 const push = vi.fn();

@@ -1,7 +1,6 @@
 import ScrollableRow from '@/app/ui/ScrollableRow';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { it, expect, describe } from 'vitest';
 
 describe('ScrollableRow', () => {
     beforeEach(() => {

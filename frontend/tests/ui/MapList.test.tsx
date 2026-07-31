@@ -3,7 +3,6 @@ import MapList from '@/app/ui/MapList';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useSearchParams } from 'next/navigation';
-import { it, expect, describe } from 'vitest';
 
 vi.mock('next/navigation', () => ({
     useSearchParams: vi.fn(),
