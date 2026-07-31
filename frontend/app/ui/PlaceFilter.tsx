@@ -31,7 +31,8 @@ export default function PlaceFilter ({
                     ${isOpen
                         ? "bg-[rgb(75,75,75)]" 
                         : "border-red-500 text-red-500 hover:border-white hover:text-white bg-dark-primary hover:bg-[rgb(75,75,75)] "}
-                    `}>
+                    `}
+                    data-testid="required-to-select">
                     <p>{placeholder}</p>
                 </button>
 
