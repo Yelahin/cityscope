@@ -43,13 +43,13 @@ export default function ScrollableRow ({
 
     return (
         <div className="relative flex items-center min-w-0 max-w-65 h-[calc(var(--height-header)/2)]">
-            {canScrollLeft && (<button onClick={() => scroll("left")} className="absolute -left-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer shrink-0">
+            {canScrollLeft && (<button onClick={() => scroll("left")} className="absolute -left-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer shrink-0" data-testid="scroll-left">
                 <IoChevronBack className="text-primary" />
             </button>)}
             <div ref={scrollRef} onScroll={checkScroll} className="flex w-full h-full gap-2.5 overflow-x-auto overscroll-x-contain scrollbar-none">
                 {children}
             </div>
-            {canScrollRight && (<button onClick={() => scroll("right")} className="absolute -right-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer">
+            {canScrollRight && (<button onClick={() => scroll("right")} className="absolute -right-0.5 flex justify-center items-center bg-dark-primary border border-border-primary text-primary rounded-sm h-full aspect-square cursor-pointer" data-testid="scroll-right">
                 <IoChevronForward className="text-primary" />
             </button>)}
         </div>
