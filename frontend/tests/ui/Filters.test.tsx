@@ -283,10 +283,13 @@ describe("Filters", () => {
 
     await user.click(screen.getByText("Apply"));
 
+    const expectedParams = new URLSearchParams();
+    expectedParams.set("city", "1");
+    expectedParams.set("category", "1,2");
+    expectedParams.set("opening_status", "OPEN");
+
     expect(push).toHaveBeenCalledTimes(1);
-    expect(push).toHaveBeenCalledWith(
-      `?city=1&category=${encodeURIComponent("1,2")}&opening_status=OPEN`,
-    );
+    expect(push).toHaveBeenCalledWith("?" + expectedParams.toString());
 
     await user.click(screen.getByText("Clear All"));
     await user.click(screen.getByText("Apply"));
