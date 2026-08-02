@@ -1,13 +1,12 @@
 import fetchApi from "@/app/lib/api/client";
 import Filters from "@/app/ui/Filters";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { act } from "react";
 
 const push = vi.fn();
 const scrollTo = vi.fn();
 
-const searchParams = new URLSearchParams();
+let searchParams = new URLSearchParams();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -33,12 +32,7 @@ HTMLElement.prototype.scrollTo = scrollTo;
 
 describe("Filters", () => {
   beforeEach(() => {
-    searchParams.delete("search");
-    searchParams.delete("city");
-    searchParams.delete("category");
-    searchParams.delete("radius");
-    searchParams.delete("price_level");
-    searchParams.delete("opening_status");
+    searchParams = new URLSearchParams();
     vi.mocked(fetchApi).mockImplementation((path: string) => {
       if (path === "cities/") {
         return Promise.resolve({
