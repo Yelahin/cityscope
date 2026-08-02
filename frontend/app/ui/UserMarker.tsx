@@ -5,7 +5,7 @@ import L from "leaflet";
 export default function UserMarker ({position}: {position: [number, number]}) {
     const userIcon = L.divIcon({
         className: "user-marker",
-        html: "<div className='user-marker-dot'></div>",
+        html: "<div className='user-marker-dot' data-testid='user-marker'></div>",
         iconSize: [20, 20]
     })
 
