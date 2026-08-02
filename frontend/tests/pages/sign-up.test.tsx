@@ -33,7 +33,7 @@ vi.mock("@/app/lib/api/client", () => ({
   },
 }));
 
-describe("sign-up", () => {
+describe("SignUp", () => {
   it("should display 3 inputs for username, email and password", () => {
     render(<SignUp />);
 
