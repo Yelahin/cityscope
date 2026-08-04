@@ -10,6 +10,7 @@ from rest_framework.decorators import (
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from core.throttles import (
@@ -89,18 +90,19 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return response
 
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-@throttle_classes([RegisterMinThrottle, RegisterHourThrottle, RegisterDayThrottle])
-def register_user(request):
-    user = UserSerializer(data=request.data)
-    if user.is_valid():
-        user.save()
-        return Response(
-            data={"message": "User was successfully created"},
-            status=status.HTTP_201_CREATED,
-        )
-    return Response(data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST)
+class RegisterUserView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [RegisterMinThrottle, RegisterHourThrottle, RegisterDayThrottle]
+
+    def post(self, request, *args, **kwargs):
+        user = UserSerializer(data=request.data)
+        if user.is_valid():
+            user.save()
+            return Response(
+                data={"message": "User was successfully created"},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])

@@ -7,6 +7,12 @@ from rest_framework.test import APIClient, APITestCase
 
 from core.models import Place
 from fetchdata.api.tests.factories import PlaceFactory
+from fetchdata.api.views import PlaceViewSet
+from users.api.views import (
+    RegisterUserView,
+    SavedSearchViewSet,
+    TokenObtainPairView,
+)
 from users.models import SavedSearch
 
 from .factories import SavedSearchFactory
@@ -14,6 +20,7 @@ from .factories import SavedSearchFactory
 
 class RegisterUserTests(APITestCase):
     def setUp(self):
+        RegisterUserView.throttle_classes = ()
         self.url = reverse("api_user_registration")
 
     def test_get_method_not_allowed(self):
@@ -69,6 +76,7 @@ class RegisterUserTests(APITestCase):
 
 class AuthenticationTests(APITestCase):
     def setUp(self):
+        TokenObtainPairView.throttle_classes = ()
         self.credentials = {
             "username": "User_1",
             "password": "password-user-1",
@@ -125,6 +133,7 @@ class AuthenticationTests(APITestCase):
 
 class FavoritePlaceTests(APITestCase):
     def setUp(self):
+        PlaceViewSet.throttle_classes = ()
         self.user_1_credentials = {"username": "User_1", "password": "password-user-1"}
         self.user_2_credentials = {"username": "User_2", "password": "password-user-2"}
 
@@ -309,6 +318,7 @@ class FavoritePlaceTests(APITestCase):
 
 class SavedSearchTests(APITestCase):
     def setUp(self):
+        SavedSearchViewSet.throttle_classes = ()
         self.user_1_credentials = {
             "username": "User_1",
             "password": "password-user-1",

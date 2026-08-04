@@ -5,12 +5,14 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
 from core.models import Category, City, Place
+from fetchdata.api.views import PlaceViewSet
 
 from .factories import PlaceFactory
 
 
 class PlaceDetailTests(APITestCase):
     def setUp(self):
+        PlaceViewSet.throttle_classes = ()
         self.place = PlaceFactory(
             address="Alexanderplatz, Berlin",
             rating=4.5,
@@ -48,6 +50,7 @@ class PlaceDetailTests(APITestCase):
 
 class PlaceTestCase(APITestCase):
     def setUp(self):
+        PlaceViewSet.throttle_classes = ()
         self.url = "places"
         self.place = PlaceFactory(name="Test Obj", address="Elm Court 5 02138")
         self.place_count = 50
