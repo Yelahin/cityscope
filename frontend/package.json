@@ -9,6 +9,9 @@
     "lint": "eslint",
     "test": "vitest"
   },
+  "overrides": {
+    "undici": "8.0.2"
+  },
   "dependencies": {
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
