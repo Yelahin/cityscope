@@ -184,6 +184,33 @@ REST_FRAMEWORK = {
         "users.api.authentication.CustomJWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+
+    # Rate limits
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'places_min': '100/min',
+        'places_hour': '1500/hour',
+        'places_day': '5000/day',
+        'categories_min': '30/min',
+        'categories_hour': '300/hour',
+        'categories_day': '800/day',
+        'cities_min': '30/min',
+        'cities_hour': '300/hour',
+        'cities_day': '800/day',
+        'searches_min': '30/min',
+        'searches_hour': '300/hour',
+        'searches_day': '800/day',
+        'login_min': '5/min',
+        'login_hour': '15/hour',
+        'login_day': '30/day',
+        'register_min': '3/min',
+        'register_hour': '10/hour',
+        'register_day': '30/day',
+        'get_me_min': '60/min',
+        'get_me_hour': '600/hour',
+    }
 }
 
 CORS_ALLOW_CREDENTIALS = True

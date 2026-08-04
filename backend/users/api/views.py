@@ -5,6 +5,7 @@ from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
+    throttle_classes
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -15,8 +16,11 @@ from users.models import SavedSearch
 
 from .serializers import SavedSearchSerializer, UserSerializer
 
+from core.throttles import SavedSearchMinThrottle, SavedSearchHourThrottle, SavedSearchDayThrottle, LoginMinThrottle, LoginHourThrottle, LoginDayThrottle, RegisterMinThrottle, RegisterHourThrottle, RegisterDayThrottle, GetMeMinThrottle, GetMeHourThrottle
+
 
 class SavedSearchViewSet(viewsets.ModelViewSet):
+    throttle_classes = [SavedSearchMinThrottle, SavedSearchHourThrottle, SavedSearchDayThrottle]
     serializer_class = SavedSearchSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [OrderingFilter, SearchFilter]
@@ -34,6 +38,7 @@ class SavedSearchViewSet(viewsets.ModelViewSet):
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    throttle_classes = [LoginMinThrottle, LoginHourThrottle, LoginDayThrottle]
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
@@ -75,6 +80,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
+@throttle_classes([RegisterMinThrottle, RegisterHourThrottle, RegisterDayThrottle])
 def register_user(request):
     user = UserSerializer(data=request.data)
     if user.is_valid():
@@ -88,6 +94,7 @@ def register_user(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([GetMeMinThrottle, GetMeHourThrottle])
 def get_me(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)

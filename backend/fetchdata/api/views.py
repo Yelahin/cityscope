@@ -13,11 +13,13 @@ from core.models import Category, City, Place
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
 from .serializers import CategorySerializer, CitySerializer, PlaceSerializer
 from .utils import StandardResultSetPagination, get_calculated_distance
+from core.throttles import CategoryMinThrottle, CategoryHourThrottle, CategoryDayThrottle, CityMinThrottle, CityHourThrottle, CityDayThrottle, PlaceMinThrottle, PlaceHourThrottle, PlaceDayThrottle
 
 logger = logging.getLogger(__name__)
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+    throttle_classes = [PlaceMinThrottle, PlaceHourThrottle, PlaceDayThrottle]
     queryset = Place.objects.select_related("category", "city")
     serializer_class = PlaceSerializer
     pagination_class = StandardResultSetPagination
@@ -140,13 +142,17 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
 
         raise MethodNotAllowed(request.method)
 
+
 class CategoryListView(generics.ListAPIView):
+    throttle_classes = [CategoryMinThrottle, CategoryHourThrottle, CategoryDayThrottle]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = StandardResultSetPagination
     permission_classes = [AllowAny]
 
+
 class CityListView(generics.ListAPIView):
+    throttle_classes = [CityMinThrottle, CityHourThrottle, CityDayThrottle]
     queryset = City.objects.all()
     serializer_class = CitySerializer
     pagination_class = StandardResultSetPagination
