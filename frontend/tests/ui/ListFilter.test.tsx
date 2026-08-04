@@ -14,7 +14,7 @@ const cities = [
 describe("ListFilter", () => {
   it("should render placeholder", () => {
     function Wrapper({ placeholder }: { placeholder: string }) {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -50,7 +50,7 @@ describe("ListFilter", () => {
 
   it("should render all provided list items", () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -79,7 +79,7 @@ describe("ListFilter", () => {
 
   it("should render limit value", () => {
     function Wrapper({ limit }: { limit: number }) {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -109,7 +109,7 @@ describe("ListFilter", () => {
 
   it("should render selected items count", () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -135,7 +135,7 @@ describe("ListFilter", () => {
 
   it("should display check marker on selected list items", () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({
@@ -178,7 +178,7 @@ describe("ListFilter", () => {
 
   it("should select list items when click on them", async () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -221,7 +221,7 @@ describe("ListFilter", () => {
 
   it("should remove list items from selected when click on them when items already selected", async () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({
@@ -277,7 +277,7 @@ describe("ListFilter", () => {
 
   it("should filter list items using input", async () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -331,7 +331,7 @@ describe("ListFilter", () => {
 
   it("should select objects by string when selectById set to false", async () => {
     function Wrapper({ selected }: { selected: number[] | string[] }) {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({
@@ -373,7 +373,7 @@ describe("ListFilter", () => {
 
   it("should display Clear button if limit equal 1", () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -398,7 +398,7 @@ describe("ListFilter", () => {
 
   it("should display Clear All button if limit greater than 1", () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({});
@@ -423,7 +423,7 @@ describe("ListFilter", () => {
 
   it("should remove all selected filter items when clicked on clear buttons", async () => {
     function Wrapper() {
-      const [openFilter, setOpenFilter] = useState<string | null>(null);
+      const [_openFilter, setOpenFilter] = useState<string | null>(null);
       const [selectedFilters, setSelectedFilters] = useState<
         Record<string, string | number | string[] | number[]>
       >({

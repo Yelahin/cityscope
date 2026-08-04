@@ -45,7 +45,7 @@ describe("Home", () => {
   });
 
   it("should display map with proper zoom and position props", async () => {
-    const getCurrentPosition = vi.fn((success, error) =>
+    const getCurrentPosition = vi.fn((success, _error) =>
       success({
         coords: {
           latitude: 36,
