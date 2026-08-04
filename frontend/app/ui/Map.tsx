@@ -43,7 +43,7 @@ export default function Map(props: MapProps) {
   const priceLevel = searchParams.get("price_level");
   const openingStatus = searchParams.get("opening_status");
 
-  const buildUrl = useCallback((searchValue: string, showPosition: boolean, page?: number) => {
+  const buildUrl = useCallback((searchValue: string, showPosition: boolean) => {
     const parts = [
       searchValue ? `search=${searchValue}` : "",
       (showPosition && position) ? `lat=${position[0]}&lon=${position[1]}` : "",
@@ -54,7 +54,6 @@ export default function Map(props: MapProps) {
       (minRating && maxRating && ratingCheck(minRating, maxRating)) ? `rating_max=${maxRating}` : "",
       (priceLevel && priceLevelCheck(priceLevel, priceLevels)) ? `price_level=${priceLevel}` : "",
       (openingStatus && openingStatusCheck(openingStatus)) ? `opening_status=${openingStatus}` : "",
-      page ? `page=${page}` : ""
     ];
     return parts.filter((part) => part !== "").join("&");
   }, [position, category, city, radius, minRating, maxRating, priceLevel, openingStatus]);
@@ -103,7 +102,7 @@ export default function Map(props: MapProps) {
       setLoadError(null);
       try {
         const places = await fetchAllPages<Place>(
-          "places/?" + buildUrl(search ?? "", true, 1),
+          "places/?" + buildUrl(search ?? "", true),
           1000
         );
 
