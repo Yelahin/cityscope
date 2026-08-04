@@ -136,3 +136,14 @@ To run the backend tests, execute the following command:
 ```bash
 docker exec -it cityscope-backend python manage.py test
 ```
+
+### Frontend
+Before running frontend tests, move to `frontend` folder
+```bash
+cd frontend
+```
+
+To run frontend tests, execute the following command:
+```bash
+npm test
+```
