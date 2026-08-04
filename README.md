@@ -180,3 +180,5 @@ category_tags = {
     } 
 }
 ```
+
+After adding the new category, it will be included the next time data is fetched from the **Overpass API**.
