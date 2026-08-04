@@ -9,11 +9,21 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from core.models import Category, City, Place
+from core.throttles import (
+    CategoryDayThrottle,
+    CategoryHourThrottle,
+    CategoryMinThrottle,
+    CityDayThrottle,
+    CityHourThrottle,
+    CityMinThrottle,
+    PlaceDayThrottle,
+    PlaceHourThrottle,
+    PlaceMinThrottle,
+)
 
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
 from .serializers import CategorySerializer, CitySerializer, PlaceSerializer
 from .utils import StandardResultSetPagination, get_calculated_distance
-from core.throttles import CategoryMinThrottle, CategoryHourThrottle, CategoryDayThrottle, CityMinThrottle, CityHourThrottle, CityDayThrottle, PlaceMinThrottle, PlaceHourThrottle, PlaceDayThrottle
 
 logger = logging.getLogger(__name__)
 

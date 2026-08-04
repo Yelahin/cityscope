@@ -5,18 +5,29 @@ from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
-    throttle_classes
+    throttle_classes,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from core.throttles import (
+    GetMeHourThrottle,
+    GetMeMinThrottle,
+    LoginDayThrottle,
+    LoginHourThrottle,
+    LoginMinThrottle,
+    RegisterDayThrottle,
+    RegisterHourThrottle,
+    RegisterMinThrottle,
+    SavedSearchDayThrottle,
+    SavedSearchHourThrottle,
+    SavedSearchMinThrottle,
+)
 from users.models import SavedSearch
 
 from .serializers import SavedSearchSerializer, UserSerializer
-
-from core.throttles import SavedSearchMinThrottle, SavedSearchHourThrottle, SavedSearchDayThrottle, LoginMinThrottle, LoginHourThrottle, LoginDayThrottle, RegisterMinThrottle, RegisterHourThrottle, RegisterDayThrottle, GetMeMinThrottle, GetMeHourThrottle
 
 
 class SavedSearchViewSet(viewsets.ModelViewSet):
