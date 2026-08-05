@@ -12,14 +12,19 @@ import UserMarker from "./UserMarker";
 import MapList from "./MapList";
 import Filters, { priceLevels } from "./Filters";
 import { Place } from "../lib/api/types";
-import { isNumeric, ratingCheck, priceLevelCheck, openingStatusCheck } from "../lib/validation/filterValidation";
+import {
+  isNumeric,
+  ratingCheck,
+  priceLevelCheck,
+  openingStatusCheck,
+} from "../lib/validation/filterValidation";
 
 interface MapProps {
-    position?: [number, number];
-    zoom: number;
+  position?: [number, number];
+  zoom: number;
 }
 
-const defaultPosition: [number, number] = [30, 0]
+const defaultPosition: [number, number] = [30, 0];
 const searchBarMinLength = 3;
 
 export default function Map(props: MapProps) {
@@ -43,38 +48,62 @@ export default function Map(props: MapProps) {
   const priceLevel = searchParams.get("price_level");
   const openingStatus = searchParams.get("opening_status");
 
-  const buildUrl = useCallback((searchValue: string, showPosition: boolean) => {
-    const parts = [
-      searchValue ? `search=${searchValue}` : "",
-      (showPosition && position) ? `lat=${position[0]}&lon=${position[1]}` : "",
-      category ? `category=${category}` : "",
-      city ? `city=${city}` : "",
-      (radius && isNumeric(radius)) ? `radius=${radius}` : "",
-      (minRating && maxRating && ratingCheck(minRating, maxRating)) ? `rating_min=${minRating}` : "",
-      (minRating && maxRating && ratingCheck(minRating, maxRating)) ? `rating_max=${maxRating}` : "",
-      (priceLevel && priceLevelCheck(priceLevel, priceLevels)) ? `price_level=${priceLevel}` : "",
-      (openingStatus && openingStatusCheck(openingStatus)) ? `opening_status=${openingStatus}` : "",
-    ];
-    return parts.filter((part) => part !== "").join("&");
-  }, [position, category, city, radius, minRating, maxRating, priceLevel, openingStatus]);
+  const buildUrl = useCallback(
+    (searchValue: string, showPosition: boolean) => {
+      const parts = [
+        searchValue ? `search=${searchValue}` : "",
+        showPosition && position ? `lat=${position[0]}&lon=${position[1]}` : "",
+        category ? `category=${category}` : "",
+        city ? `city=${city}` : "",
+        radius && isNumeric(radius) ? `radius=${radius}` : "",
+        minRating && maxRating && ratingCheck(minRating, maxRating)
+          ? `rating_min=${minRating}`
+          : "",
+        minRating && maxRating && ratingCheck(minRating, maxRating)
+          ? `rating_max=${maxRating}`
+          : "",
+        priceLevel && priceLevelCheck(priceLevel, priceLevels)
+          ? `price_level=${priceLevel}`
+          : "",
+        openingStatus && openingStatusCheck(openingStatus)
+          ? `opening_status=${openingStatus}`
+          : "",
+      ];
+      return parts.filter((part) => part !== "").join("&");
+    },
+    [
+      position,
+      category,
+      city,
+      radius,
+      minRating,
+      maxRating,
+      priceLevel,
+      openingStatus,
+    ],
+  );
 
-  function handleMapListPlaceClick (place: Place) {
+  function handleMapListPlaceClick(place: Place) {
     const map = mapRef.current;
-    
+
     if (!map) return;
 
-    map.flyTo([place.latitude, place.longitude], 18, {duration: 2});
-    
+    map.flyTo([place.latitude, place.longitude], 18, { duration: 2 });
+
     map.once("moveend", () => {
       const marker = markersRef.current?.[place.id];
       requestAnimationFrame(() => {
-        marker.openPopup()
-      })
+        marker.openPopup();
+      });
     });
   }
 
-  function handleSubmit (value: string): void {
-    if ([value, city, category].some((element) => element !== null && element !== "")) {
+  function handleSubmit(value: string): void {
+    if (
+      [value, city, category].some(
+        (element) => element !== null && element !== "",
+      )
+    ) {
       if (value.length >= searchBarMinLength && value.length !== 0) {
         router.push("?" + buildUrl(value, false));
       } else {
@@ -85,11 +114,12 @@ export default function Map(props: MapProps) {
     }
   }
 
-  const shouldFetch = (!!search && search.length >= searchBarMinLength) || (!!category && !!city);
+  const shouldFetch =
+    (!!search && search.length >= searchBarMinLength) || (!!category && !!city);
 
   useEffect(() => {
     if (!shouldFetch) {
-      async function clearPlaces () {
+      async function clearPlaces() {
         setPlaces([]);
         setLoadError(null);
       }
@@ -97,33 +127,39 @@ export default function Map(props: MapProps) {
       return;
     }
 
-    async function fetchPlaces () {
+    async function fetchPlaces() {
       setIsLoading(true);
       setLoadError(null);
       try {
         const places = await fetchAllPages<Place>(
           "places/?" + buildUrl(search ?? "", true),
-          1000
+          1000,
         );
 
         setPlaces([...places]);
       } catch {
         setPlaces([]);
-        setLoadError("Could not load places. Make sure the backend is running.");
+        setLoadError(
+          "Could not load places. Make sure the backend is running.",
+        );
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchPlaces();
-  }, [search, category, city, buildUrl, shouldFetch])
+  }, [search, category, city, buildUrl, shouldFetch]);
 
   return (
     <>
       <div className="fixed flex items-center justify-between z-1000 left-0 w-full pointer-events-none *:pointer-events-auto">
         <div className="flex flex-col p-2.5 gap-2.5 w-full max-w-75">
           <div className="flex w-full gap-2.5">
-            <SearchBar handleSubmit={handleSubmit} limit={searchBarMinLength} className="max-w-90 w-full rounded-xl" />
+            <SearchBar
+              handleSubmit={handleSubmit}
+              limit={searchBarMinLength}
+              className="max-w-90 w-full rounded-xl"
+            />
             <MapList
               places={places}
               onPlaceClick={handleMapListPlaceClick}
@@ -134,15 +170,28 @@ export default function Map(props: MapProps) {
           <Filters position={position} />
         </div>
       </div>
-      <MapContainer ref={mapRef} attributionControl={false} center={position ?? defaultPosition} minZoom={2} maxBounds={[[-90, -200], [90, 200]]} maxBoundsViscosity={1} zoomControl={false} zoom={zoom} className="h-main-content w-full">
+      <MapContainer
+        ref={mapRef}
+        attributionControl={false}
+        center={position ?? defaultPosition}
+        minZoom={2}
+        maxBounds={[
+          [-90, -200],
+          [90, 200],
+        ]}
+        maxBoundsViscosity={1}
+        zoomControl={false}
+        zoom={zoom}
+        className="h-main-content w-full"
+      >
         <ZoomControl position="topright" />
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-      />
-      {position && <UserMarker position={position} />}
-       <MapController markersRef={markersRef} places={places} />
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        />
+        {position && <UserMarker position={position} />}
+        <MapController markersRef={markersRef} places={places} />
       </MapContainer>
     </>
-  )
+  );
 }

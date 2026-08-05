@@ -172,10 +172,7 @@ describe("Map", () => {
     await act(async () => {});
 
     expect(fetchAllPages).toHaveBeenCalledTimes(1);
-    expect(fetchAllPages).toHaveBeenCalledWith(
-      "places/?search=test",
-      1000,
-    );
+    expect(fetchAllPages).toHaveBeenCalledWith("places/?search=test", 1000);
   });
 
   it("should not trigger places fetching when applying invalid filters", async () => {

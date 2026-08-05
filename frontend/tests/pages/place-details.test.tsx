@@ -160,17 +160,27 @@ describe("PlaceDetails", () => {
 
     expect(screen.getByText("Add to favorites")).toBeInTheDocument();
     expect(fetchApi).toHaveBeenCalledTimes(2);
-    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
-      method: "POST",
-    });
+    expect(fetchApi).not.toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "POST",
+      },
+    );
 
     const user = userEvent.setup();
     await user.click(screen.getByText("Add to favorites"));
 
     expect(fetchApi).toHaveBeenCalledTimes(3);
-    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
-      method: "POST",
-    });
+    expect(fetchApi).toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "POST",
+      },
+    );
 
     expect(screen.queryByText("Add to favorites")).not.toBeInTheDocument();
     expect(screen.getByText("Remove from favorites")).toBeInTheDocument();
@@ -193,17 +203,27 @@ describe("PlaceDetails", () => {
 
     expect(screen.getByText("Remove from favorites")).toBeInTheDocument();
     expect(fetchApi).toHaveBeenCalledTimes(2);
-    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
-      method: "DELETE",
-    });
+    expect(fetchApi).not.toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "DELETE",
+      },
+    );
 
     const testUser = userEvent.setup();
     await testUser.click(screen.getByText("Remove from favorites"));
 
     expect(fetchApi).toHaveBeenCalledTimes(3);
-    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
-      method: "DELETE",
-    });
+    expect(fetchApi).toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "DELETE",
+      },
+    );
 
     expect(screen.queryByText("Remove from favorites")).not.toBeInTheDocument();
     expect(screen.getByText("Add to favorites")).toBeInTheDocument();

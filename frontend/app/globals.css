@@ -1,55 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import "tailwindcss";
 
 @layer base {
-    body {
-        color: white;
-        background-color: var(--color-dark-primary);
-        font-family: 'Inter', sans-serif;
-    }
+  body {
+    color: white;
+    background-color: var(--color-dark-primary);
+    font-family: "Inter", sans-serif;
+  }
 
-    header {
-        background-color: var(--color-dark-primary)
-    }
+  header {
+    background-color: var(--color-dark-primary);
+  }
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @theme {
-    --color-primary: var(--color-blue-500);
-    --color-secondary: var(--color-mauve-500);
-    --color-border-primary: rgb(35, 35, 35);
-    --color-dark-primary: rgb(20, 20, 20);
-    --height-header: 3.5rem;
-    --spacing-header: var(--height-header);
-    --animate-spin: spin 1s linear infinite;
-    --height-main-content: calc(100vh - var(--height-header) *2);
+  --color-primary: var(--color-blue-500);
+  --color-secondary: var(--color-mauve-500);
+  --color-border-primary: rgb(35, 35, 35);
+  --color-dark-primary: rgb(20, 20, 20);
+  --height-header: 3.5rem;
+  --spacing-header: var(--height-header);
+  --animate-spin: spin 1s linear infinite;
+  --height-main-content: calc(100vh - var(--height-header) * 2);
 }
 
 .custom-marker-cluster,
 .custom-marker-cluster div,
 .custom-marker-cluster span {
-    border-radius: 50%;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+  border-radius: 50%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .custom-marker-cluster div {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .custom-marker-cluster span {
-    width: 80%;
-    height: 80%;
+  width: 80%;
+  height: 80%;
 }
 
 .user-marker {
-    background-color: white;
-    border: 3px solid var(--color-primary);
-    border-radius: 50%;
+  background-color: white;
+  border: 3px solid var(--color-primary);
+  border-radius: 50%;
 }
