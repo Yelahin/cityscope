@@ -26,7 +26,7 @@ export function AuthProvider ({children}: {children: React.ReactNode}) {
     }, []);
 
     async function logout () {
-        await fetchApi("logout/", undefined, {method: "POST"});
+        await fetchApi("logout/", undefined, undefined, {method: "POST"});
         setUser(null);
     }
 

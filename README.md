@@ -48,7 +48,8 @@ CSRF_TRUSTED_ORIGINS=your-frontend-origin       # <- production only, for exampl
 
 **Frontend**:
 ```bash
-NEXT_PUBLIC_API_BASE_URL=your-backend-api-endpoint # For example: "http://localhost:8000/api/"  
+NEXT_PUBLIC_API_BASE_URL=your-backend-api-endpoint-for-browser      # For example: "http://localhost:8000/api/"
+API_INTERNAL_BASE_URL=your-backend-api-endpoint-for-docker          # For example: "http://backend:8000/api/"
 ```
 
 5. Make sure Docker Engine or Docker Desktop is working

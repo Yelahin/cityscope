@@ -173,7 +173,7 @@ describe("Map", () => {
 
     expect(fetchAllPages).toHaveBeenCalledTimes(1);
     expect(fetchAllPages).toHaveBeenCalledWith(
-      "places/?search=test&page=1",
+      "places/?search=test",
       1000,
     );
   });

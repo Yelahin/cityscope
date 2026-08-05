@@ -69,7 +69,7 @@ describe("SignUp", () => {
 
     expect(push).toHaveBeenCalledTimes(1);
     expect(fetchApi).toHaveBeenCalledTimes(1);
-    expect(fetchApi).toHaveBeenCalledWith("register/", undefined, {
+    expect(fetchApi).toHaveBeenCalledWith("register/", undefined, undefined, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),

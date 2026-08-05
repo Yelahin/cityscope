@@ -1,4 +1,14 @@
+import { Metadata } from "next";
 import { PrimaryButtonLink } from "./ui/PrimaryButton";
+
+export const metadata: Metadata = {
+    title: "Not Found",
+    robots: {
+        index: false,
+        follow: true,
+        nocache: false,
+    },
+}
 
 export default function NotFound() {
     return (

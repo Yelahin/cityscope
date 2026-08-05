@@ -160,7 +160,7 @@ describe("PlaceDetails", () => {
 
     expect(screen.getByText("Add to favorites")).toBeInTheDocument();
     expect(fetchApi).toHaveBeenCalledTimes(2);
-    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, {
+    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
       method: "POST",
     });
 
@@ -168,7 +168,7 @@ describe("PlaceDetails", () => {
     await user.click(screen.getByText("Add to favorites"));
 
     expect(fetchApi).toHaveBeenCalledTimes(3);
-    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, {
+    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
       method: "POST",
     });
 
@@ -193,7 +193,7 @@ describe("PlaceDetails", () => {
 
     expect(screen.getByText("Remove from favorites")).toBeInTheDocument();
     expect(fetchApi).toHaveBeenCalledTimes(2);
-    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, {
+    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
       method: "DELETE",
     });
 
@@ -201,7 +201,7 @@ describe("PlaceDetails", () => {
     await testUser.click(screen.getByText("Remove from favorites"));
 
     expect(fetchApi).toHaveBeenCalledTimes(3);
-    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, {
+    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, undefined, {
       method: "DELETE",
     });
 

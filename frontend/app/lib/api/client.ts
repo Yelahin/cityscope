@@ -1,6 +1,7 @@
 import { ApiErrorResponse, PaginatedResponse } from "../types";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const clientApiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const serverApiUrl = process.env.API_INTERNAL_BASE_URL
 
 
 export class ApiError extends Error {
@@ -16,8 +17,10 @@ export class ApiError extends Error {
 
 let csrfToken: string | null = null;
 
-async function getCsrfToken() {
+async function getCsrfToken(serverFetch: boolean = false) {
     if (csrfToken) return csrfToken;
+
+    const apiUrl = serverFetch ? serverApiUrl : clientApiUrl;
 
     const response = await fetch(apiUrl + "csrf/", {credentials: "include"});
     if (!response.ok) {
@@ -38,6 +41,7 @@ function isUnsafeMethod(method?: string) {
 export default async function fetchApi<T = ApiErrorResponse>(
     path: string,
     pageSize?: number,
+    serverFetch: boolean = false,
     options?: RequestInit,
 ): Promise<T> {
     const headers = new Headers(options?.headers);
@@ -45,7 +49,14 @@ export default async function fetchApi<T = ApiErrorResponse>(
         headers.set("X-CSRFToken", await getCsrfToken());
     }
 
-    let query = apiUrl + path;
+    let query;
+
+    if (serverFetch) {
+        query = serverApiUrl + path;
+    } else {
+        query = clientApiUrl + path;
+    }
+
 
     if (!!pageSize) {
         const separator = query.includes("?") ? "&" : "?";
@@ -68,7 +79,7 @@ export default async function fetchApi<T = ApiErrorResponse>(
     return data as T;
 }
 
-export async function fetchAllPages<T>(path: string, pageSize?: number) {
+export async function fetchAllPages<T>(path: string, pageSize?: number, serverFetch: boolean = false) {
     const results: T[] = [];
     let page = 1;
 
@@ -77,6 +88,7 @@ export async function fetchAllPages<T>(path: string, pageSize?: number) {
         const response: PaginatedResponse<T> = await fetchApi(
             `${path}${separator}page=${page}`,
             pageSize,
+            serverFetch,
         );
         results.push(...response.results);
 
