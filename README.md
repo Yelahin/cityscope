@@ -138,7 +138,6 @@ To run the backend tests, execute the following command:
 docker exec -it cityscope-backend python manage.py test
 ```
 
-After adding the new category, it will be included the next time data is fetched from the **Overpass API**.
 ### Frontend
 Before running frontend tests, move to `frontend` folder
 ```bash
