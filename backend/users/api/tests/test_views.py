@@ -99,14 +99,24 @@ class RegisterUserTests(APITestCase):
         self.assertEqual(users_count, 0)
 
         for index in range(0, 3):
-            response = self.client.post(self.url, {"username": f"User_{index}", "password": f"user-password-{index}"})
+            response = self.client.post(
+                self.url,
+                {
+                    "username": f"User_{index}",
+                    "password": f"user-password-{index}",
+                },
+            )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         users_count = len(get_user_model().objects.all())
         self.assertEqual(users_count, 3)
 
-        response = self.client.post(self.url, {"username": "User_4", "password": "user-password-4"})
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        response = self.client.post(
+            self.url, {"username": "User_4", "password": "user-password-4"}
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
         users_count = len(get_user_model().objects.all())
@@ -121,14 +131,24 @@ class RegisterUserTests(APITestCase):
         self.assertEqual(users_count, 0)
 
         for index in range(0, 5):
-            response = self.client.post(self.url, {"username": f"User_{index}", "password": f"user-password-{index}"})
+            response = self.client.post(
+                self.url,
+                {
+                    "username": f"User_{index}",
+                    "password": f"user-password-{index}",
+                },
+            )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         users_count = len(get_user_model().objects.all())
         self.assertEqual(users_count, 5)
 
-        response = self.client.post(self.url, {"username": "User_4", "password": "user-password-4"})
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        response = self.client.post(
+            self.url, {"username": "User_4", "password": "user-password-4"}
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
         users_count = len(get_user_model().objects.all())
@@ -143,14 +163,24 @@ class RegisterUserTests(APITestCase):
         self.assertEqual(users_count, 0)
 
         for index in range(0, 10):
-            response = self.client.post(self.url, {"username": f"User_{index}", "password": f"user-password-{index}"})
+            response = self.client.post(
+                self.url,
+                {
+                    "username": f"User_{index}",
+                    "password": f"user-password-{index}",
+                },
+            )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         users_count = len(get_user_model().objects.all())
         self.assertEqual(users_count, 10)
 
-        response = self.client.post(self.url, {"username": "User_4", "password": "user-password-4"})
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        response = self.client.post(
+            self.url, {"username": "User_4", "password": "user-password-4"}
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
         users_count = len(get_user_model().objects.all())
@@ -199,10 +229,14 @@ class AuthenticationTests(APITestCase):
 
     def test_cookie_authenticated_mutations_require_csrf(self):
         client = APIClient(enforce_csrf_checks=True)
-        client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+        client.post(
+            reverse("token_obtain_pair"), self.credentials, format="json"
+        )
         saved_search = {"name": "Nearby cafes", "params": {"category": 1}}
 
-        response = client.post(reverse("search-list"), saved_search, format="json")
+        response = client.post(
+            reverse("search-list"), saved_search, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         csrf_response = client.get(reverse("api_csrf_token"))
@@ -220,11 +254,17 @@ class AuthenticationTests(APITestCase):
         CustomTokenObtainPairView.throttle_classes = [LoginMinThrottle]
 
         for _ in range(0, 3):
-            response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+            response = self.client.post(
+                reverse("token_obtain_pair"), self.credentials, format="json"
+            )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        response = self.client.post(
+            reverse("token_obtain_pair"), self.credentials, format="json"
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
     @patch("core.throttles.LoginHourThrottle.get_rate")
@@ -233,11 +273,17 @@ class AuthenticationTests(APITestCase):
         CustomTokenObtainPairView.throttle_classes = [LoginHourThrottle]
 
         for _ in range(0, 5):
-            response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+            response = self.client.post(
+                reverse("token_obtain_pair"), self.credentials, format="json"
+            )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        response = self.client.post(
+            reverse("token_obtain_pair"), self.credentials, format="json"
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
     @patch("core.throttles.LoginDayThrottle.get_rate")
@@ -246,11 +292,17 @@ class AuthenticationTests(APITestCase):
         CustomTokenObtainPairView.throttle_classes = [LoginDayThrottle]
 
         for _ in range(10):
-            response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+            response = self.client.post(
+                reverse("token_obtain_pair"), self.credentials, format="json"
+            )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        response = self.client.post(
+            reverse("token_obtain_pair"), self.credentials, format="json"
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
 
@@ -258,11 +310,23 @@ class FavoritePlaceTests(APITestCase):
     def setUp(self):
         cache.clear()
         PlaceViewSet.throttle_classes = ()
-        self.user_1_credentials = {"username": "User_1", "password": "password-user-1"}
-        self.user_2_credentials = {"username": "User_2", "password": "password-user-2"}
+        self.user_1_credentials = {
+            "username": "User_1",
+            "password": "password-user-1",
+        }
+        self.user_2_credentials = {
+            "username": "User_2",
+            "password": "password-user-2",
+        }
 
-        self.user_1 = get_user_model().objects.create_user(username=self.user_1_credentials["username"], password=self.user_1_credentials["password"])
-        self.user_2 = get_user_model().objects.create_user(username=self.user_2_credentials["username"], password=self.user_2_credentials["password"])
+        self.user_1 = get_user_model().objects.create_user(
+            username=self.user_1_credentials["username"],
+            password=self.user_1_credentials["password"],
+        )
+        self.user_2 = get_user_model().objects.create_user(
+            username=self.user_2_credentials["username"],
+            password=self.user_2_credentials["password"],
+        )
         self.url = "/api/places/favorite/"
 
         self.place_count = 20
@@ -274,7 +338,7 @@ class FavoritePlaceTests(APITestCase):
                 self.user_1.favorite_places.add(place)
 
         self.place = self.user_1.favorite_places.first()
-      
+
     def test_unauthenticated_user_cannot_access_endpoints(self):
         # GET
         response = self.client.get(self.url)
@@ -287,7 +351,7 @@ class FavoritePlaceTests(APITestCase):
         response = self.client.post(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        # DELETE 
+        # DELETE
         response = self.client.delete(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -313,12 +377,16 @@ class FavoritePlaceTests(APITestCase):
         self.assertContains(response, self.place.name)
 
         # Get not existing favorite place
-        response = self.client.get(f"/api/places/{Place.objects.order_by("-id").first().id + 1}/favorite/")
+        response = self.client.get(
+            f"/api/places/{Place.objects.order_by('-id').first().id + 1}/favorite/"
+        )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_can_get_only_own_favorite_places(self):
-        # GET list 
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
+        # GET list
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()), self.favorite_places_count
+        )
         self.assertEqual(len(self.user_2.favorite_places.all()), 0)
 
         self.client.login(**self.user_1_credentials)
@@ -358,12 +426,21 @@ class FavoritePlaceTests(APITestCase):
             id__in=self.user_1.favorite_places.values("id")
         ).first()
         self.client.login(**self.user_1_credentials)
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
-        self.assertFalse(self.user_1.favorite_places.filter(id=place.id).exists())
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()), self.favorite_places_count
+        )
+        self.assertFalse(
+            self.user_1.favorite_places.filter(id=place.id).exists()
+        )
         response = self.client.post(f"/api/places/{place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count + 1)
-        self.assertTrue(self.user_1.favorite_places.filter(id=place.id).exists())
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()),
+            self.favorite_places_count + 1,
+        )
+        self.assertTrue(
+            self.user_1.favorite_places.filter(id=place.id).exists()
+        )
 
         # Add favorite place that already in favorite places
         self.assertTrue(self.user_1.favorite_places.filter(id=self.place.id))
@@ -372,53 +449,81 @@ class FavoritePlaceTests(APITestCase):
         self.assertTrue(self.user_1.favorite_places.filter(id=self.place.id))
 
         # Add not existing place to favorite places
-        self.assertFalse(Place.objects.filter(id=Place.objects.order_by("-id").first().id + 1).exists())
-        response = self.client.post(f"/api/places/{Place.objects.order_by("-id").first().id + 1}/favorite/")
-        self.assertEqual(response.status_code, 404)
+        self.assertFalse(
+            Place.objects.filter(
+                id=Place.objects.order_by("-id").first().id + 1
+            ).exists()
+        )
+        response = self.client.post(
+            f"/api/places/{Place.objects.order_by('-id').first().id + 1}/favorite/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_can_add_only_own_favorite_places(self):
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()), self.favorite_places_count
+        )
         self.assertEqual(len(self.user_2.favorite_places.all()), 0)
 
         # Add favorite places for user_1
         self.client.login(**self.user_1_credentials)
-        id = Place.objects.order_by("-id").first().id - self.favorite_places_count
-        response = self.client.post(f"/api/places/{id+1}/favorite/")
+        id = (
+            Place.objects.order_by("-id").first().id
+            - self.favorite_places_count
+        )
+        response = self.client.post(f"/api/places/{id + 1}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response = self.client.post(f"/api/places/{id+2}/favorite/")
+        response = self.client.post(f"/api/places/{id + 2}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response = self.client.post(f"/api/places/{id+3}/favorite/")
+        response = self.client.post(f"/api/places/{id + 3}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count+3)
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()),
+            self.favorite_places_count + 3,
+        )
         self.assertEqual(len(self.user_2.favorite_places.all()), 0)
 
         # Add favorite places for user_2
         self.client.login(**self.user_2_credentials)
-        id = Place.objects.order_by("-id").first().id - self.favorite_places_count
-        response = self.client.post(f"/api/places/{id+1}/favorite/")
+        id = (
+            Place.objects.order_by("-id").first().id
+            - self.favorite_places_count
+        )
+        response = self.client.post(f"/api/places/{id + 1}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response = self.client.post(f"/api/places/{id+2}/favorite/")
+        response = self.client.post(f"/api/places/{id + 2}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response = self.client.post(f"/api/places/{id+3}/favorite/")
+        response = self.client.post(f"/api/places/{id + 3}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count+3)
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()),
+            self.favorite_places_count + 3,
+        )
         self.assertEqual(len(self.user_2.favorite_places.all()), 3)
 
     def test_delete_favorite_place(self):
         # Delete place from favorite places
         self.client.login(**self.user_1_credentials)
-        self.assertTrue(self.user_1.favorite_places.filter(id=self.place.id).exists())
+        self.assertTrue(
+            self.user_1.favorite_places.filter(id=self.place.id).exists()
+        )
         response = self.client.delete(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(self.user_1.favorite_places.filter(id=self.place.id).exists())
+        self.assertFalse(
+            self.user_1.favorite_places.filter(id=self.place.id).exists()
+        )
 
         # Delete place that no more exists in favorite places
-        self.assertFalse(self.user_1.favorite_places.filter(id=self.place.id).exists())
+        self.assertFalse(
+            self.user_1.favorite_places.filter(id=self.place.id).exists()
+        )
         response = self.client.delete(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(self.user_1.favorite_places.filter(id=self.place.id).exists())
+        self.assertFalse(
+            self.user_1.favorite_places.filter(id=self.place.id).exists()
+        )
 
         # Delete not existing place from favorite places
         id = Place.objects.order_by("-id").first().id + 1
@@ -428,7 +533,9 @@ class FavoritePlaceTests(APITestCase):
 
     def test_user_can_delete_only_own_favorite_places(self):
         # user_2 trying to delete user_1's favorite place
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()), self.favorite_places_count
+        )
         self.assertEqual(len(self.user_2.favorite_places.all()), 0)
 
         self.assertTrue(self.place in self.user_1.favorite_places.all())
@@ -437,7 +544,9 @@ class FavoritePlaceTests(APITestCase):
         self.client.login(**self.user_2_credentials)
         response = self.client.delete(f"/api/places/{self.place.id}/favorite/")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
+        self.assertEqual(
+            len(self.user_1.favorite_places.all()), self.favorite_places_count
+        )
 
     @patch("core.throttles.PlaceMinThrottle.get_rate")
     def test_favorite_throttling_min(self, mock):
@@ -445,19 +554,27 @@ class FavoritePlaceTests(APITestCase):
         PlaceViewSet.throttle_classes = [PlaceMinThrottle]
 
         self.client.login(**self.user_1_credentials)
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count
+        )
 
         for place in self.user_1.favorite_places.all()[:3]:
             response = self.client.delete(f"/api/places/{place.id}/favorite/")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-3)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count - 3
+        )
         place_id = self.user_1.favorite_places.first().id
 
         response = self.client.delete(f"/api/places/{place_id}/favorite/")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-3)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count - 3
+        )
 
     @patch("core.throttles.PlaceHourThrottle.get_rate")
     def test_favorite_throttling_hour(self, mock):
@@ -465,19 +582,27 @@ class FavoritePlaceTests(APITestCase):
         PlaceViewSet.throttle_classes = [PlaceHourThrottle]
 
         self.client.login(**self.user_1_credentials)
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count
+        )
 
         for place in self.user_1.favorite_places.all()[:5]:
             response = self.client.delete(f"/api/places/{place.id}/favorite/")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-5)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count - 5
+        )
         place_id = self.user_1.favorite_places.first().id
 
         response = self.client.delete(f"/api/places/{place_id}/favorite/")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-5)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count - 5
+        )
 
     @patch("core.throttles.PlaceDayThrottle.get_rate")
     def test_favorite_throttling_day(self, mock):
@@ -485,19 +610,27 @@ class FavoritePlaceTests(APITestCase):
         PlaceViewSet.throttle_classes = [PlaceDayThrottle]
 
         self.client.login(**self.user_1_credentials)
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count
+        )
 
         for place in self.user_1.favorite_places.all()[:7]:
             response = self.client.delete(f"/api/places/{place.id}/favorite/")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-7)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count - 7
+        )
         place_id = self.user_1.favorite_places.first().id
 
         response = self.client.delete(f"/api/places/{place_id}/favorite/")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
-        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-7)
+        self.assertEqual(
+            self.user_1.favorite_places.count(), self.favorite_places_count - 7
+        )
 
 
 class SavedSearchTests(APITestCase):
@@ -901,12 +1034,14 @@ class SavedSearchTests(APITestCase):
 
         self.client.login(**self.user_1_credentials)
 
-        for _ in range (0, 3):
+        for _ in range(0, 3):
             response = self.client.get(self.url)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
     @patch("core.throttles.SavedSearchHourThrottle.get_rate")
@@ -916,12 +1051,14 @@ class SavedSearchTests(APITestCase):
 
         self.client.login(**self.user_1_credentials)
 
-        for _ in range (0, 5):
+        for _ in range(0, 5):
             response = self.client.get(self.url)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
 
     @patch("core.throttles.SavedSearchDayThrottle.get_rate")
@@ -931,10 +1068,12 @@ class SavedSearchTests(APITestCase):
 
         self.client.login(**self.user_1_credentials)
 
-        for _ in range (0, 10):
+        for _ in range(0, 10):
             response = self.client.get(self.url)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.status_code, status.HTTP_429_TOO_MANY_REQUESTS
+        )
         self.assertEqual(response.data["detail"].code, "throttled")
