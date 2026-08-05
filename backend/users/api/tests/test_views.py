@@ -1,17 +1,33 @@
 import json
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from core.models import Place
+from core.throttles import (
+    LoginDayThrottle,
+    LoginHourThrottle,
+    LoginMinThrottle,
+    PlaceDayThrottle,
+    PlaceHourThrottle,
+    PlaceMinThrottle,
+    RegisterDayThrottle,
+    RegisterHourThrottle,
+    RegisterMinThrottle,
+    SavedSearchDayThrottle,
+    SavedSearchHourThrottle,
+    SavedSearchMinThrottle,
+)
 from fetchdata.api.tests.factories import PlaceFactory
 from fetchdata.api.views import PlaceViewSet
 from users.api.views import (
+    CustomTokenObtainPairView,
     RegisterUserView,
     SavedSearchViewSet,
-    TokenObtainPairView,
 )
 from users.models import SavedSearch
 
@@ -20,6 +36,7 @@ from .factories import SavedSearchFactory
 
 class RegisterUserTests(APITestCase):
     def setUp(self):
+        cache.clear()
         RegisterUserView.throttle_classes = ()
         self.url = reverse("api_user_registration")
 
@@ -73,10 +90,77 @@ class RegisterUserTests(APITestCase):
         users_count = len(get_user_model().objects.all())
         self.assertEqual(users_count, 0)
 
+    @patch("core.throttles.RegisterMinThrottle.get_rate")
+    def test_register_throttling_min(self, mock):
+        mock.return_value = "3/min"
+        RegisterUserView.throttle_classes = [RegisterMinThrottle]
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 0)
+
+        for index in range(0, 3):
+            response = self.client.post(self.url, {"username": f"User_{index}", "password": f"user-password-{index}"})
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 3)
+
+        response = self.client.post(self.url, {"username": "User_4", "password": "user-password-4"})
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 3)
+
+    @patch("core.throttles.RegisterHourThrottle.get_rate")
+    def test_register_throttling_hour(self, mock):
+        mock.return_value = "5/hour"
+        RegisterUserView.throttle_classes = [RegisterHourThrottle]
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 0)
+
+        for index in range(0, 5):
+            response = self.client.post(self.url, {"username": f"User_{index}", "password": f"user-password-{index}"})
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 5)
+
+        response = self.client.post(self.url, {"username": "User_4", "password": "user-password-4"})
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 5)
+
+    @patch("core.throttles.RegisterDayThrottle.get_rate")
+    def test_register_throttling_day(self, mock):
+        mock.return_value = "10/day"
+        RegisterUserView.throttle_classes = [RegisterDayThrottle]
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 0)
+
+        for index in range(0, 10):
+            response = self.client.post(self.url, {"username": f"User_{index}", "password": f"user-password-{index}"})
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 10)
+
+        response = self.client.post(self.url, {"username": "User_4", "password": "user-password-4"})
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+        users_count = len(get_user_model().objects.all())
+        self.assertEqual(users_count, 10)
+
 
 class AuthenticationTests(APITestCase):
     def setUp(self):
-        TokenObtainPairView.throttle_classes = ()
+        cache.clear()
+        CustomTokenObtainPairView.throttle_classes = ()
         self.credentials = {
             "username": "User_1",
             "password": "password-user-1",
@@ -130,9 +214,49 @@ class AuthenticationTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    @patch("core.throttles.LoginMinThrottle.get_rate")
+    def test_login_throttling_min(self, mock):
+        mock.return_value = "3/min"
+        CustomTokenObtainPairView.throttle_classes = [LoginMinThrottle]
+
+        for _ in range(0, 3):
+            response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.LoginHourThrottle.get_rate")
+    def test_login_throttling_hour(self, mock):
+        mock.return_value = "5/hour"
+        CustomTokenObtainPairView.throttle_classes = [LoginHourThrottle]
+
+        for _ in range(0, 5):
+            response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.LoginDayThrottle.get_rate")
+    def test_login_throttling_day(self, mock):
+        mock.return_value = "10/day"
+        CustomTokenObtainPairView.throttle_classes = [LoginDayThrottle]
+
+        for _ in range(10):
+            response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.post(reverse("token_obtain_pair"), self.credentials, format="json")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
 
 class FavoritePlaceTests(APITestCase):
     def setUp(self):
+        cache.clear()
         PlaceViewSet.throttle_classes = ()
         self.user_1_credentials = {"username": "User_1", "password": "password-user-1"}
         self.user_2_credentials = {"username": "User_2", "password": "password-user-2"}
@@ -315,9 +439,70 @@ class FavoritePlaceTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(len(self.user_1.favorite_places.all()), self.favorite_places_count)
 
+    @patch("core.throttles.PlaceMinThrottle.get_rate")
+    def test_favorite_throttling_min(self, mock):
+        mock.return_value = "3/min"
+        PlaceViewSet.throttle_classes = [PlaceMinThrottle]
+
+        self.client.login(**self.user_1_credentials)
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count)
+
+        for place in self.user_1.favorite_places.all()[:3]:
+            response = self.client.delete(f"/api/places/{place.id}/favorite/")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-3)
+        place_id = self.user_1.favorite_places.first().id
+
+        response = self.client.delete(f"/api/places/{place_id}/favorite/")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-3)
+
+    @patch("core.throttles.PlaceHourThrottle.get_rate")
+    def test_favorite_throttling_hour(self, mock):
+        mock.return_value = "5/hour"
+        PlaceViewSet.throttle_classes = [PlaceHourThrottle]
+
+        self.client.login(**self.user_1_credentials)
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count)
+
+        for place in self.user_1.favorite_places.all()[:5]:
+            response = self.client.delete(f"/api/places/{place.id}/favorite/")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-5)
+        place_id = self.user_1.favorite_places.first().id
+
+        response = self.client.delete(f"/api/places/{place_id}/favorite/")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-5)
+
+    @patch("core.throttles.PlaceDayThrottle.get_rate")
+    def test_favorite_throttling_day(self, mock):
+        mock.return_value = "7/day"
+        PlaceViewSet.throttle_classes = [PlaceDayThrottle]
+
+        self.client.login(**self.user_1_credentials)
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count)
+
+        for place in self.user_1.favorite_places.all()[:7]:
+            response = self.client.delete(f"/api/places/{place.id}/favorite/")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-7)
+        place_id = self.user_1.favorite_places.first().id
+
+        response = self.client.delete(f"/api/places/{place_id}/favorite/")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+        self.assertEqual(self.user_1.favorite_places.count(), self.favorite_places_count-7)
+
 
 class SavedSearchTests(APITestCase):
     def setUp(self):
+        cache.clear()
         SavedSearchViewSet.throttle_classes = ()
         self.user_1_credentials = {
             "username": "User_1",
@@ -708,3 +893,48 @@ class SavedSearchTests(APITestCase):
             len(SavedSearch.objects.filter(user=self.user_1)),
             self.saved_search_count,
         )
+
+    @patch("core.throttles.SavedSearchMinThrottle.get_rate")
+    def test_searches_throttling_min(self, mock):
+        mock.return_value = "3/min"
+        SavedSearchViewSet.throttle_classes = [SavedSearchMinThrottle]
+
+        self.client.login(**self.user_1_credentials)
+
+        for _ in range (0, 3):
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.SavedSearchHourThrottle.get_rate")
+    def test_searches_throttling_hour(self, mock):
+        mock.return_value = "5/hour"
+        SavedSearchViewSet.throttle_classes = [SavedSearchHourThrottle]
+
+        self.client.login(**self.user_1_credentials)
+
+        for _ in range (0, 5):
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.SavedSearchDayThrottle.get_rate")
+    def test_searches_throttling_day(self, mock):
+        mock.return_value = "10/day"
+        SavedSearchViewSet.throttle_classes = [SavedSearchDayThrottle]
+
+        self.client.login(**self.user_1_credentials)
+
+        for _ in range (0, 10):
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["detail"].code, "throttled")

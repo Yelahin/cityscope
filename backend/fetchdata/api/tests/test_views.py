@@ -1,10 +1,18 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
 from core.models import Category, City, Place
+from core.throttles import (
+    PlaceDayThrottle,
+    PlaceHourThrottle,
+    PlaceMinThrottle,
+)
 from fetchdata.api.views import PlaceViewSet
 
 from .factories import PlaceFactory
@@ -12,6 +20,7 @@ from .factories import PlaceFactory
 
 class PlaceDetailTests(APITestCase):
     def setUp(self):
+        cache.clear()
         PlaceViewSet.throttle_classes = ()
         self.place = PlaceFactory(
             address="Alexanderplatz, Berlin",
@@ -47,9 +56,49 @@ class PlaceDetailTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data["is_favorite"])
 
+    @patch("core.throttles.PlaceMinThrottle.get_rate")
+    def test_detail_throttling_min(self, mock):
+        mock.return_value = "5/min"
+        PlaceViewSet.throttle_classes = [PlaceMinThrottle]
+
+        for _ in range(0, 5):
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.PlaceHourThrottle.get_rate")
+    def test_detail_throttling_hour(self, mock):
+        mock.return_value = "10/hour"
+        PlaceViewSet.throttle_classes = [PlaceHourThrottle]
+
+        for _ in range(0, 10):
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.PlaceDayThrottle.get_rate")
+    def test_detail_throttling_day(self, mock):
+        mock.return_value = "15/day"
+        PlaceViewSet.throttle_classes = [PlaceDayThrottle]
+
+        for _ in range(0, 15):
+            response = self.client.get(self.url)
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
 
 class PlaceTestCase(APITestCase):
     def setUp(self):
+        cache.clear()
         PlaceViewSet.throttle_classes = ()
         self.url = "places"
         self.place = PlaceFactory(name="Test Obj", address="Elm Court 5 02138")
@@ -440,3 +489,42 @@ class PlaceTestCase(APITestCase):
         response =  self.client.get(reverse("place-list") + "?lat=90&lon=181")
         self.assertEqual(response.status_code, 400)
         self.assertIsInstance(response.data["lon"][0], ErrorDetail)
+
+    @patch("core.throttles.PlaceMinThrottle.get_rate")
+    def test_place_throttling_min(self, mock):
+        mock.return_value = "5/min"
+        PlaceViewSet.throttle_classes = [PlaceMinThrottle]
+
+        for _ in range(0, 5):
+            response = self.client.get(reverse("place-list"))
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("place-list"))
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.PlaceHourThrottle.get_rate")
+    def test_place_throttling_hour(self, mock):
+        mock.return_value = "10/hour"
+        PlaceViewSet.throttle_classes = [PlaceHourThrottle]
+
+        for _ in range(0, 10):
+            response = self.client.get(reverse("place-list"))
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("place-list"))
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.data["detail"].code, "throttled")
+
+    @patch("core.throttles.PlaceDayThrottle.get_rate")
+    def test_place_throttling_day(self, mock):
+        mock.return_value = "15/day"
+        PlaceViewSet.throttle_classes = [PlaceDayThrottle]
+
+        for _ in range(0, 15):
+            response = self.client.get(reverse("place-list"))
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("place-list"))
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.data["detail"].code, "throttled")
