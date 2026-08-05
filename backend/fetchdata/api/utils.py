@@ -44,14 +44,22 @@ def get_calculated_distance(latitude, longitude, logger=logger) -> FloatField:
     if latitude > 90 or latitude < -90:
         logger.exception(f"{latitude} is invalid value for latitutde!")
         raise ValidationError(
-            {"lat": ["Latitude should be less than 90.0 and greater than -90.0"]}
+            {
+                "lat": [
+                    "Latitude should be less than 90.0 and greater than -90.0"
+                ]
+            }
         )
 
     # Validate longitude
     if longitude > 180 or longitude < -180:
         logger.exception(f"{longitude} is invalid value for longitude!")
         raise ValidationError(
-            {"lon": ["Longitude should be less than 180.0 and greater than -180.0"]}
+            {
+                "lon": [
+                    "Longitude should be less than 180.0 and greater than -180.0"
+                ]
+            }
         )
 
     # Calculate distance
@@ -69,5 +77,5 @@ def get_calculated_distance(latitude, longitude, logger=logger) -> FloatField:
 
 class StandardResultSetPagination(PageNumberPagination):
     page_size = 100
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 1000

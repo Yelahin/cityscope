@@ -5,32 +5,31 @@ import factory
 from core.models import Category, City, Place, SourceRecord
 
 
-class CategoryFactory(factory.django.DjangoModelFactory): 
-    class Meta: 
+class CategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
         model = Category
-        django_get_or_create = ("name", )
+        django_get_or_create = ("name",)
 
     name = factory.Faker(
-        'random_element',
-        elements=["Cafe", "Gym", "Hospital", "School", "Restaurant"]
+        "random_element",
+        elements=["Cafe", "Gym", "Hospital", "School", "Restaurant"],
     )
 
 
 class CityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = City
-        django_get_or_create = ("name", )
+        django_get_or_create = ("name",)
 
     name = factory.Faker(
-        'random_element',
-        elements=["Paris", "London", "Berlin", "Rome"]
+        "random_element", elements=["Paris", "London", "Berlin", "Rome"]
     )
 
 
 class SourceRecordFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = SourceRecord
-        django_get_or_create = ("name", )
+        django_get_or_create = ("name",)
 
     name = "Overpass"
     source_type = SourceRecord.API
@@ -40,7 +39,7 @@ class PlaceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Place
 
-    name = factory.Sequence(lambda n: f'Place {n}')
+    name = factory.Sequence(lambda n: f"Place {n}")
     address = None
     latitude = factory.LazyFunction(lambda: randrange(-90, 91))
     longitude = factory.LazyFunction(lambda: randrange(-180, 181))

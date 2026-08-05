@@ -16,11 +16,15 @@ from fetchdata.services.tests.factories import (
 class ImportPlaceViewTestCase(TestCase):
     def setUp(self):
         self.url = "import_places"
-        self.source = SourceRecord.objects.create(name="Overpass", source_type=SourceRecord.API)
+        self.source = SourceRecord.objects.create(
+            name="Overpass", source_type=SourceRecord.API
+        )
         self.city = City.objects.create(name="London")
         self.category = Category.objects.create(name="Cafe")
 
-        self.user = get_user_model().objects.create_superuser(username="Admin", password="testpassword1234!")
+        self.user = get_user_model().objects.create_superuser(
+            username="Admin", password="testpassword1234!"
+        )
         self.client.force_login(self.user)
 
     @patch("fetchdata.services.fetch.api.query")
@@ -35,12 +39,14 @@ class ImportPlaceViewTestCase(TestCase):
 
         self.assertEqual(Place.objects.count(), 0)
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": self.source.id,
-            "city": self.city.id,
-            "category": self.category.id,
-        })
-
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": self.source.id,
+                "city": self.city.id,
+                "category": self.category.id,
+            },
+        )
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
@@ -58,40 +64,54 @@ class ImportPlaceViewTestCase(TestCase):
 
         self.assertEqual(Place.objects.count(), 0)
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": self.source.id,
-            "city": self.city.id,
-            "category": self.category.id,
-        })
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": self.source.id,
+                "city": self.city.id,
+                "category": self.category.id,
+            },
+        )
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": self.source.id,
-            "city": self.city.id,
-            "category": self.category.id,
-        }) 
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": self.source.id,
+                "city": self.city.id,
+                "category": self.category.id,
+            },
+        )
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
 
         # Test combined duplicates and new elements
-        mock_query.return_value.nodes = nodes + OverpyNodeFactory.build_batch(5)
+        mock_query.return_value.nodes = nodes + OverpyNodeFactory.build_batch(
+            5
+        )
         mock_query.return_value.ways = ways + OverpyWayFactory.build_batch(5)
-        mock_query.return_value.relations = relations + OverpyRelationFactory.build_batch(5)
+        mock_query.return_value.relations = (
+            relations + OverpyRelationFactory.build_batch(5)
+        )
 
         self.assertEqual(Place.objects.count(), len(nodes + ways + relations))
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": self.source.id,
-            "city": self.city.id,
-            "category": self.category.id,
-        })
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": self.source.id,
+                "city": self.city.id,
+                "category": self.category.id,
+            },
+        )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Place.objects.count(), len(nodes + ways + relations) + 15)
-
+        self.assertEqual(
+            Place.objects.count(), len(nodes + ways + relations) + 15
+        )
 
     @patch("fetchdata.services.fetch.api.query")
     def test_invalid_form(self, mock_query):
@@ -105,11 +125,14 @@ class ImportPlaceViewTestCase(TestCase):
 
         self.assertEqual(Place.objects.count(), 0)
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": "Invalid",
-            "city": "Invalid",
-            "category": "Invalid",
-        })
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": "Invalid",
+                "city": "Invalid",
+                "category": "Invalid",
+            },
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context["form"].is_valid())
@@ -119,24 +142,34 @@ class ImportPlaceViewTestCase(TestCase):
     def test_form_overpy_error(self, mock_query):
         mock_query.side_effect = OverPyException()
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": self.source.id,
-            "city": self.city.id,
-            "category": self.category.id,
-        })
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": self.source.id,
+                "city": self.city.id,
+                "category": self.category.id,
+            },
+        )
 
         self.assertFalse(response.context["form"].is_valid())
-        self.assertFormError(response.context["form"], None, "Overpy raised an exception!")
+        self.assertFormError(
+            response.context["form"], None, "Overpy raised an exception!"
+        )
 
     @patch("fetchdata.services.fetch.api.query")
     def test_form_error(self, mock_query):
         mock_query.side_effect = Exception()
 
-        response = self.client.post(reverse(f"admin:{self.url}"), data={
-            "sourcerecord": self.source.id,
-            "city": self.city.id,
-            "category": self.category.id,
-        })
+        response = self.client.post(
+            reverse(f"admin:{self.url}"),
+            data={
+                "sourcerecord": self.source.id,
+                "city": self.city.id,
+                "category": self.category.id,
+            },
+        )
 
         self.assertFalse(response.context["form"].is_valid())
-        self.assertFormError(response.context["form"], None, "Something went wrong!")
+        self.assertFormError(
+            response.context["form"], None, "Something went wrong!"
+        )

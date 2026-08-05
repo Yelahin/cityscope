@@ -32,7 +32,11 @@ from .serializers import SavedSearchSerializer, UserSerializer
 
 
 class SavedSearchViewSet(viewsets.ModelViewSet):
-    throttle_classes = [SavedSearchMinThrottle, SavedSearchHourThrottle, SavedSearchDayThrottle]
+    throttle_classes = [
+        SavedSearchMinThrottle,
+        SavedSearchHourThrottle,
+        SavedSearchDayThrottle,
+    ]
     serializer_class = SavedSearchSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [OrderingFilter, SearchFilter]
@@ -51,6 +55,7 @@ class SavedSearchViewSet(viewsets.ModelViewSet):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     throttle_classes = [LoginMinThrottle, LoginHourThrottle, LoginDayThrottle]
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
@@ -92,7 +97,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class RegisterUserView(APIView):
     permission_classes = [AllowAny]
-    throttle_classes = [RegisterMinThrottle, RegisterHourThrottle, RegisterDayThrottle]
+    throttle_classes = [
+        RegisterMinThrottle,
+        RegisterHourThrottle,
+        RegisterDayThrottle,
+    ]
 
     def post(self, request, *args, **kwargs):
         user = UserSerializer(data=request.data)
@@ -102,7 +111,9 @@ class RegisterUserView(APIView):
                 data={"message": "User was successfully created"},
                 status=status.HTTP_201_CREATED,
             )
-        return Response(data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(["GET"])

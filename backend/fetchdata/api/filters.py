@@ -15,11 +15,14 @@ from .utils import get_calculated_distance
 
 logger = logging.getLogger(__name__)
 
+
 class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
     pass
 
+
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
     pass
+
 
 class PlaceFilterSet(filters.FilterSet):
     category = NumberInFilter(field_name="category", lookup_expr="in")
@@ -69,14 +72,16 @@ class PlaceFilterSet(filters.FilterSet):
                 "Can not filter by radius without users coordinates provided!"
             )
             raise ValidationError(
-                {"radius": ["Radius filter expect users coordinates: lat, lon"]}
+                {
+                    "radius": [
+                        "Radius filter expect users coordinates: lat, lon"
+                    ]
+                }
             )
 
         # Check if radius is negative value
-        if radius and radius < 0: 
-            logger.exception(
-                "Can not filter by negative radius!"
-            )
+        if radius and radius < 0:
+            logger.exception("Can not filter by negative radius!")
             raise ValidationError(
                 {"radius": ["Radius can't be a negative number"]}
             )

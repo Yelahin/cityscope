@@ -10,16 +10,16 @@ class CustomRateThrottle(SimpleRateThrottle):
             ident = self.get_ident(request)
 
         return self.cache_format % {
-            'scope': self.scope,
-            'ident': ident,
+            "scope": self.scope,
+            "ident": ident,
         }
 
 
 class CustomUserIPThrottle(SimpleRateThrottle):
     def get_cache_key(self, request, view):
         return self.cache_format % {
-            'scope': self.scope,
-            'ident': self.get_ident(request),
+            "scope": self.scope,
+            "ident": self.get_ident(request),
         }
 
 
@@ -97,6 +97,7 @@ class RegisterDayThrottle(CustomUserIPThrottle):
 
 class GetMeMinThrottle(CustomUserIPThrottle):
     scope = "get_me_min"
+
 
 class GetMeHourThrottle(CustomUserIPThrottle):
     scope = "get_me_hour"

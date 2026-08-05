@@ -22,7 +22,9 @@ ELEMENTS_FIELDS = {
 
 
 # Transform raw data from response to DataBase ready data
-def get_transformed_data(fetched_data: tuple[list, SourceRecord], city: City) -> list[dict]:
+def get_transformed_data(
+    fetched_data: tuple[list, SourceRecord], city: City
+) -> list[dict]:
     sourcerecord = fetched_data[1]
     elements = fetched_data[0].copy()
 
@@ -55,6 +57,7 @@ def transform_element(element, sourcerecord: SourceRecord, city: City) -> dict:
 
 # Transform field functions
 
+
 def get_name_from_element(element) -> str | None:
     # Get name
     name = element.tags.get("name:en")
@@ -75,7 +78,7 @@ def get_name_from_element(element) -> str | None:
             > 1
         ):
             return ascii_text
-        
+
     return None
 
 
@@ -89,7 +92,7 @@ def get_address_from_element(element) -> str | None:
     address = [element.tags.get(tag) for tag in tags if element.tags.get(tag)]
     if any(address):
         return " ".join(address)
-    
+
     return None
 
 
@@ -99,14 +102,16 @@ def get_category_from_element(element) -> Category | None:
     # Transform Overpass QL category name to human readable
     for key, value in category_tags.items():
         element_category = element.tags.get(value.get("tag"))
-        if element_category is not None and element_category == value.get("value"):
+        if element_category is not None and element_category == value.get(
+            "value"
+        ):
             category = key
             break
 
     if category:
         cat, created = Category.objects.get_or_create(name=category)
         return cat
-    
+
     return None
 
 

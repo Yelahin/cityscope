@@ -72,7 +72,9 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         filterset_class=PlaceFilterSet,
     )
     def favorite_places(self, request):
-        queryset = request.user.favorite_places.select_related("category", "city")
+        queryset = request.user.favorite_places.select_related(
+            "category", "city"
+        )
         queryset = self.filter_queryset(queryset)
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -154,7 +156,11 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CategoryListView(generics.ListAPIView):
-    throttle_classes = [CategoryMinThrottle, CategoryHourThrottle, CategoryDayThrottle]
+    throttle_classes = [
+        CategoryMinThrottle,
+        CategoryHourThrottle,
+        CategoryDayThrottle,
+    ]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = StandardResultSetPagination

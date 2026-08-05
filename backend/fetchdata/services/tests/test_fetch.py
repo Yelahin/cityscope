@@ -22,7 +22,9 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
         self.nodes = OverpyNodeFactory.build_batch(10)
         self.ways = OverpyWayFactory.build_batch(10)
         self.relations = OverpyRelationFactory.build_batch(10)
-        self.source = SourceRecord.objects.create(name="Overpass", source_type=SourceRecord.API)
+        self.source = SourceRecord.objects.create(
+            name="Overpass", source_type=SourceRecord.API
+        )
         self.city = City.objects.create(name="London")
 
     def test_get_overpass_query_contains_boilerplate(self):
@@ -42,7 +44,10 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
 
         query = get_overpass_query(categories=[cafe], city=self.city)
 
-        tag, value = category_tags[cafe.name]["tag"], category_tags[cafe.name]["value"]
+        tag, value = (
+            category_tags[cafe.name]["tag"],
+            category_tags[cafe.name]["value"],
+        )
         self.assertIn(f'node["{tag}"="{value}"](area.city);', query)
         self.assertIn(f'way["{tag}"="{value}"](area.city);', query)
         self.assertIn(f'relation["{tag}"="{value}"](area.city);', query)
@@ -53,7 +58,10 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
 
         query = get_overpass_query(categories=[cafe], city=self.city)
 
-        tag, value = category_tags[school.name]["tag"], category_tags[school.name]["value"]
+        tag, value = (
+            category_tags[school.name]["tag"],
+            category_tags[school.name]["value"],
+        )
         self.assertNotIn(f'node["{tag}"="{value}"](area.city);', query)
 
     @patch("fetchdata.services.fetch.api.query")
@@ -82,7 +90,9 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
 
         upload_data_to_database(query, self.city)
 
-        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+        self.assertEqual(
+            Place.objects.count(), len(self.nodes + self.ways + self.relations)
+        )
 
     @patch("fetchdata.services.fetch.api.query")
     def test_upload_data_to_database_duplicates(self, mock_api):
@@ -98,24 +108,44 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
 
         upload_data_to_database(query, self.city)
 
-        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+        self.assertEqual(
+            Place.objects.count(), len(self.nodes + self.ways + self.relations)
+        )
         upload_data_to_database(query, self.city)
-        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+        self.assertEqual(
+            Place.objects.count(), len(self.nodes + self.ways + self.relations)
+        )
 
         # Test upload combined duplicates and new elements
-        mock_api.return_value.nodes = self.nodes + OverpyNodeFactory.build_batch(5)
-        mock_api.return_value.ways = self.ways + OverpyWayFactory.build_batch(5)
-        mock_api.return_value.relations = self.relations + OverpyRelationFactory.build_batch(5)
+        mock_api.return_value.nodes = (
+            self.nodes + OverpyNodeFactory.build_batch(5)
+        )
+        mock_api.return_value.ways = self.ways + OverpyWayFactory.build_batch(
+            5
+        )
+        mock_api.return_value.relations = (
+            self.relations + OverpyRelationFactory.build_batch(5)
+        )
 
-        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations))
+        self.assertEqual(
+            Place.objects.count(), len(self.nodes + self.ways + self.relations)
+        )
         upload_data_to_database(query, self.city)
-        self.assertEqual(Place.objects.count(), len(self.nodes + self.ways + self.relations) + 15)
+        self.assertEqual(
+            Place.objects.count(),
+            len(self.nodes + self.ways + self.relations) + 15,
+        )
 
     @patch("fetchdata.services.fetch.api.query")
     def test_upload_data_to_database_overpy_exception(self, mock_query):
         mock_query.side_effect = OverPyException()
 
-        with self.assertLogs(logger="fetchdata.services.fetch", level="ERROR") as log, self.assertRaises(OverPyException):
+        with (
+            self.assertLogs(
+                logger="fetchdata.services.fetch", level="ERROR"
+            ) as log,
+            self.assertRaises(OverPyException),
+        ):
             upload_data_to_database("query", self.city)
 
         self.assertIn("Overpy error occured!", log.output[0])
@@ -124,7 +154,12 @@ class FetchOverpassAPIPipelineTestCase(TestCase):
     def test_upload_data_to_database_exception(self, mock_query):
         mock_query.side_effect = Exception()
 
-        with self.assertLogs(logger="fetchdata.services.fetch", level="ERROR") as log, self.assertRaises(Exception):
+        with (
+            self.assertLogs(
+                logger="fetchdata.services.fetch", level="ERROR"
+            ) as log,
+            self.assertRaises(Exception),
+        ):
             upload_data_to_database("query", self.city)
 
         self.assertIn("Something went wrong!", log.output[0])

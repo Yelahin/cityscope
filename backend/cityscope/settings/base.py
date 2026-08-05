@@ -90,7 +90,7 @@ CACHES = {
 
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:6379/0"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:6379/0"
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TIMEZONE = "Europe/Paris"
 
 # Password validation
@@ -143,7 +143,7 @@ SIMPLE_JWT = {
     "AUTH_COOKIE_REFRESH": "refresh_token",
     "AUTH_COOKIE_HTTP_ONLY": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken", ),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "AUTH_COOKIE_PATH": "/",
     "AUTH_COOKIE_SAMESITE": "Lax",
 }
@@ -177,42 +177,41 @@ REST_FRAMEWORK = {
     # Pagination
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
-    
     # Filtering
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
-
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
     # Authentication
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "users.api.authentication.CustomJWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
-
     # Rate limits
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.ScopedRateThrottle',
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.ScopedRateThrottle",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'places_min': '100/min',
-        'places_hour': '1500/hour',
-        'places_day': '5000/day',
-        'categories_min': '30/min',
-        'categories_hour': '300/hour',
-        'categories_day': '800/day',
-        'cities_min': '30/min',
-        'cities_hour': '300/hour',
-        'cities_day': '800/day',
-        'searches_min': '30/min',
-        'searches_hour': '300/hour',
-        'searches_day': '800/day',
-        'login_min': '5/min',
-        'login_hour': '15/hour',
-        'login_day': '30/day',
-        'register_min': '3/min',
-        'register_hour': '10/hour',
-        'register_day': '30/day',
-        'get_me_min': '60/min',
-        'get_me_hour': '600/hour',
-    }
+    "DEFAULT_THROTTLE_RATES": {
+        "places_min": "100/min",
+        "places_hour": "1500/hour",
+        "places_day": "5000/day",
+        "categories_min": "30/min",
+        "categories_hour": "300/hour",
+        "categories_day": "800/day",
+        "cities_min": "30/min",
+        "cities_hour": "300/hour",
+        "cities_day": "800/day",
+        "searches_min": "30/min",
+        "searches_hour": "300/hour",
+        "searches_day": "800/day",
+        "login_min": "5/min",
+        "login_hour": "15/hour",
+        "login_day": "30/day",
+        "register_min": "3/min",
+        "register_hour": "10/hour",
+        "register_day": "30/day",
+        "get_me_min": "60/min",
+        "get_me_hour": "600/hour",
+    },
 }
 
 CORS_ALLOW_CREDENTIALS = True

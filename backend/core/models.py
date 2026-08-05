@@ -10,7 +10,9 @@ class SlugifyModel(models.Model):
     class Meta:
         abstract = True
 
-    slug = models.SlugField(max_length=100, unique=True, blank=True, editable=False)
+    slug = models.SlugField(
+        max_length=100, unique=True, blank=True, editable=False
+    )
 
     # Generate slug automatically if slug was not provided
     def save(self, *args, **kwargs):

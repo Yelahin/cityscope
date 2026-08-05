@@ -12,13 +12,17 @@ from fetchdata.services.transform import get_transformed_data
 
 class SaveOverpassAPIPipeline(TestCase):
     def setUp(self):
-        self.source = SourceRecord.objects.create(name="Overpass", source_type=SourceRecord.API)
+        self.source = SourceRecord.objects.create(
+            name="Overpass", source_type=SourceRecord.API
+        )
         self.city = City.objects.create(name="London")
 
     def test_save_places_to_db_one(self):
         node = OverpyNodeFactory(tags__name="Test Place node")
 
-        transformed_data = get_transformed_data(([node], self.source), self.city)
+        transformed_data = get_transformed_data(
+            ([node], self.source), self.city
+        )
 
         save_places_to_db(transformed_data)
 
@@ -28,22 +32,35 @@ class SaveOverpassAPIPipeline(TestCase):
         self.assertEqual(Place.objects.first().sourcerecord, self.source)
 
     def test_save_places_to_db_multiple(self):
-        elements = OverpyNodeFactory.build_batch(10) + OverpyWayFactory.build_batch(10) + OverpyRelationFactory.build_batch(10)
+        elements = (
+            OverpyNodeFactory.build_batch(10)
+            + OverpyWayFactory.build_batch(10)
+            + OverpyRelationFactory.build_batch(10)
+        )
 
-        transformed_data = get_transformed_data((elements, self.source), self.city)
+        transformed_data = get_transformed_data(
+            (elements, self.source), self.city
+        )
 
         save_places_to_db(transformed_data)
 
         self.assertEqual(Place.objects.count(), len(elements))
-        self.assertEqual(Place.objects.filter(city=self.city).count(), len(elements))
-        self.assertEqual(Place.objects.filter(sourcerecord=self.source).count(), len(elements))
+        self.assertEqual(
+            Place.objects.filter(city=self.city).count(), len(elements)
+        )
+        self.assertEqual(
+            Place.objects.filter(sourcerecord=self.source).count(),
+            len(elements),
+        )
 
     def test_save_places_to_db_duplicates(self):
         # Test single element
         self.assertEqual(Place.objects.count(), 0)
 
         node = OverpyNodeFactory.build()
-        transformed_data = get_transformed_data(([node], self.source), self.city)
+        transformed_data = get_transformed_data(
+            ([node], self.source), self.city
+        )
         save_places_to_db(transformed_data)
         self.assertEqual(Place.objects.count(), 1)
 
@@ -51,23 +68,46 @@ class SaveOverpassAPIPipeline(TestCase):
         self.assertEqual(Place.objects.count(), 1)
 
         # Test multiple duplicates
-        elements = OverpyNodeFactory.build_batch(10) + OverpyWayFactory.build_batch(10) + OverpyRelationFactory.build_batch(10)
-        transformed_data = get_transformed_data((elements, self.source), self.city)
+        elements = (
+            OverpyNodeFactory.build_batch(10)
+            + OverpyWayFactory.build_batch(10)
+            + OverpyRelationFactory.build_batch(10)
+        )
+        transformed_data = get_transformed_data(
+            (elements, self.source), self.city
+        )
 
         save_places_to_db(transformed_data)
         self.assertEqual(Place.objects.count(), len(elements) + 1)
-        self.assertEqual(Place.objects.filter(city=self.city).count(), len(elements) + 1)
-        self.assertEqual(Place.objects.filter(sourcerecord=self.source).count(), len(elements) + 1)
+        self.assertEqual(
+            Place.objects.filter(city=self.city).count(), len(elements) + 1
+        )
+        self.assertEqual(
+            Place.objects.filter(sourcerecord=self.source).count(),
+            len(elements) + 1,
+        )
 
         save_places_to_db(transformed_data)
         self.assertEqual(Place.objects.count(), len(elements) + 1)
-        self.assertEqual(Place.objects.filter(city=self.city).count(), len(elements) + 1)
-        self.assertEqual(Place.objects.filter(sourcerecord=self.source).count(), len(elements) + 1)
+        self.assertEqual(
+            Place.objects.filter(city=self.city).count(), len(elements) + 1
+        )
+        self.assertEqual(
+            Place.objects.filter(sourcerecord=self.source).count(),
+            len(elements) + 1,
+        )
 
         # Test new elements with duplicates combined
         self.assertEqual(Place.objects.count(), len(elements) + 1)
-        combined_elements = elements + OverpyNodeFactory.build_batch(10) + OverpyWayFactory.build_batch(5) + OverpyRelationFactory.build_batch(5)
-        transformed_data = get_transformed_data((combined_elements, self.source), self.city)
+        combined_elements = (
+            elements
+            + OverpyNodeFactory.build_batch(10)
+            + OverpyWayFactory.build_batch(5)
+            + OverpyRelationFactory.build_batch(5)
+        )
+        transformed_data = get_transformed_data(
+            (combined_elements, self.source), self.city
+        )
 
         save_places_to_db(transformed_data)
         self.assertEqual(Place.objects.count(), len(combined_elements) + 1)
