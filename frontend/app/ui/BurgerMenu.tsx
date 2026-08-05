@@ -8,13 +8,13 @@ type Page = {
     link: boolean
 }
 
-const authenticatedUserPages = [
+export const authenticatedUserPages = [
     {label: "Home", href: "/", link: true},
     {label: "Profile", href: "/profile", link: true},
     {label: "Log Out", href: "/logout", link: false}
 ];
 
-const unAuthenticatedUserPages = [
+export const unAuthenticatedUserPages = [
     {label: "Home", href: "/", link: true},
     {label: "Sign Up", href: "/sign-up", link: true},
     {label: "Login", href: "/login", link: true}
@@ -39,7 +39,7 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
 
     return (
         <>
-            <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center gap-2 sm:hidden cursor-pointer w-10 h-10 p-1.5 rounded-lg shadow-md border-[0.5px] border-border-primary">
+            <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center gap-2 sm:hidden cursor-pointer w-10 h-10 p-1.5 rounded-lg shadow-md border-[0.5px] border-border-primary" data-testid="burger-menu-button">
                     <span className={`flex h-0.75 rounded-3xl transition-all
                         ${isOpen ? "w-8 bg-primary rotate-45 translate-y-2.75" : "w-6 bg-gray-500"}`}></span>
                     <span className={`flex h-0.75 rounded-3xl transition-all
@@ -49,7 +49,7 @@ export default function BurgerMenu ({ isOpen, setIsOpen }: {isOpen: boolean, set
             </button>
 
             <div className={`fixed z-10000 sm:hidden top-header right-0 bg-[rgb(15,15,15)]/70 backdrop-blur-sm w-full 
-                ${isOpen ? "opacity-100 h-full" : "pointer-events-none opacity-0 h-0"} transition`}>
+                ${isOpen ? "opacity-100 h-full" : "pointer-events-none opacity-0 h-0"} transition`} data-testid="burger-menu">
                     <ul className="flex flex-col items-center pt-10">
                         {pages.map((page: Page) => {
                             return (

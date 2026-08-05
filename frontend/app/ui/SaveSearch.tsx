@@ -88,6 +88,7 @@ export default function SaveSearch() {
                 onClick={openForm}
                 disabled={user === undefined}
                 className="flex items-center justify-center whitespace-nowrap rounded-full border border-white-500 bg-dark-primary px-2 text-sm text-primary hover:bg-[rgb(75,75,75)] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                data-testid="save-search-button"
             >
                 {wasSaved ? "Saved" : "Save search"}
             </button>
@@ -104,7 +105,7 @@ export default function SaveSearch() {
                                 onChange={(event) => setName(event.target.value)}
                                 className="rounded-lg"
                             />
-                            {error && <p className="text-sm text-red-500">{error}</p>}
+                            {error && <p data-testid="saved-search-error" className="text-sm text-red-500">{error}</p>}
                             <div className="flex justify-end gap-3">
                                 <OutlineButton onClick={closeForm}>Cancel</OutlineButton>
                                 <PrimaryButton type="submit" disabled={isSubmitting}>

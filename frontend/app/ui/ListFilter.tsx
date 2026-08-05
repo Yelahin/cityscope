@@ -49,7 +49,7 @@ export default function ListFilter ({
 
     return (
         <div>
-            {(limit && limit > 1) &&
+            {(limit > 1) &&
                 <div className="flex mb-1.5">
                     <span className="text-sm text-primary">{objArray.length}</span>
                     <p className="text-sm text-gray-400">{`/${limit}`}</p>
@@ -94,7 +94,7 @@ export default function ListFilter ({
                             <div className="flex justify-center items-center p-0 m-0 w-7.5">
                                 {(() => {
                                     const currentArray: (string | number)[] = Array.isArray(selectedFilters[key]) ? selectedFilters[key] : [];
-                                    return currentArray.includes(value) && <IoCheckmark className="text-xl text-primary" />
+                                    return currentArray.includes(value) && <IoCheckmark className="text-xl text-primary" data-testid="check-mark" />
                                 })()}
                             </div>
                         </ListItem>
