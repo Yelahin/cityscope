@@ -10,6 +10,7 @@ import fetchApi, { ApiError } from "../../lib/api/client";
 import type { Place, User } from "../../lib/api/types";
 import Spinner from "../../ui/Spinner";
 import StarRating from "../../ui/StarRatings";
+import { useAuth } from "@/app/ui/AuthContext";
 
 const PlaceMap = dynamic(() => import("../../ui/PlaceMap"), { ssr: false });
 
@@ -17,9 +18,10 @@ export default function PlaceDetailsClient() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const [place, setPlace] = useState<Place | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
   const [href] = useState(() => {
     if (typeof window === "undefined") return "/";
     return sessionStorage.getItem("lastSearchUrl") || "/";
@@ -35,10 +37,6 @@ export default function PlaceDetailsClient() {
         }
         setError("Could not load this place.");
       });
-
-    fetchApi<User>("me/")
-      .then(() => setIsAuthenticated(true))
-      .catch(() => setIsAuthenticated(false));
   }, [params.id]);
 
   async function toggleFavorite() {
