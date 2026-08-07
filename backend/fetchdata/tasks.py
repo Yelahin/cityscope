@@ -18,9 +18,7 @@ def import_places_from_overpass(city_id: int, max_retries: int):
     categories = Category.objects.all()
     query = get_overpass_query(city=city, categories=categories)
 
-
     for attempt in range(1, max_retries + 1):
-
         try:
             upload_data_to_database(query=query, city=city)
             return
@@ -34,7 +32,7 @@ def import_places_from_overpass(city_id: int, max_retries: int):
                 f"Something went wrong during Celery background task! | retry: {attempt}/{max_retries}"
             )
             return
-        
+
     logger.exception(
         f"Places for city: {city.name} was not uploaded after {max_retries} retries!"
     )

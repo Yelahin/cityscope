@@ -9,222 +9,254 @@ import RatingFilter from "./RatingFilter";
 import OpeningStatusFilter from "./OpeningStatusFilter";
 import SaveSearch from "./SaveSearch";
 import { PaginatedResponse, FilterOption } from "../lib/types";
-import { categoriesCheck, cityCheck, isNumeric, ratingCheck, priceLevelCheck, openingStatusCheck } from "../lib/validation/filterValidation";
-
-
+import {
+  categoriesCheck,
+  cityCheck,
+  isNumeric,
+  ratingCheck,
+  priceLevelCheck,
+  openingStatusCheck,
+} from "../lib/validation/filterValidation";
 
 export const priceLevels = [
-    "0$ - 10$",
-    "5$ - 12$",
-    "7$ - 16$",
-    "10$ - 20$",
-    "10$ - 25$",
-    "15$ - 25$",
-    "15$ - 30$",
-    "20$ - 30$",
-    "20$ - 35$",
-    "25$ - 40$",
-    "25$ - 45$",
-    "30$ - 50$",
-    "30$ - 60$",
-    "35$ - 65$",
-    "40$ - 80$",
-    "45$ - 85$",
-    "55$ - 95$",
-    "50$ - 100$",
-    "60$ - 110$",
-    "75$ - 130$",
-    "100$+"
-].map((name, id) => ({id: id, name: name}));
+  "0$ - 10$",
+  "5$ - 12$",
+  "7$ - 16$",
+  "10$ - 20$",
+  "10$ - 25$",
+  "15$ - 25$",
+  "15$ - 30$",
+  "20$ - 30$",
+  "20$ - 35$",
+  "25$ - 40$",
+  "25$ - 45$",
+  "30$ - 50$",
+  "30$ - 60$",
+  "35$ - 65$",
+  "40$ - 80$",
+  "45$ - 85$",
+  "55$ - 95$",
+  "50$ - 100$",
+  "60$ - 110$",
+  "75$ - 130$",
+  "100$+",
+].map((name, id) => ({ id: id, name: name }));
 
-export default function Filters ({position}: {position: [number, number] | undefined}) {
-    const [openFilter, setOpenFilter] = useState<string | null>(null);
-    const [categories, setCategories] = useState<FilterOption[]>([]);
-    const [cities, setCities] = useState<FilterOption[]>([]);
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const search = searchParams.get("search");
-    const [selectedFilters, setSelectedFilters] = useState<Record<string, number | string | number[] | string[]>>({});
-    const [requiredToSelect, setRequiredToSelect] = useState<string[]>([]);
-    const [scrollTrigger, setScrollTrigger] = useState<number>(0);
+export default function Filters({
+  position,
+}: {
+  position: [number, number] | undefined;
+}) {
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
+  const [categories, setCategories] = useState<FilterOption[]>([]);
+  const [cities, setCities] = useState<FilterOption[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search");
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, number | string | number[] | string[]>
+  >({});
+  const [requiredToSelect, setRequiredToSelect] = useState<string[]>([]);
+  const [scrollTrigger, setScrollTrigger] = useState<number>(0);
 
-    useEffect(() => {
-        fetchApi<PaginatedResponse<FilterOption>>("categories/")
-            .then((categories) => setCategories(categories.results))
-            .catch(() => setCategories([]));
+  useEffect(() => {
+    fetchApi<PaginatedResponse<FilterOption>>("categories/")
+      .then((categories) => setCategories(categories.results))
+      .catch(() => setCategories([]));
 
-        fetchApi<PaginatedResponse<FilterOption>>("cities/")
-            .then((cities) => setCities(cities.results))
-            .catch(() => setCities([]));
-    }, [])
+    fetchApi<PaginatedResponse<FilterOption>>("cities/")
+      .then((cities) => setCities(cities.results))
+      .catch(() => setCities([]));
+  }, []);
 
-    useEffect(() => {
-        if (cities.length === 0 || categories.length === 0) return;
+  useEffect(() => {
+    if (cities.length === 0 || categories.length === 0) return;
 
-        const category = searchParams.get("category");
-        const city = searchParams.get("city");
-        const radius = searchParams.get("radius");
-        const minRating = searchParams.get("rating_min");
-        const maxRating = searchParams.get("rating_max");
-        const priceLevel = searchParams.get("price_level");
-        const openingStatus = searchParams.get("opening_status");
+    const category = searchParams.get("category");
+    const city = searchParams.get("city");
+    const radius = searchParams.get("radius");
+    const minRating = searchParams.get("rating_min");
+    const maxRating = searchParams.get("rating_max");
+    const priceLevel = searchParams.get("price_level");
+    const openingStatus = searchParams.get("opening_status");
 
-        const filtersFromUrl: Record<string, number | string | number[] | string[]> = {};
+    const filtersFromUrl: Record<
+      string,
+      number | string | number[] | string[]
+    > = {};
 
-        if (category && categoriesCheck(category, categories)) filtersFromUrl["category"] = category.split(",").map(Number);
-        if (cityCheck(city, cities)) filtersFromUrl["city"] = [Number(city)];
-        if (radius && isNumeric(radius)) filtersFromUrl["radius"] = Number(radius);
-        if (ratingCheck(minRating, maxRating)) filtersFromUrl["rating_min"] = Number(minRating);
-        if (ratingCheck(minRating, maxRating)) filtersFromUrl["rating_max"] = Number(maxRating);
-        if (priceLevel && priceLevelCheck(priceLevel, priceLevels)) filtersFromUrl["price_level"] = priceLevel.split(",");
-        if (openingStatus && openingStatusCheck(openingStatus)) filtersFromUrl["opening_status"] = openingStatus;
+    if (category && categoriesCheck(category, categories))
+      filtersFromUrl["category"] = category.split(",").map(Number);
+    if (cityCheck(city, cities)) filtersFromUrl["city"] = [Number(city)];
+    if (radius && isNumeric(radius)) filtersFromUrl["radius"] = Number(radius);
+    if (ratingCheck(minRating, maxRating))
+      filtersFromUrl["rating_min"] = Number(minRating);
+    if (ratingCheck(minRating, maxRating))
+      filtersFromUrl["rating_max"] = Number(maxRating);
+    if (priceLevel && priceLevelCheck(priceLevel, priceLevels))
+      filtersFromUrl["price_level"] = priceLevel.split(",");
+    if (openingStatus && openingStatusCheck(openingStatus))
+      filtersFromUrl["opening_status"] = openingStatus;
 
-        async function setFilters () {
-            setSelectedFilters(filtersFromUrl);
-        }
-
-        setFilters();
-    }, [searchParams, cities, categories])
-
-    function toggleFilter (name: string) {
-        setOpenFilter(prev => (prev === name ? null : name));
+    async function setFilters() {
+      setSelectedFilters(filtersFromUrl);
     }
 
-    function handleClear () {
-        setSelectedFilters({});
-        setOpenFilter(null);
-        router.push(search ? `?search=${search}` : "?")
+    setFilters();
+  }, [searchParams, cities, categories]);
+
+  function toggleFilter(name: string) {
+    setOpenFilter((prev) => (prev === name ? null : name));
+  }
+
+  function handleClear() {
+    setSelectedFilters({});
+    setOpenFilter(null);
+    router.push(search ? `?search=${search}` : "?");
+  }
+
+  function handleApply() {
+    if (
+      (search && search !== "") ||
+      ("category" in selectedFilters && "city" in selectedFilters)
+    ) {
+      const params = new URLSearchParams(search ? `search=${search}` : "");
+      Object.entries(selectedFilters).forEach(([key, value]) => {
+        params.set(key, Array.isArray(value) ? value.join(",") : String(value));
+      });
+      router.push("?" + params.toString());
+    } else {
+      if (!("city" in selectedFilters) && !requiredToSelect.includes("city"))
+        setRequiredToSelect((prev) => [...prev, "city"]);
+      if (
+        !("category" in selectedFilters) &&
+        !requiredToSelect.includes("category")
+      )
+        setRequiredToSelect((prev) => [...prev, "category"]);
+
+      setScrollTrigger((prev) => prev + 1);
     }
+  }
 
-    function handleApply () {
-        if ((search && search !== "") || ("category" in selectedFilters && "city" in selectedFilters)) {
-            const params = new URLSearchParams(search ? `search=${search}` : "");
-            Object.entries(selectedFilters).forEach(([key, value]) => {
-                params.set(key, Array.isArray(value) ? value.join(",") : String(value));
-            });
-            router.push("?" + params.toString());
-        } else {
-            if (!("city" in selectedFilters) && !(requiredToSelect.includes("city"))) setRequiredToSelect(prev => [...prev, "city"]);
-            if (!("category" in selectedFilters) && !(requiredToSelect.includes("category"))) setRequiredToSelect(prev => [...prev, "category"]);
+  return (
+    <div className="flex max-w-75 w-full gap-2.5">
+      <ScrollableRow
+        requiredToSelect={requiredToSelect}
+        scrollTrigger={scrollTrigger}
+      >
+        <PlaceFilter
+          placeholder="City"
+          selectedFilters={selectedFilters}
+          isOpen={openFilter === "City"}
+          onToggle={() => toggleFilter("City")}
+          requiredToSelect={requiredToSelect}
+          filter={
+            <ListFilter
+              objects={cities}
+              placeholder="City"
+              setOpenFilter={setOpenFilter}
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
+              limit={1}
+              setRequiredToSelect={setRequiredToSelect}
+            />
+          }
+        />
+        <PlaceFilter
+          placeholder="Category"
+          selectedFilters={selectedFilters}
+          isOpen={openFilter === "Category"}
+          onToggle={() => toggleFilter("Category")}
+          requiredToSelect={requiredToSelect}
+          filter={
+            <ListFilter
+              objects={categories}
+              placeholder="Category"
+              setOpenFilter={setOpenFilter}
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
+              limit={3}
+              setRequiredToSelect={setRequiredToSelect}
+            />
+          }
+        />
 
-            setScrollTrigger(prev => prev + 1);
-        }
-    }
-
-    return (
-        <div className="flex max-w-75 w-full gap-2.5">
-            <ScrollableRow requiredToSelect={requiredToSelect} scrollTrigger={scrollTrigger}>
-                <PlaceFilter
-                    placeholder="City" 
-                    selectedFilters={selectedFilters}
-                    isOpen={openFilter === "City"} 
-                    onToggle={() => toggleFilter("City")}
-                    requiredToSelect={requiredToSelect}
-                    filter={
-                        <ListFilter 
-                            objects={cities} 
-                            placeholder="City" 
-                            setOpenFilter={setOpenFilter}
-                            selectedFilters={selectedFilters}
-                            setSelectedFilters={setSelectedFilters}
-                            limit={1}
-                            setRequiredToSelect={setRequiredToSelect}
-                        />
-                    }
-                />
-                <PlaceFilter 
-                    placeholder="Category" 
-                    selectedFilters={selectedFilters}
-                    isOpen={openFilter === "Category"} 
-                    onToggle={() => toggleFilter("Category")}
-                    requiredToSelect={requiredToSelect}
-                    filter={
-                        <ListFilter 
-                            objects={categories} 
-                            placeholder="Category" 
-                            setOpenFilter={setOpenFilter}
-                            selectedFilters={selectedFilters}
-                            setSelectedFilters={setSelectedFilters}
-                            limit={3}
-                            setRequiredToSelect={setRequiredToSelect}
-                        />
-                    }
-                />
-
-                {position &&
-                    <PlaceFilter
-                        placeholder="Radius"
-                        selectedFilters={selectedFilters}
-                        isOpen={openFilter === "Radius"}
-                        onToggle={() => toggleFilter("Radius")}
-                        filter={
-                            <RadiusFilter 
-                                setOpenFilter={setOpenFilter} 
-                                selectedFilters={selectedFilters}
-                                setSelectedFilters={setSelectedFilters}
-                            />
-                        }
-                    />
-                }
-                <PlaceFilter
-                    placeholder="Rating"
-                    param="rating_max"
-                    selectedFilters={selectedFilters}
-                    isOpen={openFilter === "Rating"}
-                    onToggle={() => toggleFilter("Rating")}
-                    filter={
-                        <RatingFilter 
-                            setOpenFilter={setOpenFilter} 
-                            selectedFilters={selectedFilters}
-                            setSelectedFilters={setSelectedFilters}
-                        />
-                    }
-                />
-                <PlaceFilter
-                    placeholder="Price level"
-                    param="price_level"
-                    selectedFilters={selectedFilters}
-                    isOpen={openFilter === "Price level"}
-                    onToggle={() => toggleFilter("Price level")}
-                    filter={
-                        <ListFilter 
-                            selectById={false} 
-                            objects={priceLevels} 
-                            placeholder="Price level" 
-                            param="price_level"
-                            selectedFilters={selectedFilters}
-                            setSelectedFilters={setSelectedFilters}
-                            setOpenFilter={setOpenFilter}
-                            limit={priceLevels.length}
-                        />
-                    }
-                />
-                <PlaceFilter
-                    placeholder="Opening status"
-                    param="opening_status"
-                    selectedFilters={selectedFilters}
-                    isOpen={openFilter === "Opening status"}
-                    onToggle={() => toggleFilter("Opening status")}
-                    filter={
-                        <OpeningStatusFilter 
-                            setOpenFilter={setOpenFilter}
-                            selectedFilters={selectedFilters}
-                            setSelectedFilters={setSelectedFilters}
-                        />
-                    }
-                />
-                <SaveSearch />
-                <button 
-                    className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer"
-                    onClick={handleClear} 
-                >
-                    Clear All
-                </button>
-            </ScrollableRow>
-            <button 
-                className="text-sm rounded-full px-2 cursor-pointer whitespace-nowrap text-white bg-primary hover:bg-blue-400 active:bg-blue-300 transition"
-                onClick={handleApply}
-            >Apply</button>
-        </div>
-    );
+        {position && (
+          <PlaceFilter
+            placeholder="Radius"
+            selectedFilters={selectedFilters}
+            isOpen={openFilter === "Radius"}
+            onToggle={() => toggleFilter("Radius")}
+            filter={
+              <RadiusFilter
+                setOpenFilter={setOpenFilter}
+                selectedFilters={selectedFilters}
+                setSelectedFilters={setSelectedFilters}
+              />
+            }
+          />
+        )}
+        <PlaceFilter
+          placeholder="Rating"
+          param="rating_max"
+          selectedFilters={selectedFilters}
+          isOpen={openFilter === "Rating"}
+          onToggle={() => toggleFilter("Rating")}
+          filter={
+            <RatingFilter
+              setOpenFilter={setOpenFilter}
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
+            />
+          }
+        />
+        <PlaceFilter
+          placeholder="Price level"
+          param="price_level"
+          selectedFilters={selectedFilters}
+          isOpen={openFilter === "Price level"}
+          onToggle={() => toggleFilter("Price level")}
+          filter={
+            <ListFilter
+              selectById={false}
+              objects={priceLevels}
+              placeholder="Price level"
+              param="price_level"
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
+              setOpenFilter={setOpenFilter}
+              limit={priceLevels.length}
+            />
+          }
+        />
+        <PlaceFilter
+          placeholder="Opening status"
+          param="opening_status"
+          selectedFilters={selectedFilters}
+          isOpen={openFilter === "Opening status"}
+          onToggle={() => toggleFilter("Opening status")}
+          filter={
+            <OpeningStatusFilter
+              setOpenFilter={setOpenFilter}
+              selectedFilters={selectedFilters}
+              setSelectedFilters={setSelectedFilters}
+            />
+          }
+        />
+        <SaveSearch />
+        <button
+          className="flex whitespace-nowrap justify-center items-center bg-dark-primary hover:bg-[rgb(75,75,75)] text-sm text-red-500 hover:text-white border border-white-500 px-2 rounded-full cursor-pointer"
+          onClick={handleClear}
+        >
+          Clear All
+        </button>
+      </ScrollableRow>
+      <button
+        className="text-sm rounded-full px-2 cursor-pointer whitespace-nowrap text-white bg-primary hover:bg-blue-400 active:bg-blue-300 transition"
+        onClick={handleApply}
+      >
+        Apply
+      </button>
+    </div>
+  );
 }

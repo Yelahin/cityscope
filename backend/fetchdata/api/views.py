@@ -9,6 +9,17 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from core.models import Category, City, Place
+from core.throttles import (
+    CategoryDayThrottle,
+    CategoryHourThrottle,
+    CategoryMinThrottle,
+    CityDayThrottle,
+    CityHourThrottle,
+    CityMinThrottle,
+    PlaceDayThrottle,
+    PlaceHourThrottle,
+    PlaceMinThrottle,
+)
 
 from .filters import PlaceFilterSet, PlaceOrderingFilter, PlaceSearchFilter
 from .serializers import CategorySerializer, CitySerializer, PlaceSerializer
@@ -18,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+    throttle_classes = [PlaceMinThrottle, PlaceHourThrottle, PlaceDayThrottle]
     queryset = Place.objects.select_related("category", "city")
     serializer_class = PlaceSerializer
     pagination_class = StandardResultSetPagination
@@ -60,7 +72,9 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         filterset_class=PlaceFilterSet,
     )
     def favorite_places(self, request):
-        queryset = request.user.favorite_places.select_related("category", "city")
+        queryset = request.user.favorite_places.select_related(
+            "category", "city"
+        )
         queryset = self.filter_queryset(queryset)
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -140,13 +154,21 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
 
         raise MethodNotAllowed(request.method)
 
+
 class CategoryListView(generics.ListAPIView):
+    throttle_classes = [
+        CategoryMinThrottle,
+        CategoryHourThrottle,
+        CategoryDayThrottle,
+    ]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = StandardResultSetPagination
     permission_classes = [AllowAny]
 
+
 class CityListView(generics.ListAPIView):
+    throttle_classes = [CityMinThrottle, CityHourThrottle, CityDayThrottle]
     queryset = City.objects.all()
     serializer_class = CitySerializer
     pagination_class = StandardResultSetPagination

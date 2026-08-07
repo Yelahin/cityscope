@@ -5,18 +5,38 @@ from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
+    throttle_classes,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from core.throttles import (
+    GetMeHourThrottle,
+    GetMeMinThrottle,
+    LoginDayThrottle,
+    LoginHourThrottle,
+    LoginMinThrottle,
+    RegisterDayThrottle,
+    RegisterHourThrottle,
+    RegisterMinThrottle,
+    SavedSearchDayThrottle,
+    SavedSearchHourThrottle,
+    SavedSearchMinThrottle,
+)
 from users.models import SavedSearch
 
 from .serializers import SavedSearchSerializer, UserSerializer
 
 
 class SavedSearchViewSet(viewsets.ModelViewSet):
+    throttle_classes = [
+        SavedSearchMinThrottle,
+        SavedSearchHourThrottle,
+        SavedSearchDayThrottle,
+    ]
     serializer_class = SavedSearchSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [OrderingFilter, SearchFilter]
@@ -34,6 +54,8 @@ class SavedSearchViewSet(viewsets.ModelViewSet):
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    throttle_classes = [LoginMinThrottle, LoginHourThrottle, LoginDayThrottle]
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
@@ -73,21 +95,30 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return response
 
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def register_user(request):
-    user = UserSerializer(data=request.data)
-    if user.is_valid():
-        user.save()
+class RegisterUserView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [
+        RegisterMinThrottle,
+        RegisterHourThrottle,
+        RegisterDayThrottle,
+    ]
+
+    def post(self, request, *args, **kwargs):
+        user = UserSerializer(data=request.data)
+        if user.is_valid():
+            user.save()
+            return Response(
+                data={"message": "User was successfully created"},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(
-            data={"message": "User was successfully created"},
-            status=status.HTTP_201_CREATED,
+            data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST
         )
-    return Response(data={"message": user.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([GetMeMinThrottle, GetMeHourThrottle])
 def get_me(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)

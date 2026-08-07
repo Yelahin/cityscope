@@ -242,6 +242,7 @@ describe("Profile", () => {
     expect(fetchApi).toHaveBeenCalledWith(
       `places/${places[0].id}/favorite/`,
       undefined,
+      undefined,
       { method: "DELETE" },
     );
 
@@ -283,6 +284,7 @@ describe("Profile", () => {
     expect(fetchApi).toHaveBeenCalledTimes(2);
     expect(fetchApi).toHaveBeenCalledWith(
       `places/${places[0].id}/favorite/`,
+      undefined,
       undefined,
       { method: "DELETE" },
     );
@@ -326,6 +328,7 @@ describe("Profile", () => {
     expect(fetchApi).toHaveBeenCalledWith(
       `places/${places[0].id}/favorite/`,
       undefined,
+      undefined,
       { method: "DELETE" },
     );
 
@@ -355,6 +358,7 @@ describe("Profile", () => {
     expect(fetchApi).toHaveBeenCalledTimes(2);
     expect(fetchApi).toHaveBeenCalledWith(
       `searches/${searches[0].id}/`,
+      undefined,
       undefined,
       { method: "DELETE" },
     );
@@ -398,6 +402,7 @@ describe("Profile", () => {
     expect(fetchApi).toHaveBeenCalledWith(
       `searches/${searches[0].id}/`,
       undefined,
+      undefined,
       { method: "DELETE" },
     );
 
@@ -439,6 +444,7 @@ describe("Profile", () => {
     expect(fetchApi).toHaveBeenCalledTimes(2);
     expect(fetchApi).toHaveBeenCalledWith(
       `searches/${searches[0].id}/`,
+      undefined,
       undefined,
       { method: "DELETE" },
     );

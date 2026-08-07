@@ -14,19 +14,19 @@ Cityscope is a geo search web app for discovering nearby places
 
 <hr>
 
-1) Clone the repository
+1. Clone the repository
 ```bash
 git clone https://github.com/Yelahin/cityscope
 ```
 
-2) Open project folder
+2. Open project folder
 ```bash
 cd cityscope
 ```
 
-3) Create **backend/.env** file for backend and create **frontend/.env.local** file for frontend
+3. Create **backend/.env** file for backend and create **frontend/.env.local** file for frontend
 
-4) Set up variables in **backend/.env** and **frontend/.env.local** file. Variables displayed in **.env.example** file located both in backend and frontend app
+4. Set up variables in **backend/.env** and **frontend/.env.local** file. Variables displayed in **.env.example** file located both in backend and frontend app
 
 
 **Backend**:
@@ -48,17 +48,18 @@ CSRF_TRUSTED_ORIGINS=your-frontend-origin       # <- production only, for exampl
 
 **Frontend**:
 ```bash
-NEXT_PUBLIC_API_BASE_URL=your-backend-api-endpoint # For example: "http://localhost:8000/api/"  
+NEXT_PUBLIC_API_BASE_URL=your-backend-api-endpoint-for-browser      # For example: "http://localhost:8000/api/"
+API_INTERNAL_BASE_URL=your-backend-api-endpoint-for-docker          # For example: "http://backend:8000/api/"
 ```
 
-5) Make sure Docker Engine or Docker Desktop is working
+5. Make sure Docker Engine or Docker Desktop is working
 
-6) Create and run containers in detached mode
+6. Create and run containers in detached mode
 ```bash
 docker compose up --build -d
 ```
 
-7) Apply database migrations
+7. Apply database migrations
 ```bash
 docker exec cityscope-backend python manage.py migrate
 ```
@@ -147,3 +148,37 @@ To run frontend tests, execute the following command:
 ```bash
 npm test
 ```
+
+## Important
+
+To add additional categories fetched from the **Overpass API**, follow these steps:
+
+1. Open the `backend/fetchdata/services/utils.py` file.
+
+2. Add a new category to the `category_tags` dictionary using the following format:
+```python
+category_tags = {
+    ...,
+    "Category Name": {
+        "tag": "overpass_tag",
+        "value": "overpass_value"
+    }
+}
+```
+
+Where:
+- `"Category Name"` is the name that will be stored in the database and displayed on the frontend.
+- `"tag"` is the **Overpass API** tag used to identify the category (for example `amenity`).
+- `"value"` is the corresponding **Overpass API** value for the selected tag (for example, `cafe`).
+
+### Example
+```python
+category_tags = {
+    "Cafe": {
+        "tag": "amenity",
+        "value": "cafe"
+    } 
+}
+```
+
+After adding the new category, it will be included the next time data is fetched from the **Overpass API**.

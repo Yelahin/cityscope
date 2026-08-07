@@ -61,7 +61,7 @@ describe("Login", () => {
     await user.click(screen.getByRole("button"));
 
     expect(fetchApi).toHaveBeenCalledTimes(1);
-    expect(fetchApi).toHaveBeenCalledWith("token/", undefined, {
+    expect(fetchApi).toHaveBeenCalledWith("token/", undefined, undefined, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),

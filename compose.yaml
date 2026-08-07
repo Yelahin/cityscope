@@ -36,7 +36,7 @@ services:
       timeout: 5s
       retries: 5
 
-  broker:
+  redis:
     container_name: redis
     image: redis:latest
     healthcheck:
@@ -55,7 +55,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      broker:
+      redis:
         condition: service_healthy
 
   celery_worker:
@@ -68,7 +68,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      broker:
+      redis:
         condition: service_healthy
 
 volumes:

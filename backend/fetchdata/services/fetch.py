@@ -66,7 +66,6 @@ def get_overpass_query(categories: list[Category], city: City) -> str:
             relation["{tag}"="{value}"](area.city);
         """
 
-
     return f"""
     [out:json][timeout:120];
     (

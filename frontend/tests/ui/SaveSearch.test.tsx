@@ -142,7 +142,7 @@ describe("SaveSearch", () => {
     await user.click(screen.getByText("Save"));
 
     expect(fetchApi).toHaveBeenCalledTimes(1);
-    expect(fetchApi).toHaveBeenCalledWith("searches/", undefined, {
+    expect(fetchApi).toHaveBeenCalledWith("searches/", undefined, undefined, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: "Search name", params: {} }),
@@ -173,7 +173,7 @@ describe("SaveSearch", () => {
     await user.click(screen.getByText("Save"));
 
     expect(fetchApi).toHaveBeenCalledTimes(1);
-    expect(fetchApi).toHaveBeenCalledWith("searches/", undefined, {
+    expect(fetchApi).toHaveBeenCalledWith("searches/", undefined, undefined, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: "Search name", params: {} }),

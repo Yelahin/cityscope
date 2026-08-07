@@ -2,6 +2,7 @@ import PlaceDetails from "@/app/places/[id]/page";
 import { act, render, screen } from "@testing-library/react";
 import { ApiError } from "@/app/lib/api/client";
 import userEvent from "@testing-library/user-event";
+import { useAuth } from "@/app/ui/AuthContext";
 
 const { push, fetchApi } = vi.hoisted(() => ({
   push: vi.fn(),
@@ -20,6 +21,14 @@ vi.mock("@/app/lib/api/client", async () => {
   return {
     ...actual,
     default: fetchApi,
+  };
+});
+
+vi.mock("@/app/ui/AuthContext", async () => {
+  const actual = await vi.importActual("@/app/ui/AuthContext");
+  return {
+    ...actual,
+    useAuth: vi.fn(),
   };
 });
 
@@ -48,6 +57,12 @@ describe("PlaceDetails", () => {
         return Promise.resolve(place);
       }
       return Promise.resolve({});
+    });
+
+    vi.mocked(useAuth).mockReturnValue({
+      user: undefined,
+      setUser: vi.fn(),
+      logout: vi.fn(),
     });
   });
 
@@ -106,9 +121,6 @@ describe("PlaceDetails", () => {
       if (path === "places/1/") {
         return Promise.resolve(place);
       }
-      if (path === "me/") {
-        return Promise.reject(new ApiError("User doesn't exist", 401, null));
-      }
       return Promise.resolve({});
     });
 
@@ -130,6 +142,12 @@ describe("PlaceDetails", () => {
   });
 
   it("should display add to favorites button if place isn't in favorites", async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user,
+      setUser: vi.fn(),
+      logout: vi.fn(),
+    });
+
     render(<PlaceDetails />);
     await act(async () => {});
 
@@ -137,13 +155,16 @@ describe("PlaceDetails", () => {
   });
 
   it("should display Remove from favorites button if place is in favorites", async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user,
+      setUser: vi.fn(),
+      logout: vi.fn(),
+    });
+
     vi.mocked(fetchApi).mockImplementation((path: string) => {
       const favoritePlace = { ...place, is_favorite: true };
       if (path === "places/1/") {
         return Promise.resolve(favoritePlace);
-      }
-      if (path === "me/") {
-        return Promise.resolve(user);
       }
       return Promise.resolve({});
     });
@@ -155,35 +176,54 @@ describe("PlaceDetails", () => {
   });
 
   it("should make POST request to add new favorite place", async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user,
+      setUser: vi.fn(),
+      logout: vi.fn(),
+    });
+
     render(<PlaceDetails />);
     await act(async () => {});
 
     expect(screen.getByText("Add to favorites")).toBeInTheDocument();
+    expect(fetchApi).toHaveBeenCalledTimes(1);
+    expect(fetchApi).not.toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "POST",
+      },
+    );
+
+    const testUser = userEvent.setup();
+    await testUser.click(screen.getByText("Add to favorites"));
+
     expect(fetchApi).toHaveBeenCalledTimes(2);
-    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, {
-      method: "POST",
-    });
-
-    const user = userEvent.setup();
-    await user.click(screen.getByText("Add to favorites"));
-
-    expect(fetchApi).toHaveBeenCalledTimes(3);
-    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, {
-      method: "POST",
-    });
+    expect(fetchApi).toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "POST",
+      },
+    );
 
     expect(screen.queryByText("Add to favorites")).not.toBeInTheDocument();
     expect(screen.getByText("Remove from favorites")).toBeInTheDocument();
   });
 
   it("should make DELETE request to remove place from favirtes", async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user,
+      setUser: vi.fn(),
+      logout: vi.fn(),
+    });
+
     vi.mocked(fetchApi).mockImplementation((path: string) => {
       const favoritePlace = { ...place, is_favorite: true };
       if (path === "places/1/") {
         return Promise.resolve(favoritePlace);
-      }
-      if (path === "me/") {
-        return Promise.resolve(user);
       }
       return Promise.resolve({});
     });
@@ -192,18 +232,28 @@ describe("PlaceDetails", () => {
     await act(async () => {});
 
     expect(screen.getByText("Remove from favorites")).toBeInTheDocument();
-    expect(fetchApi).toHaveBeenCalledTimes(2);
-    expect(fetchApi).not.toHaveBeenCalledWith("places/1/favorite/", undefined, {
-      method: "DELETE",
-    });
+    expect(fetchApi).toHaveBeenCalledTimes(1);
+    expect(fetchApi).not.toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "DELETE",
+      },
+    );
 
     const testUser = userEvent.setup();
     await testUser.click(screen.getByText("Remove from favorites"));
 
-    expect(fetchApi).toHaveBeenCalledTimes(3);
-    expect(fetchApi).toHaveBeenCalledWith("places/1/favorite/", undefined, {
-      method: "DELETE",
-    });
+    expect(fetchApi).toHaveBeenCalledTimes(2);
+    expect(fetchApi).toHaveBeenCalledWith(
+      "places/1/favorite/",
+      undefined,
+      undefined,
+      {
+        method: "DELETE",
+      },
+    );
 
     expect(screen.queryByText("Remove from favorites")).not.toBeInTheDocument();
     expect(screen.getByText("Add to favorites")).toBeInTheDocument();

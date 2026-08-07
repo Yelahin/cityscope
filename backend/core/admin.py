@@ -17,18 +17,20 @@ class CustomSite(admin.AdminSite):
         app_list = super().get_app_list(request, app_label)
 
         if app_label is None:
-            app_list.append({
-                "name": "Custom Pages",
-                "app_label": "custom_pages",
-                "app_url": "/admin/custom_pages/",
-                "has_module_perms": True,
-                "models": [
-                    {
-                        "name": "Import Places",
-                        "admin_url": "/admin/custom_pages/import_places/"
-                    },
-                ]
-            })
+            app_list.append(
+                {
+                    "name": "Custom Pages",
+                    "app_label": "custom_pages",
+                    "app_url": "/admin/custom_pages/",
+                    "has_module_perms": True,
+                    "models": [
+                        {
+                            "name": "Import Places",
+                            "admin_url": "/admin/custom_pages/import_places/",
+                        },
+                    ],
+                }
+            )
 
         return app_list
 
@@ -36,19 +38,19 @@ class CustomSite(admin.AdminSite):
     def get_urls(self):
         custom_urls = [
             path(
-                'custom_pages/import_places/', 
+                "custom_pages/import_places/",
                 self.admin_view(ImportPlacesView.as_view(admin=self)),
-                name="import_places"
+                name="import_places",
             ),
             path(
-                'custom_pages/',
+                "custom_pages/",
                 self.admin_view(custom_pages_index),
-                name="custom_pages"
+                name="custom_pages",
             ),
         ]
 
         return custom_urls + super().get_urls()
-    
+
 
 admin.site.__class__ = CustomSite
 

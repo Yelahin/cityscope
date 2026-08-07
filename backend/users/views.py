@@ -8,6 +8,7 @@ from .forms import RegistrationForm
 
 # Create your views here.
 
+
 class SignUpView(CreateView):
     form_class = RegistrationForm
     template_name = "users/sign_up.html"
@@ -15,7 +16,10 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         form.save()
-        user = authenticate(username=form.cleaned_data["username"], password=form.cleaned_data["password1"])
+        user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password1"],
+        )
         login(self.request, user)
         return HttpResponseRedirect(self.success_url)
 

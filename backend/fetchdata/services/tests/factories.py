@@ -8,8 +8,9 @@ from fetchdata.services.utils import category_tags
 
 fake = Faker()
 
+
 class OverpassTagsFactory(factory.DictFactory):
-    name = factory.Sequence(lambda n: f'Place {n}')
+    name = factory.Sequence(lambda n: f"Place {n}")
 
     @classmethod
     def _generate_tags(cls, kwargs):
